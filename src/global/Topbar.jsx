@@ -64,11 +64,11 @@ function Topbar() {
                   // color:"#FFF"
                 }}
               />
-              <Typography sx={{color:"#FFF"}}variant="h4" fontWeight="500" marginLeft={1}>
+              <Typography sx={{ color: "#FFF" }} variant="h4" fontWeight="500" marginLeft={1}>
                 OBSERVABILITY
               </Typography>
             </Box>
-            <Box sx={{display:"flex"}}>
+            <Box sx={{ display: "flex" }}>
               {" "}
               <IconButton
                 aria-label="Toggle Dark Mode"
@@ -97,45 +97,44 @@ function Topbar() {
           <Toolbar
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-between", // Adjust spacing between logo and icons
               alignItems: "center",
-              // marginTop: "2px",
               backgroundColor: colors.primary[400],
             }}
           >
-            <img
-              src={indigoLogo}
-              alt="Logo"
-              style={{
-                // width: "180px",x
-                // height: "60px",
-                marginRight:"820px",
-                marginTop:"5px",
-                width: "180px",
-                height: "60px",
-              }}
-            />
-            <IconButton
-              aria-label="Toggle Dark Mode"
-              onClick={() => handleColorMode()}
-            >
-              {theme.palette.mode === "light" ? (
-                <Brightness7 style={{ fontSize: "20px", color: "#FFF" }} />
-              ) : (
-                <Brightness4 style={{ fontSize: "20px" }} />
-              )}
-            </IconButton>
-            <IconButton style={{ marginLeft: "5px" }}>
-              <Person style={{ fontSize: "20px", color: "#FFF" }} />
-            </IconButton>
-            <span style={{ color: colors.tabColor[500] }}>User: {user}</span>
-            <div style={{ marginLeft: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={indigoLogo}
+                alt="Logo"
+                style={{
+                  width: "180px",
+                  height: "60px",
+                  marginRight: "20px", // Adjust spacing between logo and icons
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <IconButton
+                aria-label="Toggle Dark Mode"
+                onClick={() => handleColorMode()}
+              >
+                {theme.palette.mode === "light" ? (
+                  <Brightness7 style={{ fontSize: "20px", color: "#FFF" }} />
+                ) : (
+                  <Brightness4 style={{ fontSize: "20px" }} />
+                )}
+              </IconButton>
+              <IconButton style={{ marginLeft: "5px" }}>
+                <Person style={{ fontSize: "20px", color: "#FFF" }} />
+                <span style={{ color: colors.tabColor[500], fontSize:"12px" }}>User: {user}</span>
+              </IconButton>
               <IconButton aria-label="Account" onClick={handleLogout}>
                 <LogoutIcon style={{ fontSize: "20px", color: "#FFF" }} />
               </IconButton>
             </div>
           </Toolbar>
         </AppBar>
+
       )}
     </div>
   );
