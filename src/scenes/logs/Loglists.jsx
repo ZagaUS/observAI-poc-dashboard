@@ -436,7 +436,7 @@ const Loglists = () => {
       console.log("Filter Body " + logFilterApiBody);
       try {
         console.log("Filter callback ");
-        const { data, totalCount } = await LogFilterOptionWithDate(
+        const { data } = await LogFilterOptionWithDate(
           selectedStartDate,
           selectedEndDate,
           lookBackVal.value,
@@ -445,8 +445,9 @@ const Loglists = () => {
           pageLimit,
           logFilterApiBody
         );
-        if (data.length !== 0) {
-          const updatedData = createTimeInWords(data);
+        const totalCount = 100;
+        if (data.searchLogsPaged.length !== 0) {
+          const updatedData = createTimeInWords(data.searchLogsPaged);
           const finalOutput = mapLogData(updatedData);
           setLogData(finalOutput);
           console.log(finalOutput);
