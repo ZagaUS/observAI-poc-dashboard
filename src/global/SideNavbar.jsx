@@ -14,6 +14,7 @@ import { tokens } from "../theme";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "./globalContext/GlobalContext";
 import logo from "../assets/zaga-logedit.jpg"
+import redhatLogo from "../assets/redhat.png"
 import FilterDialog from "../scenes/dashboard/FilterDialog";
 import Metricfilter from "../scenes/metrics/Metricfilter";
 import Logfilter from "../scenes/logs/Logfilter";
@@ -51,7 +52,7 @@ const SideNavbar = () => {
   // };  
 
   // useEffect(() => {
- 
+
   //   if (isSmallScreen) {
   //     setIsCollapsed(true);
   //   } else {
@@ -61,12 +62,10 @@ const SideNavbar = () => {
 
   return (
     <Box>
-
-
-      {isSmallScreen?null:<Sidebar
+      {isSmallScreen ? null : <Sidebar
         collapsed={isCollapsed}
         rootStyles={{ height: "100%", borderRight: "none" }}
-        // breakPoint={BREAK_POINTS.custom}
+      // breakPoint={BREAK_POINTS.custom}
       >
         <Menu
           iconShape="square"
@@ -99,17 +98,28 @@ const SideNavbar = () => {
             },
           }}
         >
-          {!isCollapsed ? (<Box style={{ margin: "8px 10px -8px 33px", }} >
+          {!isCollapsed ? (<Box style={{ margin: "-25px 10px -42px 33px", }} >
             <img
-              src={logo}
+              src={redhatLogo}
               alt="Logo"
               style={{
                 // width: "180px",x
                 // height: "60px",
                 width: "180px",
-                height: "60px",
+                height: "120px",
               }}
             />
+            {/* <div
+              // className="logo-container"
+              style={{
+                width: "180px",
+                height: "60px",
+                backgroundImage: `url(${redhatLogo})`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+            /> */}
           </Box>) : null}
 
 
@@ -222,7 +232,7 @@ const SideNavbar = () => {
           </MenuItem> */}
         </Menu>
       </Sidebar>}
-      
+
     </Box>
   );
 };

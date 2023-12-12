@@ -14,6 +14,7 @@ import { ColorModeContext, tokens } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "./globalContext/GlobalContext";
 import logo from "../assets/zaga-logedit.jpg";
+import indigoLogo from "../assets/indigoNew3.jpeg"
 
 function Topbar() {
   const navigate = useNavigate();
@@ -102,7 +103,18 @@ function Topbar() {
               backgroundColor: colors.primary[400],
             }}
           >
-            {" "}
+            <img
+              src={indigoLogo}
+              alt="Logo"
+              style={{
+                // width: "180px",x
+                // height: "60px",
+                marginRight:"820px",
+                marginTop:"5px",
+                width: "180px",
+                height: "60px",
+              }}
+            />
             <IconButton
               aria-label="Toggle Dark Mode"
               onClick={() => handleColorMode()}
