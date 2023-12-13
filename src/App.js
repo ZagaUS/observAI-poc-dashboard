@@ -1,7 +1,7 @@
 import SideNavbar from "./global/SideNavbar";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import { Route, Routes } from "react-router";
+import { Route, Routes, useNavigate } from "react-router";
 import LoginPage from "./scenes/auth/Login";
 import Topbar from "./global/Topbar";
 import { GlobalContextProvider } from "./global/globalContext/GlobalContext";
@@ -16,9 +16,35 @@ import KafkaSummaryChart from "./scenes/dashboard/summary/KafkaSummaryChart";
 import PodDashboardCharts from "./scenes/dashboard/sustainability/PodDashboardCharts";
 import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboardCharts";
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
+import { useEffect } from "react";
+import { isTokenExpired, logout } from "./global/AuthMechanism";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        const isExpired = isTokenExpired(accessToken);
+        console.log("is EXPIRED---------------------------- " + isExpired);
+        if (isExpired) {
+          navigate("/");
+        } else {
+          // Token is valid, continue with the navigation
+          const isLogout = localStorage.getItem("loggedOut");
+          console.log("Logout " + isLogout);
+          if (isLogout === null && window.location.pathname === "/") {
+            navigate("/mainpage/dashboard");
+          }
+        }
+      }
+    };
+
+    checkTokenExpiration();
+
+  }, [navigate]);
 
   const DashboardSection = () => {
     return (
