@@ -11,14 +11,18 @@ import "./SpanFlow.css";
 import {
   Box,
   Card,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Paper,
   Popover,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
+  ToggleButton,
   Typography,
   useMediaQuery,
   useTheme,
@@ -30,11 +34,13 @@ import SpanInfo from "./SpanInfo";
 import { useRef } from "react";
 import Loading from "../../../../global/Loading/Loading";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import CustomFlow from "./CustomFlow";
 
 const SpanFlow = () => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [orderedSpans, setOrderedSpans] = useState([]);
+  // const [CustomFlow,setCustomflow] =useState([]);
   const [isCardVisible, setIsCardVisible] = useState(false);
   const [spanflowErrStatus, setSpanflowErrStatus] = useState(false);
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
@@ -45,6 +51,7 @@ const SpanFlow = () => {
   orderedSpans.forEach((status) => {});
 
   // console.log("isCardVisible", isCardVisible);
+  // console.log("cutom flow",CustomFlow);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { selectedTrace, setSelectedSpan, traceLoading } =
@@ -52,6 +59,14 @@ const SpanFlow = () => {
   // console.log("stscode", selectedTrace);
   console.log("order-span", orderedSpans);
   const [loading, setLoading] = useState(false);
+
+  const [checked, setChecked] = useState(true);
+  const [showCard, setShowCard] = useState(true);
+
+  const switchHandler = (event) => {
+    setChecked(event.target.checked);
+    setShowCard(!showCard);
+  };
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -388,6 +403,7 @@ const SpanFlow = () => {
       // const orderedSpansData = sortingParentChildOrder(selectedTrace.spans);
       setOrderedSpans(selectedTrace.spanDTOs);
       dynamicNodeCreation(selectedTrace.spanDTOs);
+      // setCustomflow(selectedTrace.spanDTOs);
     }
     // setLoading(false);
   }, [selectedTrace, setSelectedSpan]);
@@ -449,6 +465,18 @@ const SpanFlow = () => {
                       {selectedTrace.serviceName}
                     </Typography>
                   </Typography>
+
+                  <FormGroup>
+                    <FormControlLabel
+                    // labelPlacement="top"
+                      control={<Switch size="small"
+                      checked={checked} 
+                      onClick={switchHandler} 
+                      />}
+                      label="Flow"
+                    />
+                  </FormGroup>
+
                   <Typography variant="h6">
                     SpanCount <br />
                     <Typography variant="h7">
@@ -627,8 +655,11 @@ const SpanFlow = () => {
               </div>
 
               {/* maxHeight: "calc(145vh - 50px)" */}
+              {showCard ? <div>
+                <CustomFlow spandata={orderedSpans}/>
+              </div> : (
               <div
-                style={{ maxHeight: "calc(71vh - 85px)",
+                style={{ maxHeight: "calc(69vh - 85px)",
                 ...(
                   isiphone && {
                     maxHeight:  "125vh",
@@ -685,7 +716,9 @@ const SpanFlow = () => {
                   <SpanInfo />
                 </div>
               </div>
+              )}
             </div>
+              
           )}
         </div>
       )}

@@ -1,29 +1,15 @@
 {
   "files": {
-<<<<<<< HEAD
     "main.css": "/static/css/main.4e85836a.css",
-    "main.js": "/static/js/main.da320313.js",
+    "main.js": "/static/js/main.c03e7931.js",
     "static/media/observai.png": "/static/media/observai.ce90f42f2fbb2ce26aee.png",
     "static/media/zaga-logedit.jpg": "/static/media/zaga-logedit.242683575116b6343771.jpg",
     "index.html": "/index.html",
     "main.4e85836a.css.map": "/static/css/main.4e85836a.css.map",
-    "main.da320313.js.map": "/static/js/main.da320313.js.map"
+    "main.c03e7931.js.map": "/static/js/main.c03e7931.js.map"
   },
   "entrypoints": [
     "static/css/main.4e85836a.css",
-    "static/js/main.da320313.js"
-=======
-    "main.css": "/static/css/main.55031619.css",
-    "main.js": "/static/js/main.1059126f.js",
-    "static/media/observai.png": "/static/media/observai.ce90f42f2fbb2ce26aee.png",
-    "static/media/zaga-logedit.jpg": "/static/media/zaga-logedit.242683575116b6343771.jpg",
-    "index.html": "/index.html",
-    "main.55031619.css.map": "/static/css/main.55031619.css.map",
-    "main.1059126f.js.map": "/static/js/main.1059126f.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.55031619.css",
-    "static/js/main.1059126f.js"
->>>>>>> kepler-integration
+    "static/js/main.c03e7931.js"
   ]
 }

@@ -138,7 +138,9 @@ const Loglists = () => {
   const [getAllMessage, setGetAllMessage] = useState("");
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
 
-  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+  const isSize1280 = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery("(orientation: landscape)");
 
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
@@ -847,17 +849,20 @@ const Loglists = () => {
             sx={{
               padding: "20px",
               marginTop: "10px",
-              height: "calc(73vh - 72px)",
-              // height: isSmallScreen ? "calc(90vh - 72px)" : "calc(73vh - 72px)",
-              // [theme.breakpoints.down('sm')]: {
-              //   height: "calc(100vh - 85px)"
-              // },
-              // [theme.breakpoints.down('lg')]: {
-              //   height: "calc(100vh - 85px)"
-              // },
-              ...(isiphone && {
-                height: "100vh",
-              }),
+              height: isLandscape && isSize1280 ? "calc(90vh - 72px)" : "calc(73vh - 72px)",
+              // height: isSize1280 ? "calc(90vh - 72px)" : "calc(73vh - 72px)",
+              [theme.breakpoints.down('sm')]: {
+                height: "calc(100vh - 85px)"
+              },
+              [theme.breakpoints.down('lg')]: {
+                height: "calc(100vh - 85px)"
+              },
+              // ...(isiphone && {
+              //   height: "calc(100vh - 72px)",
+              // }),
+              // ...(isSmallScreen && {
+              //   height: "calc(90vh - 72px)",
+              // })
               // [theme.breakpoints.down('iphoneSE')]: {
               //   height: "calc(120vh - 85px)"
               // },
@@ -867,21 +872,21 @@ const Loglists = () => {
               // ...isWidth400 && {
               //   height: "calc(110vh - 85px)"
               // },
-              // [theme.breakpoints.only('iphoneXR')]: {
-              //   height: "calc(102vh - 85px)"
-              // },
-              // [theme.breakpoints.only('surfDuo')]: {
-              //   height: "calc(110vh - 85px)"
-              // },
-              // [theme.breakpoints.only('isipadpro')]: {
-              //   height: "calc(67vh - 85px)"
-              // },
-              // [theme.breakpoints.only('issurfacepro')]: {
-              //   height: "calc(68vh - 85px)"
-              // },
-              // [theme.breakpoints.only('ipadAir')]: {
-              //   height: "calc(77vh - 85px)"
-              // }
+              [theme.breakpoints.only('iphoneXR')]: {
+                height: "calc(102vh - 85px)"
+              },
+              [theme.breakpoints.only('surfDuo')]: {
+                height: "calc(110vh - 85px)"
+              },
+              [theme.breakpoints.only('isipadpro')]: {
+                height: "calc(67vh - 85px)"
+              },
+              [theme.breakpoints.only('issurfacepro')]: {
+                height: "calc(68vh - 85px)"
+              },
+              [theme.breakpoints.only('ipadAir')]: {
+                height: "calc(77vh - 85px)"
+              }
             }}
           >
             <div>
@@ -934,7 +939,7 @@ const Loglists = () => {
                   {" "}
                   <TableContainer
                     sx={{
-                      maxHeight: isSmallScreen
+                      maxHeight: isSize1280
                         ? "calc(86vh - 85px)"
                         : "calc(66vh - 85px)",
                       [theme.breakpoints.down("sm")]: {
@@ -1221,7 +1226,7 @@ const Loglists = () => {
             {" "}
             <Card
               sx={{
-                // height: isSmallScreen ? "90vh" : "79.5vh",
+                // height: isSize1280 ? "90vh" : "79.5vh",
                 height: isLandscape ? "79.5vh" : "90vh",
                 [theme.breakpoints.down("sm")]: {
                   height: "90vh",
@@ -1238,8 +1243,8 @@ const Loglists = () => {
                     aria-label="close"
                     onClick={handlecardclose}
                     style={{
-                      bottom: isSmallScreen ? 10 : 10,
-                      left: isSmallScreen ? 70 : 100,
+                      bottom: isSize1280 ? 10 : 10,
+                      left: isSize1280 ? 70 : 100,
                     }}
                   >
                     <CloseIcon />
