@@ -469,7 +469,7 @@ const SpanFlow = () => {
                   <FormGroup>
                     <FormControlLabel
                     // labelPlacement="top"
-                      control={<Switch size="small"
+                      control={<Switch size="small" color="info"
                       checked={checked} 
                       onClick={switchHandler} 
                       />}
