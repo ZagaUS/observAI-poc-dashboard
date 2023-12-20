@@ -60,8 +60,8 @@ const SpanFlow = () => {
   console.log("order-span", orderedSpans);
   const [loading, setLoading] = useState(false);
 
-  const [checked, setChecked] = useState(false);
-  const [showCard, setShowCard] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [showCard, setShowCard] = useState(true);
 
   const switchHandler = (event) => {
     setChecked(event.target.checked);

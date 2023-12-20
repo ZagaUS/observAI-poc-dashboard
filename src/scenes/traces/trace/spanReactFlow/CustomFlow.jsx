@@ -134,6 +134,11 @@ const CustomFlow = ({ spandata }) => {
                 marginBottom: "-10px",
                 marginTop: "-10px",
               },
+              "& .MuiStepConnector-line": {
+                borderColor: "black",
+                borderWidth: "2px",
+                width: "10px"
+              },
             }}
           >
             {spandata.map((span, index) => {
