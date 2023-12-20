@@ -1,84 +1,58 @@
-import { Card, CardContent, Step, Stepper } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  IconButton,
+  Paper,
+  Popover,
+  Step,
+  Stepper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import React from "react";
 import { useState } from "react";
 import "./CustomFlow.css";
 import { MdHttp } from "react-icons/md";
-import { FaDatabase } from "react-icons/fa";
 import { SiApachekafka } from "react-icons/si";
 import { PiBracketsRoundBold } from "react-icons/pi";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
-
-import Check from "@mui/icons-material/Check";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
-import StepConnector, {
-  stepConnectorClasses,
-} from "@mui/material/StepConnector";
 import { LuDatabase } from "react-icons/lu";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 
 const CustomFlow = ({ spandata }) => {
-  const [spanName, setspanname] = useState([]);
-  const [activeStep, setActiveStep] = useState(0);
+  const [popoverAnchor, setPopoverAnchor] = useState(false);
+  const [spanErrorData, setSpanErrorData] = useState({});
 
-  console.log("spandata", spandata);
-  console.log("spandnames", spanName);
-
-  const searchString = "GET";
-
-  // const spandata = [
-  //   { spans: { name: "GET /orders/getOrders" } },
-  //   { spans: { name: "SELECT * FROM orders" } },
-  //   { spans: { name: "observability-demo-tables" } },
-
-  // ];
-
-  const arr = ["GET", "SELECT", "ORDER", "PUT"];
-
-
-  const CustomConnector = () => {
-    const connectorStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      // Add any additional styling properties as needed
-    };
-  
-    return (
-      <StepConnector
-        style={connectorStyle}
-      >
-        <div>Additional Content</div>
-      </StepConnector>
-    );
+  const handlePopoverClose = () => {
+    setPopoverAnchor(false);
   };
 
-  const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
-    padding: "10px",
-    [`&.${stepConnectorClasses.alternativeLabel}`]: {
-      top: 30,
-    },
-    // [`&.${stepConnectorClasses.active}`]: {
-    //   [`& .${stepConnectorClasses.line}`]: {
-    //     backgroundImage:
-    //       'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
-    //   },
-    // },
-    // [`&.${stepConnectorClasses.completed}`]: {
-    //   [`& .${stepConnectorClasses.line}`]: {
-    //     backgroundImage:
-    //       'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
-    //   },
-    // },
-    [`& .${stepConnectorClasses.line}`]: {
-      // height: 3,
-      // border: 0,
-      backgroundColor:
-        theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
-      // borderRadius: 1,
-    },
-  }));
+  const handleButtonClick = (errorMessage, logAttributes, errorStatus) => {
+    const formattedLogAttributes = {};
+
+    logAttributes.forEach((attribute) => {
+      const key = attribute.key;
+      const value = attribute.value.stringValue;
+      formattedLogAttributes[key] = value;
+    });
+
+    const logData = {
+      errorMessage: errorMessage.stringValue,
+      logAttributes: logAttributes,
+      errorStatus: errorStatus,
+    };
+    console.log("logData", logData);
+    setSpanErrorData(logData);
+    // setPopoverAnchor(targetElementRef.current);
+    setPopoverAnchor(true);
+  };
 
   const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
     backgroundColor:
@@ -91,15 +65,6 @@ const CustomFlow = ({ spandata }) => {
     borderRadius: "50%",
     justifyContent: "center",
     alignItems: "center",
-    // ...(ownerState.active && {
-    //   backgroundImage:
-    //     'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    //   boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-    // }),
-    // ...(ownerState.completed && {
-    //   backgroundImage:
-    //     'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    // }),
   }));
 
   function ColorlibStepIcon(props) {
@@ -142,10 +107,8 @@ const CustomFlow = ({ spandata }) => {
   const calculateDurationInMs = (startTimeUnix, endTimeUnix) => {
     const startTimeUnixNano = parseInt(startTimeUnix, 10);
     const endTimeUnixNano = parseInt(endTimeUnix, 10);
-    const startTime = new Date(startTimeUnixNano / 1000000); // Convert nanoseconds to milliseconds
-    const endTime = new Date(endTimeUnixNano / 1000000); // Convert nanoseconds to milliseconds
-
-    // Calculate the duration in milliseconds
+    const startTime = new Date(startTimeUnixNano / 1000000);
+    const endTime = new Date(endTimeUnixNano / 1000000);
     const duration = endTime - startTime;
 
     return duration;
@@ -165,7 +128,6 @@ const CustomFlow = ({ spandata }) => {
           {/* <Stepper activeStep={1} alternativeLabel connector={<ColorlibConnector />} style={{ marginTop: "130px"}}> */}
           <Stepper
             orientation="vertical"
-            // connector={<CustomConnector />}
             sx={{
               alignItems: "center",
               "& .MuiStep-root": {
@@ -177,8 +139,6 @@ const CustomFlow = ({ spandata }) => {
             {spandata.map((span, index) => {
               const spanName = span.spans.name;
               const errorStatus = span.errorStatus;
-
-              // Display Kafka icon only if both "thread.id" and "thread.name" are present
 
               const attributes = span.spans.attributes || [];
 
@@ -198,29 +158,6 @@ const CustomFlow = ({ spandata }) => {
                 (attr) => attr.key === "user-id"
               );
 
-              // const isFunction =
-              //   (hasThreadID && hasThreadName && attributes.length === 2) ||  (hasThreadID &&
-              //   hasCodenamspace &&
-              //   hasCodefunction &&
-              //   hasThreadName &&
-              //   attributes.length === 4) ||  (hasThreadID &&
-              //   hasCodenamspace &&
-              //   hasCodefunction &&
-              //   hasThreadName &&
-              //   hasCodeuser&&
-              //   attributes.length ===5) ||
-              //   (hasCodeuser&&
-              //   hasThreadName &&
-              //   hasThreadID&&
-              //   attributes.length ===3)
-
-              // const isFunction2 =
-              //   hasThreadID &&
-              //   hasCodenamspace &&
-              //   hasCodefunction &&
-              //   hasThreadName &&
-              //   attributes.length === 4;
-
               const isHTTP = attributes.some((attr) =>
                 attr.key.includes("http.method")
               );
@@ -235,21 +172,112 @@ const CustomFlow = ({ spandata }) => {
 
               return (
                 <Step key={index}>
-                  <div className="circle" style={{ marginLeft: "-58px" }}>
-                    {/* {isHTTP && (
-                // Render HTTP icon
-                <MdHttp
-                  style={{
-                    color: "white",
-                    backgroundColor: "gray",
-                    fontSize: "40px",
-                    padding: "8px",
-                    borderRadius: "50px",
-                  }}
-                />
-              )} */}
+                  {spanErrorData.errorStatus ? (
+                    <Popover
+                      open={popoverAnchor}
+                      anchorOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                      style={{
+                        position: "absolute",
+                        height: "550px",
+                        width: "500px",
+                      }}
+                    >
+                      <Paper>
+                        <div>
+                          <IconButton
+                            color="inherit"
+                            onClick={handlePopoverClose}
+                          >
+                            <ClearRoundedIcon />
+                          </IconButton>
+                          <div>
+                              {" "}
+                              <TableContainer component={Paper}>
+                                <Table aria-label="customized table">
+                                  <TableBody>
+                                    <div style={{ overflowX: "hidden" }}>
+                                      <TableRow>
+                                        <TableCell
+                                          align="left"
+                                          style={{
+                                            width: "20%",
+                                            fontWeight: "500",
+                                          }}
+                                        >
+                                          Error Component
+                                        </TableCell>
+                                        <TableCell
+                                          align="left"
+                                          style={{ width: "80%" }}
+                                        >
+                                          {spanErrorData.errorMessage}
+                                        </TableCell>
+                                      </TableRow>
 
-                    <span style={{width:"70px"}}>
+                                      {spanErrorData.logAttributes.length > 0
+                                        ? spanErrorData.logAttributes.map(
+                                            (attribute, index) => (
+                                              <TableRow key={index}>
+                                                <TableCell
+                                                  align="left"
+                                                  style={{
+                                                    width: "20%",
+                                                    fontWeight: "500",
+                                                  }}
+                                                >
+                                                  {/* jey <div>{attribute.key}</div> */}
+
+                                                  <div></div>
+                                                </TableCell>
+                                                <TableCell
+                                                  align="left"
+                                                  style={{ width: "80%" }}
+                                                >
+                                                  <div
+                                                    className={
+                                                      attribute.key ===
+                                                      "exception.stacktrace"
+                                                        ? "scrollable"
+                                                        : ""
+                                                    }
+                                                  >
+                                                    {attribute.key ===
+                                                    "exception.stacktrace" ? (
+                                                      <div className="stacktrace">
+                                                        {
+                                                          attribute.value
+                                                            .stringValue
+                                                        }
+                                                      </div>
+                                                    ) : (
+                                                      attribute.value
+                                                        .stringValue
+                                                    )}
+                                                  </div>
+                                                </TableCell>
+                                              </TableRow>
+                                            )
+                                          )
+                                        : null}
+                                    </div>
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </div>
+                          </div>
+                      </Paper>
+                    </Popover>
+                  ) : null}
+
+                  <div className="circle" style={{ marginLeft: "-58px" }}>
+                    <span style={{ width: "70px" }}>
                       <strong style={{ color: "#000" }}>
                         (
                         {calculateDurationInMs(
@@ -260,155 +288,198 @@ const CustomFlow = ({ spandata }) => {
                       </strong>
                     </span>
                     {isHTTP && (
-                      <>  <div
-                      style={{
-                        padding: "10px",
-                        backgroundColor: errorStatus ? "red" : "#4c516d",
-                        borderRadius: "50px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginRight:"5px"
-                      }}
-                    >
-                      <MdHttp
-                        style={{
-                          color: "white",
-                          backgroundColor: "#808080 ",
-                          fontSize: "40px",
-                          padding: "8px",
-                          borderRadius: "50px",
-                        }}
-                      />
-                    </div><div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
-                    
-                    )}
-
-                    {/* {isDatabase && (
-                // Render Database icon
-                <FaDatabase
-                  style={{
-                    color: "white",
-                    backgroundColor: "gray",
-                    fontSize: "40px",
-                    padding: "8px",
-                    borderRadius: "50px",
-                  }}
-                />
-              )} */}
-                    {isDatabase && (<>
-                      <div
-                        style={{
-                          padding: "10px",
-                          backgroundColor: errorStatus ? "red" : "#006a4e",
-                          borderRadius: "50px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginRight:"5px"
-                        }}
-                      >
-                        <LuDatabase
+                      <>
+                        {" "}
+                        <div
+                          onClick={
+                            errorStatus
+                              ? () =>
+                                  handleButtonClick(
+                                    span.errorMessage,
+                                    span.logAttributes,
+                                    span.errorStatus
+                                  )
+                              : null
+                          }
                           style={{
-                            color: "white",
+                            padding: "10px",
+                            backgroundColor: errorStatus ? "red" : "#4c516d",
+                            borderRadius: "50px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: "5px",
+                          }}
+                        >
+                          <MdHttp
+                            onClick={
+                              errorStatus
+                                ? () =>
+                                    handleButtonClick(
+                                      span.errorMessage,
+                                      span.logAttributes,
+                                      span.errorStatus
+                                    )
+                                : null
+                            }
+                            style={{
+                              color: "white",
+                              backgroundColor: "#808080 ",
+                              fontSize: "40px",
+                              padding: "8px",
+                              borderRadius: "50px",
+                            }}
+                          />
+                        </div>
+                        <div style={{ width: "0px", paddingLeft: "0px" }}>
+                          {spanName}
+                        </div>
+                      </>
+                    )}
+                    {isDatabase && (
+                      <>
+                        <div
+                          onClick={
+                            errorStatus
+                              ? () =>
+                                  handleButtonClick(
+                                    span.errorMessage,
+                                    span.logAttributes,
+                                    span.errorStatus
+                                  )
+                              : null
+                          }
+                          style={{
+                            padding: "10px",
                             backgroundColor: errorStatus ? "red" : "#006a4e",
-                            fontSize: "40px",
-                            padding: "8px",
                             borderRadius: "50px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: "5px",
                           }}
-                        />
-                      </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                        >
+                          <LuDatabase
+                            onClick={
+                              errorStatus
+                                ? () =>
+                                    handleButtonClick(
+                                      span.errorMessage,
+                                      span.logAttributes,
+                                      span.errorStatus
+                                    )
+                                : null
+                            }
+                            style={{
+                              color: "white",
+                              backgroundColor: errorStatus ? "red" : "#006a4e",
+                              fontSize: "40px",
+                              padding: "8px",
+                              borderRadius: "50px",
+                            }}
+                          />
+                        </div>
+                        <div style={{ width: "0px", paddingLeft: "0px" }}>
+                          {spanName}
+                        </div>
+                      </>
                     )}
-
-                    {/* {isKafka && (
-                // Render Database icon
-                <SiApachekafka
-                  style={{
-                    color: "white",
-                    backgroundColor: "gray",
-                    fontSize: "40px",
-                    padding: "8px",
-                    borderRadius: "50px",
-                  }}
-                />
-              )} */}
-                    {isKafka && (<>
-                      <div
-                        style={{
-                          padding: "10px",
-                          backgroundColor: errorStatus ? "red" : "#4c516d",
-                          borderRadius: "50px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginRight:"5px"
-                        }}
-                      >
-                        <SiApachekafka
+                    {isKafka && (
+                      <>
+                        <div
+                          onClick={
+                            errorStatus
+                              ? () =>
+                                  handleButtonClick(
+                                    span.errorMessage,
+                                    span.logAttributes,
+                                    span.errorStatus
+                                  )
+                              : null
+                          }
                           style={{
-                            color: "white",
-                            backgroundColor: "#4c516d ",
-                            fontSize: "40px",
-                            padding: "8px",
+                            padding: "10px",
+                            backgroundColor: errorStatus ? "red" : "#4c516d",
                             borderRadius: "50px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: "5px",
                           }}
-                        />
-                      </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                        >
+                          <SiApachekafka
+                            onClick={
+                              errorStatus
+                                ? () =>
+                                    handleButtonClick(
+                                      span.errorMessage,
+                                      span.logAttributes,
+                                      span.errorStatus
+                                    )
+                                : null
+                            }
+                            style={{
+                              color: "white",
+                              backgroundColor: "#4c516d ",
+                              fontSize: "40px",
+                              padding: "8px",
+                              borderRadius: "50px",
+                            }}
+                          />
+                        </div>
+                        <div style={{ width: "0px", paddingLeft: "0px" }}>
+                          {spanName}
+                        </div>
+                      </>
                     )}
-
-                    {/* {isFunction && (
-                // Render Database icon
-                <PiBracketsRoundBold
-                  style={{
-                    color: "white",
-                    backgroundColor: "gray",
-                    fontSize: "40px",
-                    padding: "8px",
-                    borderRadius: "50px",
-                  }}
-                />
-              )} */}
-                    {isFunction && (<>
-                      <div
-                        style={{
-                          padding: "10px",
-                          backgroundColor: errorStatus ? "red" : "#4c516d",
-                          borderRadius: "50px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginRight:"5px"
-                        }}
-                      >
-                        <PiBracketsRoundBold
+                    {isFunction && (
+                      <>
+                        <div
+                          onClick={
+                            errorStatus
+                              ? () =>
+                                  handleButtonClick(
+                                    span.errorMessage,
+                                    span.logAttributes,
+                                    span.errorStatus
+                                  )
+                              : null
+                          }
                           style={{
-                            color: "white",
-                            backgroundColor: "#003153",
-                            fontSize: "40px",
-                            padding: "8px",
+                            padding: "10px",
+                            backgroundColor: errorStatus ? "red" : "#4c516d",
                             borderRadius: "50px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: "5px",
                           }}
-                        />
-                      </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                        >
+                          <PiBracketsRoundBold
+                            onClick={
+                              errorStatus
+                                ? () =>
+                                    handleButtonClick(
+                                      span.errorMessage,
+                                      span.logAttributes,
+                                      span.errorStatus
+                                    )
+                                : null
+                            }
+                            style={{
+                              color: "white",
+                              backgroundColor: "#003153",
+                              fontSize: "40px",
+                              padding: "8px",
+                              borderRadius: "50px",
+                            }}
+                          />
+                        </div>
+                        <div style={{ width: "0px", paddingLeft: "0px" }}>
+                          {spanName}
+                        </div>
+                      </>
                     )}
-
-                    {/* {isFunction2 && (
-                // Render Database icon
-                <PiBracketsRoundBold
-                  style={{
-                    color: "white",
-                    backgroundColor: "gray",
-                    fontSize: "40px",
-                    padding: "8px",
-                    borderRadius: "50px",
-                  }}
-                />
-              )} */}
-
-                    {/* <p>{spanName}</p> */}
                   </div>
                 </Step>
               );
@@ -419,19 +490,5 @@ const CustomFlow = ({ spandata }) => {
     </div>
   );
 };
-
-//   return (
-//     <div>
-//       <Card sx={{ height: "calc(60vh - 32px)", padding: "10px" }}>
-//         {spandata.map((span, index) => {
-//           // setspanname(span.spans.name)
-//           // setspanname(span.spans.name);
-
-//         })}
-
-//       </Card>
-//     </div>
-//   );
-// };
 
 export default CustomFlow;
