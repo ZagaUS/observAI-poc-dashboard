@@ -1,4 +1,4 @@
-import { Card, CardContent, Step, Stepper } from "@mui/material";
+import { Card, CardContent, Step, Stepper, useTheme } from "@mui/material";
 import React from "react";
 import { useState } from "react";
 import "./CustomFlow.css";
@@ -17,10 +17,14 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import { LuDatabase } from "react-icons/lu";
+import { tokens } from "../../../../theme";
 
 const CustomFlow = ({ spandata }) => {
   const [spanName, setspanname] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   console.log("spandata", spandata);
   console.log("spandnames", spanName);
@@ -173,7 +177,7 @@ const CustomFlow = ({ spandata }) => {
                 marginTop: "-10px",
               },
               "& .MuiStepConnector-line": {
-                borderColor: "black",
+                borderColor: theme.palette.mode==="dark"? "#fff" : "#000",
                 borderWidth: "2px",
                 width: "10px"
               },
@@ -255,7 +259,7 @@ const CustomFlow = ({ spandata }) => {
               )} */}
 
                     <span style={{width:"70px"}}>
-                      <strong style={{ color: "#000" }}>
+                      <strong style={{ color: theme.palette.mode==="dark"? "#fff" : "#000" }}>
                         (
                         {calculateDurationInMs(
                           span.spans.startTimeUnixNano,
@@ -285,7 +289,7 @@ const CustomFlow = ({ spandata }) => {
                           borderRadius: "50px",
                         }}
                       />
-                    </div><div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                    </div><div style={{width: "0px", paddingLeft: "0px", fontSize: "12px"}}>{spanName}</div></>
                     
                     )}
 
@@ -323,7 +327,7 @@ const CustomFlow = ({ spandata }) => {
                           }}
                         />
                       </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                      <div style={{width: "0px", paddingLeft: "0px", display: "flex", fontSize: "12px"}}>{spanName}</div></>
                     )}
 
                     {/* {isKafka && (
@@ -360,7 +364,7 @@ const CustomFlow = ({ spandata }) => {
                           }}
                         />
                       </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                      <div style={{width: "0px", paddingLeft: "0px", fontSize: "12px"}}>{spanName}</div></>
                     )}
 
                     {/* {isFunction && (
@@ -397,7 +401,7 @@ const CustomFlow = ({ spandata }) => {
                           }}
                         />
                       </div>
-                      <div style={{width:"0px",paddingLeft:"0px"}}>{spanName}</div></>
+                      <div style={{width: "0px", paddingLeft: "0px", fontSize: "12px"}}>{spanName}</div></>
                     )}
 
                     {/* {isFunction2 && (
