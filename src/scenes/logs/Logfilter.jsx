@@ -57,21 +57,21 @@ const Logfilter = () => {
       severityText: selectedSeverity
     }
 
-    const apiBody = {};
+    // const apiBody = {};
 
-    if (payload.service !== null && Array.isArray(payload.service) && payload.service.length > 0) {
-      apiBody.serviceName = payload.service;
-    }
+    // if (payload.service !== null && Array.isArray(payload.service) && payload.service.length > 0) {
+    //   apiBody.serviceName = payload.service;
+    // }
 
-    if (payload.severityText !== null && Array.isArray(payload.severityText) && payload.severityText.length > 0) {
-      apiBody.severityText = payload.severityText;
-    }
+    // if (payload.severityText !== null && Array.isArray(payload.severityText) && payload.severityText.length > 0) {
+    //   apiBody.severityText = payload.severityText;
+    // }
 
 
-    console.log('API Body:', apiBody);
+    console.log('API Body:', payload);
 
-    if (Object.keys(apiBody).length !== 0) {
-      setLogFilterApiBody(apiBody);
+    if (Object.keys(payload).length !== 0) {
+      setLogFilterApiBody(payload);
       setNeedLogFilterCall(true);
     } else {
       setClearLogFilter(false);
