@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import "./CustomFlow.css";
 import { MdHttp } from "react-icons/md";
@@ -29,6 +29,9 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 const CustomFlow = ({ spandata }) => {
   const [popoverAnchor, setPopoverAnchor] = useState(false);
   const [spanErrorData, setSpanErrorData] = useState({});
+  const [ref,setRef]=useState(null);
+
+  const targetElementRef = useRef(null);
 
   const handlePopoverClose = () => {
     setPopoverAnchor(false);
@@ -52,6 +55,7 @@ const CustomFlow = ({ spandata }) => {
     setSpanErrorData(logData);
     // setPopoverAnchor(targetElementRef.current);
     setPopoverAnchor(true);
+    setRef(targetElementRef.current)
   };
 
   const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
@@ -115,7 +119,7 @@ const CustomFlow = ({ spandata }) => {
   };
 
   return (
-    <div>
+    <div   ref={targetElementRef}>
       <Card
         sx={{
           height: "calc(60vh - 32px)",
@@ -180,6 +184,7 @@ const CustomFlow = ({ spandata }) => {
                   {spanErrorData.errorStatus ? (
                     <Popover
                       open={popoverAnchor}
+                      anchorEl={ref}
                       anchorOrigin={{
                         vertical: "center",
                         horizontal: "center",
