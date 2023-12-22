@@ -445,9 +445,9 @@ const Loglists = () => {
           pageLimit,
           logFilterApiBody
         );
-        const totalCount = 100;
-        if (data.filterLogs.length !== 0) {
-          const updatedData = createTimeInWords(data.filterLogs);
+        const totalCount = data.filterLogs.totalCount;
+        if (data.filterLogs.logs.length !== 0) {
+          const updatedData = createTimeInWords(data.filterLogs.logs);
           const finalOutput = mapLogData(updatedData);
           setLogData(finalOutput);
           console.log(finalOutput);

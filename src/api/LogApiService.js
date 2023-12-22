@@ -251,48 +251,51 @@ export const LogFilterOptionWithDate = async (
     // Condition to check for historical data
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
-        query FilterLogs {
-          filterLogs(
-            page: ${page}
-            pageSize: ${pageSize}
-            query: { serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} }
-            from: ${JSON.stringify(startDate)}
-            to: ${JSON.stringify(endDate)}
-            minutesAgo: 0
-            sortOrder: ${JSON.stringify(sortOrder)}
-          ) {
-            createdTime
-            serviceName
-            severityText
-            spanId
-            traceId
-            id
-            scopeLogs {
-              logRecords {
-                flags
-                observedTimeUnixNano
-                severityNumber
+      query FilterLogs {
+        filterLogs(
+          page: ${page}
+          pageSize: ${pageSize}
+          query: { serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} }
+          from: ${JSON.stringify(startDate)}
+          to: ${JSON.stringify(endDate)}
+          minutesAgo: 0
+          sortOrder: ${JSON.stringify(sortOrder)}
+        )  {
+            logs {
+                createdTime
+                serviceName
                 severityText
                 spanId
-                timeUnixNano
                 traceId
-                attributes {
-                  key
-                  value {
-                    intValue
-                    stringValue
-                  }
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
                 }
-                body {
-                  stringValue
-                }
-              }
-              scope {
-                name
-              }
             }
-          }
+            totalCount
         }
+    }
       `;
     } else {
       gqlQuery = `
@@ -305,39 +308,42 @@ export const LogFilterOptionWithDate = async (
             to: null
             minutesAgo: ${minutesAgo}
             sortOrder: ${JSON.stringify(sortOrder)}
-          ) {
-            createdTime
-            serviceName
-            severityText
-            spanId
-            traceId
-            id
-            scopeLogs {
-              logRecords {
-                flags
-                observedTimeUnixNano
-                severityNumber
+          )  {
+            logs {
+                createdTime
+                serviceName
                 severityText
                 spanId
-                timeUnixNano
                 traceId
-                attributes {
-                  key
-                  value {
-                    intValue
-                    stringValue
-                  }
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
                 }
-                body {
-                  stringValue
-                }
-              }
-              scope {
-                name
-              }
             }
-          }
+            totalCount
         }
+    }
       `;
     }
 
