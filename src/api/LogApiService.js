@@ -116,46 +116,49 @@ export const getAllLogBySorts = async (
   }
 };
 
-export const GetAllLogBySortsWithDate = async (
-  startDate,
-  endDate,
-  minutesAgo,
-  page,
-  pageSize,
-  sortOrder,
-  serviceListData
-) => {
-  try {
-    // Get the list of service names from localStorage and parse it
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
-    console.log(
-      "GET ALL " +
-      `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
-    );
-    // Construct the URL with the service names
-    var finalUrl;
-    console.log(
-      "HIST " + JSON.parse(localStorage.getItem("needHistoricalData"))
-    );
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call+${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
-      );
-      finalUrl = `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call+${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`;
-    }
 
-    const response = await axios.get(finalUrl);
-    return response.data;
-  } catch (error) {
-    console.error("Error retrieving users:", error);
-    throw error;
-  }
-};
+// bala
+
+// export const GetAllLogBySortsWithDate = async (
+//   startDate,
+//   endDate,
+//   minutesAgo,
+//   page,
+//   pageSize,
+//   sortOrder,
+//   serviceListData
+// ) => {
+//   try {
+//     // Get the list of service names from localStorage and parse it
+//     const serviceNameListParam = serviceListData.join("&serviceNameList=");
+//     console.log(
+//       "GET ALL " +
+//       `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
+//     );
+//     // Construct the URL with the service names
+//     var finalUrl;
+//     console.log(
+//       "HIST " + JSON.parse(localStorage.getItem("needHistoricalData"))
+//     );
+//     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+//       console.log(
+//         `History call+${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
+//       );
+//       finalUrl = `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`;
+//     } else {
+//       console.log(
+//         `Minutes call+${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`
+//       );
+//       finalUrl = `${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`;
+//     }
+
+//     const response = await axios.get(finalUrl);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
 
 // export const LogFilter = async (data) => {
 //     try {
@@ -170,6 +173,152 @@ export const GetAllLogBySortsWithDate = async (
 //         return error;
 //     }
 // };
+
+
+
+export const GetAllLogBySortsWithDate = async (
+  startDate,
+  endDate,
+  minutesAgo,
+  page,
+  pageSize,
+  sortOrder,
+  serviceName,
+  // serviceNameList,
+  payload
+) => {
+  try {
+    let gqlQuery;
+
+    // Condition to check for historical data
+    if (JSON.parse(localStorage.getItem('needHistoricalData'))) {
+      gqlQuery = `
+      query SortOrderLogs {
+        sortOrderLogs(
+            page: ${page}
+            pageSize: ${pageSize}
+            sortOrder: ${JSON.stringify(sortOrder)}
+            serviceNameList: ${JSON.stringify(serviceName)}
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: null
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }    
+    `;
+    }
+
+    else {
+      gqlQuery = `
+      query SortOrderLogs {
+        sortOrderLogs(
+             page: ${page}
+            pageSize: ${pageSize}
+            sortOrder: ${JSON.stringify(sortOrder)}
+            serviceNameList: ${JSON.stringify(serviceName)}
+            from: ${JSON.stringify(startDate)}
+            to: null
+            minutesAgo: ${minutesAgo}
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }    
+    `;
+    }
+
+    // let myarray = ["order-srv-1"]
+    // let dataToSend = myarray.toString()
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+  } catch (error) {
+    console.error('Error retrieving logs:', error);
+    throw error;
+  }
+};
+
 
 export const LogFilterOption = async (minutesAgo, page, pageSize, payload) => {
   try {
@@ -359,7 +508,7 @@ export const LogFilterOptionWithDate = async (
         },
       }
     );
-
+    console.log(response.data, "================>");
     if (response.data) {
       console.log('GraphQL output:', response.data.data);
       return response.data;
@@ -407,6 +556,37 @@ export const searchLogs = async (
   }
 };
 
+// export const searchLogsWithDate = async (
+//   keyword,
+//   startDate,
+//   endDate,
+//   minutesAgo,
+//   page,
+//   pageSize
+// ) => {
+//   try {
+//     var finalUrl;
+
+//     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+//       console.log(
+//         `History call + ${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`
+//       );
+//       finalUrl = `${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`;
+//     } else {
+//       console.log(
+//         `Minutes call + ${logUrl}/filterLogs?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`
+//       );
+//       finalUrl = `${logUrl}/searchFunction?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`;
+//     }
+//     const response = await axios.get(finalUrl);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
+
+
 export const searchLogsWithDate = async (
   keyword,
   startDate,
@@ -416,21 +596,124 @@ export const searchLogsWithDate = async (
   pageSize
 ) => {
   try {
-    var finalUrl;
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`
-      );
-      finalUrl = `${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call + ${logUrl}/filterLogs?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/searchFunction?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`;
+      gqlQuery=`
+      query SearchFunction {
+        searchFunction(
+            page: ${page}
+            pageSize: ${pageSize}
+            keyword: ${keyword}
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: null
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }   
+      `;  
+   } else {
+    gqlQuery = `
+    query SearchFunction {
+      searchFunction(
+        page: ${page}
+        pageSize: ${pageSize}
+        keyword: ${keyword}
+        from: ${JSON.stringify(startDate)}
+        to: null
+        minutesAgo: ${minutesAgo}
+      ) {
+          totalCount
+          logs {
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                  logRecords {
+                      flags
+                      observedTimeUnixNano
+                      severityNumber
+                      severityText
+                      spanId
+                      timeUnixNano
+                      traceId
+                      attributes {
+                          key
+                          value {
+                              intValue
+                              stringValue
+                          }
+                      }
+                      body {
+                          stringValue
+                      }
+                  }
+                  scope {
+                      name
+                  }
+              }
+          }
+      }
+  }   
+    `;
     }
-    const response = await axios.get(finalUrl);
-    return response.data;
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log(response.data, "================>");
+    console.log(gqlQuery, "================>");
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response);
+      throw new Error('Null response received');
+    }
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;

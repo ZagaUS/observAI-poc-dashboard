@@ -393,6 +393,49 @@ const Loglists = () => {
     return finalData;
   };
 
+  // const handleGetAllLogData = useCallback(
+  //   async (newpage) => {
+  //     setLoading(true);
+  //     try {
+  //       setLogData([]);
+  //       let serviceListData = [];
+  //       if (logSummaryService.length === 0) {
+  //         serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+  //       } else {
+  //         serviceListData = logSummaryService;
+  //       }
+  //       const { data, totalCount } = await GetAllLogBySortsWithDate(
+  //         selectedStartDate,
+  //         selectedEndDate,
+  //         lookBackVal.value,
+  //         newpage,
+  //         pageLimit,
+  //         selectedOption,
+  //         serviceListData
+  //       );
+
+  //       console.log("testing -----------",selectedStartDate,selectedEndDate,
+  //       lookBackVal.value,newpage,pageLimit,selectedOption,serviceListData)
+       
+  //       if (data.length !== 0) {
+  //         console.log("DATA " + JSON.stringify(data));
+  //         const updatedData = createTimeInWords(data);
+  //         const finalOutput = mapLogData(updatedData);
+  //         setLogData(finalOutput);
+  //         setTotalPageCount(Math.ceil(totalCount / pageLimit));
+  //       } else {
+  //         setGetAllMessage("No Log Data found!");
+  //       }
+  //     } catch (error) {
+  //       console.log("error " + error);
+  //     }
+  //     setLoading(false);
+  //   },
+  //   [selectedStartDate, selectedEndDate, lookBackVal, selectedOption, logSummaryService, needHistoricalData,setLogData,setTotalPageCount]
+  // );
+
+
+
   const handleGetAllLogData = useCallback(
     async (newpage) => {
       setLoading(true);
@@ -404,7 +447,7 @@ const Loglists = () => {
         } else {
           serviceListData = logSummaryService;
         }
-        const { data, totalCount } = await GetAllLogBySortsWithDate(
+        const { data } = await GetAllLogBySortsWithDate(
           selectedStartDate,
           selectedEndDate,
           lookBackVal.value,
@@ -413,9 +456,15 @@ const Loglists = () => {
           selectedOption,
           serviceListData
         );
-        if (data.length !== 0) {
+
+
+        // console.log("testing ----from API-------",selectedStartDate,selectedEndDate,
+        //       lookBackVal.value,newpage,pageLimit,selectedOption,serviceListData)
+
+        const totalCount = data.sortOrderLogs.totalCount;
+        if (data.sortOrderLogs.logs.length !== 0) {
           console.log("DATA " + JSON.stringify(data));
-          const updatedData = createTimeInWords(data);
+          const updatedData = createTimeInWords(data.sortOrderLogs.logs);
           const finalOutput = mapLogData(updatedData);
           setLogData(finalOutput);
           setTotalPageCount(Math.ceil(totalCount / pageLimit));
@@ -424,11 +473,13 @@ const Loglists = () => {
         }
       } catch (error) {
         console.log("error " + error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [selectedStartDate, selectedEndDate, lookBackVal, selectedOption, logSummaryService, needHistoricalData]
   );
+  
 
   const logFilterApiCall = useCallback(
     async () => {
@@ -473,10 +524,13 @@ const Loglists = () => {
     setCurrentPage(Number(selectedPage));
   };
 
+
+
+  
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const { data, totalCount } = await searchLogsWithDate(
+      const { data } = await searchLogsWithDate(
         searchQuery,
         selectedStartDate,
         selectedEndDate,
@@ -484,9 +538,16 @@ const Loglists = () => {
         currentPage,
         pageLimit
       );
+
+      console.log("testing--->",searchQuery);
+
       // Process and set the search results
-      if (data.length !== 0) {
-        const updatedData = createTimeInWords(data);
+      const totalCount = data.searchFunction.totalCount;
+
+      console.log("testing--->",totalCount);
+
+      if (data.searchFunction.logs.length !== 0) {
+        const updatedData = createTimeInWords(data.searchFunction.logs);
         const finalOutput = mapLogData(updatedData);
         setSearchResults(finalOutput);
         setTotalPageCount(Math.ceil(totalCount / pageLimit));
