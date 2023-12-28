@@ -17,6 +17,10 @@ import PodDashboardCharts from "./scenes/dashboard/sustainability/PodDashboardCh
 import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboardCharts";
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
 
+import AdminDashboard from "./scenes/auth/AdminDashboard";
+import AdminLoginPage from "./scenes/auth/AdminLogin";
+
+
 function App() {
   const [theme, colorMode] = useMode();
 
@@ -77,8 +81,8 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route path="/" element={<LoginPage />} />
-            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-            {/* Nested routes for /mainpage/* */}
+            <Route path="/admindashboard" element={<AdminDashboard/>}/>
+            <Route path="/adminlogin" element={<AdminLoginPage/>}/>
             <Route path="/mainpage/*" element={<MainPage />} />
           </Routes>
           {/* {localStorage.getItem("userInfo") !== null ? (<div className="app">

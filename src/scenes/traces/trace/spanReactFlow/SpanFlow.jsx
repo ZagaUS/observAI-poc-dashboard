@@ -72,6 +72,8 @@ const SpanFlow = () => {
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     []
   );
+
+  
   const onEdgesChange = useCallback(
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     []
@@ -473,7 +475,7 @@ const SpanFlow = () => {
                       checked={checked} 
                       onClick={switchHandler} 
                       />}
-                      label="Flow"
+                      label="Custom Flow"
                     />
                   </FormGroup>
 

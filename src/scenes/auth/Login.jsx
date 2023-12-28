@@ -4,7 +4,10 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   MenuItem,
+  Switch,
   Typography,
   useMediaQuery,
   useTheme,
@@ -31,6 +34,11 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [serviceListData, setServiceListData] = useState([]);
+  const [checked, setChecked] = useState(true);
+
+  const switchHandler = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const servicePayload = (serviceData) => {
     serviceData.forEach((item) => {
@@ -57,6 +65,8 @@ const Login = () => {
     }
   };
 
+  // const handleadminlogin = () => {};
+
   const handleLogin = async () => {
     setLoading(true);
     localStorage.setItem("routeName", "Dashboard");
@@ -76,12 +86,24 @@ const Login = () => {
     console.log("Inside setTimeout");
     const userAuth = await loginUser(payload);
 
-    if (userAuth.status === 200) {
+    console.log(userAuth, "userauth");
+
+    const admin = userAuth.data.roles
+
+    const admincheck = admin.includes('admin');
+
+    console.log(admincheck,"admincheck");
+
+    console.log(admin,"admin");
+
+    if (checked && admincheck) {
+      navigate("/admindashboard");
+    } else if (userAuth.status === 200) {
       console.log("login", username, password, role);
       localStorage.setItem("userInfo", JSON.stringify(userAuth.data));
       getServiceListCall(userAuth.data);
       setLoading(false);
-      console.log(payload);
+      console.log(payload, "payload");
     } else if (userAuth.response.status === 401) {
       setLoading(false);
       setErrorMessage(userAuth.response.data);
@@ -95,6 +117,7 @@ const Login = () => {
       setLoading(false);
       setErrorMessage("Something went wrong. Please try again later.");
     }
+    
   };
 
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
@@ -160,6 +183,24 @@ const Login = () => {
             style={{ fontFamily: "Red Hat Display", fontSize: "16px" }}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          <div style={{ marginLeft: "55px" }}>
+            {" "}
+            <FormGroup>
+              <FormControlLabel
+                // labelPlacement="top"
+                control={
+                  <Switch
+                    size="small"
+                    color="info"
+                    checked={checked}
+                    onClick={switchHandler}
+                  />
+                }
+                label="Admin"
+              />
+            </FormGroup>
+          </div>
 
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 

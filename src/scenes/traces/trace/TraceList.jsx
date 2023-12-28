@@ -232,7 +232,7 @@ const TraceList = () => {
     } else if (logTrace.length !== 0) {
       setTraceData(logTrace);
       // jey handleCardClick(logTrace[0].traceId);
-      spanApiCall(logTrace[0].traceId);
+      spanApiCall(logTrace[0].traceId); 
     }
   }, [recentTrace, setTraceData, logTrace]);
 
