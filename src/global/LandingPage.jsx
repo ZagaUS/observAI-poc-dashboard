@@ -6,7 +6,6 @@ import {
   CardMedia,
   Grid,
   Typography,
-  useTheme,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
@@ -103,7 +102,7 @@ const LandingPage = () => {
                   image={Sustainability}
                   title="Sustainability"
                 />
-                <CardContent>
+                <CardContent sx={{ height: "215px"}}>
                   <Typography variant="h4">Sustainability</Typography>
                   <Typography
                     variant="h6"
@@ -128,7 +127,7 @@ const LandingPage = () => {
             <Grid container justifyContent="center" sx={{ height: "400px"}}>
               <Card elevation={3}>
                 <CardMedia sx={{ height: 140 }} image={Admin} title="Admin" />
-                <CardContent>
+                <CardContent sx={{ height: "215px"}}>
                   <Typography variant="h4">Admin</Typography>
                   <Typography
                     variant="h6"
