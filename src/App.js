@@ -16,6 +16,7 @@ import KafkaSummaryChart from "./scenes/dashboard/summary/KafkaSummaryChart";
 import PodDashboardCharts from "./scenes/dashboard/sustainability/PodDashboardCharts";
 import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboardCharts";
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
+import LandingPage from "./global/LandingPage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -76,8 +77,8 @@ function App() {
         <ColorModeContext.Provider value={colorMode}>
           <CssBaseline />
           <Routes>
-            <Route path="/" element={<LoginPage />} />
-            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            {/* <Route path="/" element={<LoginPage />} /> */}
+            <Route path="/" element={<LandingPage />} />
             {/* Nested routes for /mainpage/* */}
             <Route path="/mainpage/*" element={<MainPage />} />
           </Routes>
