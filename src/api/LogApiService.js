@@ -306,6 +306,7 @@ export const GetAllLogBySortsWithDate = async (
       }
     );
 
+    console.log(response.data);
     if (response.data) {
       console.log('GraphQL output:', response.data);
       return response.data;
@@ -604,7 +605,7 @@ export const searchLogsWithDate = async (
         searchFunction(
             page: ${page}
             pageSize: ${pageSize}
-            keyword: ${keyword}
+            keyword: ${JSON.stringify(keyword)}
             from: ${JSON.stringify(startDate)}
             to: ${JSON.stringify(endDate)}
             minutesAgo: null
