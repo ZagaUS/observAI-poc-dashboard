@@ -42,13 +42,13 @@ const LandingPage = () => {
         >
           <Grid item xs={8} sm={2} ipadmini={4}>
             <Grid container justifyContent="center">
-              <Card elevation={3}>
+              <Card elevation={3} sx={{ height: "400px"}}>
                 <CardMedia
                   sx={{ height: 140 }}
                   image={Observai}
                   title="observability"
                 />
-                <CardContent>
+                <CardContent sx={{ height: "215px"}}>
                   <Typography variant="h4">Observability - APM</Typography>
                   <Typography
                     variant="h6"
@@ -70,15 +70,17 @@ const LandingPage = () => {
 
           <Grid item xs={8} sm={2} ipadmini={4}>
             <Grid container justifyContent="center">
-              <Card elevation={3}>
+              <Card elevation={3} sx={{ height: "400px"}}>
                 <CardMedia
                   sx={{ height: 140 }}
                   image={Infra}
                   title="observability"
                 />
-                <CardContent>
+                <CardContent sx={{ height: "215px"}}>
                   <Typography variant="h4">Observability - Infra</Typography>
-                  <Typography>
+                  <Typography 
+                    variant="h6"
+                    sx={{ textAlign: "justify", fontWeight: "light" }}>
                     Observability is the extent to which you can understand the
                     internal state or condition of a complex system based only
                     on knowledge of its external outputs.
@@ -123,7 +125,7 @@ const LandingPage = () => {
           </Grid>
 
           <Grid item xs={8} sm={2} ipadmini={4}>
-            <Grid container justifyContent="center">
+            <Grid container justifyContent="center" sx={{ height: "400px"}}>
               <Card elevation={3}>
                 <CardMedia sx={{ height: 140 }} image={Admin} title="Admin" />
                 <CardContent>
