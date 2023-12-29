@@ -40,14 +40,15 @@ const TraceBarChart = () => {
     try {
       setLoading(true);
       var response = await getTraceSummaryDataWithDate(selectedStartDate, selectedEndDate, lookBackVal.value);
-      if (response.length !== 0) {
-        setintegrationdata(response);
-      } else {
+      if (response.data.traceMetricCount.length !== 0) {
+        setintegrationdata(response.data.traceMetricCount);
+      } else {  
         setEmptyMessage("No Data to show");
       }
-
+       console.log(response.data.traceMetricCount,"----->---traceSummaryChart");
       // console.log("Trace summary data " + JSON.stringify(response));
       setLoading(false);
+
     } catch (error) {
       // console.log("error " + error);
       setErrorMessage("An error Occurred!");

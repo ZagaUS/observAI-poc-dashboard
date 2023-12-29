@@ -43,13 +43,16 @@ const PeakLatencyChart = () => {
         selectedEndDate,
         lookBackVal.value
       );
-      if (response.some(
+      if (response.data.peakLatency.some(
         (item) => item.peakLatency !== 0
       )) {
-        setPeakLatencyData(response);
+        setPeakLatencyData(response.data.peakLatency);
       } else {
         setEmptyMessage("No Data to show");
       }
+      
+      console.log(response.data.peakLatency);
+
     } catch (error) {
       console.log("ERROR on peaklatency filter api " + error);
       setErrorMessage("An error Occurred!");

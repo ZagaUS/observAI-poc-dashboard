@@ -37,42 +37,121 @@ export const getLogSummaryData = async (timeMinutesAgo) => {
   }
 };
 
+// export const getLogSummaryDataWithDate = async (
+//   startDate,
+//   endDate,
+//   minutesAgo
+// ) => {
+//   try {
+//     // Get the list of service names from localStorage and parse it
+//     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+
+//     // Construct the URL with the service names
+//     const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+//     var finalUrl;
+
+//     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+//       console.log(
+//         `History call + ${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
+//       );
+//       finalUrl = `${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
+//     } else {
+//       console.log(
+//         `Minutes call + ${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
+//       );
+//       finalUrl = `${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
+//     }
+
+//     // from=2023-10-18&serviceNameList=order-project&to=2023-10-19
+//     //minutesAgo=120&serviceNameList=order-project&to=2023-10-19
+
+//     const response = await axios.get(finalUrl);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
+
+
+
 export const getLogSummaryDataWithDate = async (
   startDate,
   endDate,
-  minutesAgo
+  minutesAgo,
+  serviceName,
+  serviceNameList 
 ) => {
   try {
-    // Get the list of service names from localStorage and parse it
     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-
-    // Construct the URL with the service names
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
-
-    var finalUrl;
-
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
-    } else {
-      console.log(
-        `Minutes call + ${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
+    let gqlQuery;
+    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {     
+      gqlQuery = `
+      query LogMetricsCount {
+        logMetricsCount(
+            minutesAgo: 0
+            startDate: ${JSON.stringify(startDate)}
+            endDate: ${JSON.stringify(endDate)}
+            serviceNameList: ${JSON.stringify(serviceListData)}
+        ) {
+            debugCallCount
+            errorCallCount
+            warnCallCount
+            serviceName
+        }
     }
+    `;
 
+  } else {
+    gqlQuery = `
+    query LogMetricsCount {
+      logMetricsCount(
+          minutesAgo: ${minutesAgo}
+          startDate: ${JSON.stringify(startDate)}
+          endDate: null
+          serviceNameList: ${JSON.stringify(serviceListData)}
+      ) {
+          debugCallCount
+          errorCallCount
+          warnCallCount
+          serviceName
+      }
+  }
+    }  
+    `;
+  }
     // from=2023-10-18&serviceNameList=order-project&to=2023-10-19
     //minutesAgo=120&serviceNameList=order-project&to=2023-10-19
 
-    const response = await axios.get(finalUrl);
-    return response.data;
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
   }
 };
+
+
 
 export const getErroredLogDataForLastTwo = async (
   page,
@@ -314,6 +393,7 @@ export const GetAllLogBySortsWithDate = async (
       console.error('GraphQL response is null:', response.data);
       throw new Error('Null response received');
     }
+
   } catch (error) {
     console.error('Error retrieving logs:', error);
     throw error;

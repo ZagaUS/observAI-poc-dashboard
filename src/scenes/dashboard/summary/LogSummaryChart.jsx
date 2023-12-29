@@ -31,18 +31,45 @@ const LogBarChart = () => {
   const theme = useTheme();
   // const colors = tokens(theme.palette.mode);
 
-  const logSummaryApiCall = useCallback(async () => {
+  // const logSummaryApiCall = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+  //     var response = await getLogSummaryDataWithDate(selectedStartDate,selectedEndDate,lookBackVal.value,needHistoricalData);
+  //     // const traceSummaryData = JSON.parse(JSON.stringify(response));
+  //     if (response.length !== 0) {
+  //       setintegrationdata(response);
+  //     } else {
+  //       setEmptyMessage("No Data to Show");
+  //     }
+
+  //     console.log("log summary data " + JSON.stringify(response));
+  //     setLoading(false);
+  //   } catch (error) {
+  //     // console.log("ERROR on Log summary " + error);
+  //     setErrorMessage("An Error Occurred!");
+  //     setLoading(false);
+  //   }
+  // }, [selectedStartDate,selectedEndDate,lookBackVal,needHistoricalData]);
+
+  // const errordataforlasttwo =async ()=>{
+  //   const response = await getErroredLogDataForLastTwo(page,pageSize,serviceName);
+  // }
+
+  
+
+const logSummaryApiCall = useCallback(async () => {
     try {
       setLoading(true);
       var response = await getLogSummaryDataWithDate(selectedStartDate,selectedEndDate,lookBackVal.value,needHistoricalData);
       // const traceSummaryData = JSON.parse(JSON.stringify(response));
-      if (response.length !== 0) {
-        setintegrationdata(response);
+      if (response.data.logMetricsCount.length !== 0) {
+        setintegrationdata(response.data.logMetricsCount);
       } else {
         setEmptyMessage("No Data to Show");
       }
 
-      console.log("log summary data " + JSON.stringify(response));
+      console.log("log summary data " + JSON.stringify(response.data.logMetricsCount));
+      console.log(lookBackVal,"lookBackVal------->")
       setLoading(false);
     } catch (error) {
       // console.log("ERROR on Log summary " + error);
@@ -51,9 +78,11 @@ const LogBarChart = () => {
     }
   }, [selectedStartDate,selectedEndDate,lookBackVal,needHistoricalData]);
 
-  // const errordataforlasttwo =async ()=>{
-  //   const response = await getErroredLogDataForLastTwo(page,pageSize,serviceName);
-  // }
+ 
+
+
+
+
 
   useEffect(() => {
     setErrorMessage("");
