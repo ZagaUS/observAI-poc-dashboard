@@ -24,7 +24,7 @@
     "react-pro-sidebar": "^1.1.0-alpha.1",
     "react-resizable": "^3.0.5",
     "react-resizable-layout": "^0.7.1",
-    "react-router-dom": "^6.15.0",
+    "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "reactflow": "^11.8.3",
     "web-vitals": "^2.1.4"
