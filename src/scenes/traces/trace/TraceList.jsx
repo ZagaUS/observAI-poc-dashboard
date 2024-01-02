@@ -236,7 +236,7 @@ const TraceList = () => {
         serviceListData = traceSummaryService;
       }
       setLoading(true);
-      const { data, totalCount } = await TraceListPaginationApiWithDate(
+      const { data } = await TraceListPaginationApiWithDate(
         currentPage,
         pageLimit,
         selectedStartDate,
@@ -245,9 +245,9 @@ const TraceList = () => {
         selectedSortOrder,
         serviceListData
       );
-      const updatedData = createTimeInWords(data);
-
-      if (updatedData.length === 0) {
+      const updatedData = createTimeInWords(data.sortOrderTrace.traces);
+      const totalCount = data.sortOrderTrace.totalCount; 
+      if (data.sortOrderTrace.traces.length === 0) {
         setTraceGlobalEmpty("No Data to Display!");
       } else {
         setTraceData(updatedData);
@@ -279,55 +279,159 @@ const TraceList = () => {
     needHistoricalData,
   ]);
 
-  const filterApiCall = useCallback(async () => {
-    try {
-      console.log("Trace filter called!");
-      // setTraceLoading(true);
-      setLoading(true);
-      const { data, totalCount } = await TraceFilterOptionWithDate(
-        selectedStartDate,
-        lookBackVal.value,
-        selectedSortOrder,
-        selectedEndDate,
-        currentPage,
-        pageLimit,
-        filterApiBody
-      );
-      const updatedData = createTimeInWords(data);
+  // const filterApiCall = useCallback(async () => {
+  //   try {
+  //     console.log("Trace filter called!");
+  //     // setTraceLoading(true);
+  //     setLoading(true);
+  //     const { data, totalCount } = await TraceFilterOptionWithDate(
+  //       selectedStartDate,
+  //       lookBackVal.value,
+  //       selectedSortOrder,
+  //       selectedEndDate,
+  //       currentPage,
+  //       pageLimit,
+  //       filterApiBody
+  //     );
+  //     const updatedData = createTimeInWords(data);
 
-      if (updatedData.length === 0) {
-        setTraceGlobalEmpty(
-          `No Data Matched for this filter! Please click on refresh / select different queries to filter!`
-        );
-      } else {
-        setTraceData(updatedData);
-        //jey handleCardClick(updatedData[0].traceId);
-        spanApiCall(updatedData[0].traceId)
-        setTotalPageCount(Math.ceil(totalCount / pageLimit));
+  //     if (updatedData.length === 0) {
+  //       setTraceGlobalEmpty(
+  //         `No Data Matched for this filter! Please click on refresh / select different queries to filter!`
+  //       );
+  //     } else {
+  //       setTraceData(updatedData);
+  //       //jey handleCardClick(updatedData[0].traceId);
+  //       spanApiCall(updatedData[0].traceId)
+  //       setTotalPageCount(Math.ceil(totalCount / pageLimit));
+  //     }
+
+  //     setLoading(false);
+  //     // setTraceLoading(false);
+  //   } catch (error) {
+  //     console.log("ERROR " + error);
+  //     setTraceGlobalError("An error occurred On Filter");
+  //     // setTraceLoading(false);
+  //     setLoading(false);
+  //   }
+  // }, [
+  //   pageLimit,
+  //   currentPage,
+  //   filterApiBody,
+  //   selectedStartDate,
+  //   selectedSortOrder,
+  //   lookBackVal,
+  //   selectedEndDate,
+  //   setTraceData,
+  //   setTotalPageCount,
+  //   setTraceGlobalEmpty,
+  //   setTraceGlobalError,
+  //   needHistoricalData,
+  // ]);
+
+
+
+const filterApiCall = useCallback(async () => {
+  try {
+    console.log("Trace filter called!" + filterApiBody);
+    setLoading(true);
+
+    const { data } = await TraceFilterOptionWithDate(
+      selectedStartDate,
+      lookBackVal.value,
+      selectedSortOrder,
+      selectedEndDate,
+      currentPage,
+      pageLimit,
+      filterApiBody
+    );
+
+       const updatedData = createTimeInWords(data.traceFilter.traces);
+       const totalCount = data.traceFilter.totalCount; 
+
+        if (data.traceFilter.traces.length === 0) {
+          setTraceGlobalEmpty(
+            `No Data Matched for this filter! Please click on refresh / select different queries to filter!`
+          );
+        } else {
+          setTraceData(updatedData);
+          //jey handleCardClick(updatedData[0].traceId);
+          spanApiCall(updatedData[0].traceId)
+          setTotalPageCount(Math.ceil(totalCount / pageLimit));
+        }
+  
+        setLoading(false);
+        // setTraceLoading(false);
+      } catch (error) {
+        console.log("ERROR " + error);
+        setTraceGlobalError("An error occurred On Filter");
+        // setTraceLoading(false);
+        setLoading(false);
       }
+    }, [
+      pageLimit,
+      currentPage,
+      filterApiBody,
+      selectedStartDate,
+      selectedSortOrder,
+      lookBackVal,
+      selectedEndDate,
+      setTraceData,
+      setTotalPageCount,
+      setTraceGlobalEmpty,
+      setTraceGlobalError,
+      needHistoricalData,
+    ]);
 
-      setLoading(false);
-      // setTraceLoading(false);
-    } catch (error) {
-      console.log("ERROR " + error);
-      setTraceGlobalError("An error occurred On Filter");
-      // setTraceLoading(false);
-      setLoading(false);
-    }
-  }, [
-    pageLimit,
-    currentPage,
-    filterApiBody,
-    selectedStartDate,
-    selectedSortOrder,
-    lookBackVal,
-    selectedEndDate,
-    setTraceData,
-    setTotalPageCount,
-    setTraceGlobalEmpty,
-    setTraceGlobalError,
-    needHistoricalData,
-  ]);
+
+
+
+//     // Add a console log to inspect the API response
+//     console.log("API Response:", data);
+
+//     if (data && data.traceFilter.totalCount.traces) {
+//       const totalCount = data.traceFilter.totalCount;
+//       const updatedData = createTimeInWords(data.traceFilter.traces);
+
+//       if (data.traceFilter.traces.length === 0) {
+//         setTraceData(updatedData);
+//         spanApiCall(updatedData[0].traceId);
+//         setTotalPageCount(Math.ceil(totalCount / pageLimit));
+//       } else {
+//         setTraceGlobalEmpty(
+//           `No Data Matched for this filter! Please click on refresh / select different queries to filter!`
+//         );
+//       }
+
+//       setLoading(false);
+//     } else {
+//       console.log("Invalid data structure:", data);
+//       setTraceGlobalEmpty(
+//         `No Data Matched for this filter! Please click on refresh / select different queries to filter!`
+//       );
+//       setLoading(false);
+//     }
+//   } catch (error) {
+//     console.log("ERROR " + error);
+//     setTraceGlobalError("An error occurred On Filter");
+//     setLoading(false);
+//   }
+// }, [
+//   pageLimit,
+//   currentPage,
+//   filterApiBody,
+//   selectedStartDate,
+//   selectedSortOrder,
+//   lookBackVal,
+//   selectedEndDate,
+//   setTraceData,
+//   setTotalPageCount,
+//   setTraceGlobalEmpty,
+//   setTraceGlobalError,
+//   needHistoricalData,
+// ]);
+
+
 
   // useEffect(() => {
   //   console.log("Trace UseEffect called!");
