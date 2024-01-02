@@ -69,15 +69,16 @@ const DbSummaryCharts = () => {
     try {
       setLoading(true);
       var response = await getDbSummaryDataWithDate(selectedStartDate, selectedEndDate, lookBackVal.value);
-      console.log("db", response);
-      if (response.length !== 0) {
-        setintegrationdata(response);
+      if (response.data.dBTraceMetricCount.length !== 0) {
+        setintegrationdata(response.data.dBTraceMetricCount);
       } else {
         setEmptyMessage("No Data to show");
       }
 
       // console.log("Trace summary data " + JSON.stringify(response));
       setLoading(false);
+      console.log("dbSummary----->---->", response.data.dBTraceMetricCount);
+
     } catch (error) {
       // console.log("error " + error);
       setErrorMessage("An error Occurred!");

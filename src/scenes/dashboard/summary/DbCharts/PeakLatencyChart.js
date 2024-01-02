@@ -39,15 +39,17 @@ const DBCallsCount = () => {
         selectedEndDate,
         lookBackVal.value
       );
-      if (response.some(
+      if (response.data.dBTracePeakLatencyCount.some(
         (item) => item.dbPeakLatencyCount !== 0
       )) {
-        setDbPeakLatencyData(response);
+        setDbPeakLatencyData(response.data.dBTracePeakLatencyCount);
       } else {
         setEmptyMessage("No Data to show");
       }
+
+      console.log(response.data.dBTracePeakLatencyCount,"-------->")
     } catch (error) {
-      console.log("ERROR on peaklatency filter api " + error);
+      console.log("ERROR on PeakLatency filter api " + error);
       setErrorMessage("An error Occurred!");
     } finally {
       setLoading(false);
@@ -57,6 +59,7 @@ const DBCallsCount = () => {
     selectedEndDate,
     lookBackVal
   ]);
+
 
   useEffect(() => {
     DBPeaklatencyFiltered(minDurationValue,maxDurationValue);
