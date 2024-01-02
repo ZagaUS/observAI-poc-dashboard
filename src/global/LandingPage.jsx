@@ -16,32 +16,37 @@ import Sustainability from "../assets/sustainability.jpeg";
 import Admin from "../assets/admin.jpeg";
 import ZahaLogo from "../assets/zaga-logedit.jpg";
 import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { keycloak, initialized } = useKeycloak();
+
+  console.log("keycloak", keycloak);
 
   const handlelogin = () => {
-    navigate("/login");
+    // navigate("/login");
+    console.log("clicked");
   };
 
   // console.log(localStorage.getItem("userInfo"),"asdfghjkl");
 
-  const userDetails =   localStorage.getItem("userInfo");
+  const userDetails = localStorage.getItem("userInfo");
 
-  console.log(JSON.parse(userDetails),"userDetails");
+  console.log(JSON.parse(userDetails), "userDetails");
 
   const admin = JSON.parse(userDetails);
 
-  console.log(admin.roles,"admin");
+  console.log(admin.roles, "admin");
 
-  const admincheck = admin.roles.includes('admin');
+  const admincheck = admin.roles.includes("admin");
 
   console.log(admincheck);
 
-
   const handleobservability = () => {
-    navigate(admincheck?"/mainpage/dashboard":'/noauthmessage');
+    navigate('/mainpage/*');
   };
   return (
     <div style={{ margin: "30px" }}>
@@ -67,10 +72,40 @@ const LandingPage = () => {
         />
       </div>
       <div>
-        {" "}
-        <IconButton onClick={handlelogin}>
+        {/* <IconButton   onClick={() => keycloak.login()}>
           <LoginIcon />
-        </IconButton>
+        </IconButton> */}
+
+        {!keycloak.authenticated && (
+          <IconButton onClick={() => keycloak.login()}>
+            <LoginIcon />
+          </IconButton>
+        )}
+
+        {!!keycloak.authenticated && (
+          <IconButton onClick={() => keycloak.logout()}>
+            <LogoutIcon />
+          </IconButton>
+        )}
+        {/* {!keycloak.authenticated && (
+                   <button
+                     type="button"
+                     className="text-blue-800"
+                     onClick={handlelogin}
+                   >
+                     Login
+                   </button>
+                 )}
+
+                 {!!keycloak.authenticated && (
+                   <button
+                     type="button"
+                     className="text-blue-800"
+                     onClick={() => keycloak.logout()}
+                   >
+                     Logout ({keycloak.tokenParsed.preferred_username})
+                   </button>
+                 )} */}
       </div>
 
       <Box
