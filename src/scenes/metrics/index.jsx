@@ -132,14 +132,14 @@ const Metrics = () => {
       console.log("endTImne in passinf=====", selectedEndDate);
 
       const metricData = await getMetricDataApi(service, selectedStartDate, selectedEndDate, lookBackVal.value);
-      if (metricData.length !== 0) {
-        console.log("metric data " + JSON.stringify(metricData));
-        handleMetricData(metricData);
+      if (metricData.data.metricDataByServiceName.length !== 0) {
+        console.log("metric data " + JSON.stringify(metricData.data.metricDataByServiceName));
+        handleMetricData(metricData.data.metricDataByServiceName);
         setErrorMessage("");
         setEmptyMessage("");
       } else {
         console.log("No metric data");
-        handleMetricData(metricData);
+        handleMetricData(metricData.data.metricDataByServiceName);
         setEmptyMessage("No Metric Data to show!");
       }
     } catch (error) {
