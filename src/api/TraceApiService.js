@@ -287,10 +287,10 @@ export const TraceFilterOptionWithDate = async (
             page: ${page}
             pagesize: ${pageSize}
             query: {
-             
-              methodName: ${JSON.stringify(payload.methodName)}
-              serviceName:${JSON.stringify(payload.serviceName)}
-            
+              duration: {min:1,max:100000}
+              methodName: ["POST","GET"]
+              serviceName:["order-srv-1","vendor-srv-4"]
+              statusCode: [{min:100,max:200},{min:200,max:600}] 
             }
             from: ${JSON.stringify(startDate)}
             to:  ${JSON.stringify(endDate)}
@@ -337,10 +337,10 @@ export const TraceFilterOptionWithDate = async (
         query TraceFilter {
           traceFilter(
             query: {
-             
-              methodName: ${JSON.stringify(payload.methodName)}
-              serviceName:${JSON.stringify(payload.serviceName)}
-              
+              duration: {min:1,max:100000}
+              methodName: ["POST","GET"]
+              serviceName:["order-srv-1","vendor-srv-4"]
+              statusCode: [{min:100,max:200},{min:200,max:600}] 
             }
             page: ${page}
             pagesize: ${pageSize}
