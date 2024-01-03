@@ -62,7 +62,7 @@ export const getMetricDataApi = async (
       gqlQuery = `
       query MetricDataByServiceName {
         metricDataByServiceName(
-            serviceName: "order-srv-1"
+            serviceName:  "${service}"
             from: ${JSON.stringify(startDate)}
           to: ${JSON.stringify(endDate)}
             minutesAgo: null
@@ -79,7 +79,7 @@ export const getMetricDataApi = async (
       gqlQuery = `
       query MetricDataByServiceName {
         metricDataByServiceName(
-            serviceName: "order-srv-1"
+            serviceName:  "${service}"
             from: ${JSON.stringify(startDate)}
           to: null
             minutesAgo:  ${minutesAgo}
