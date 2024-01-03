@@ -40,10 +40,10 @@ const PeakLatencyKafka = () => {
         lookBackVal.value
       );
       console.log("Kafka Peakaltency data " + response);
-      if (response.some(
+      if (response.data.kafkaTracePeakLatencyCount.some(
         (item) => item.kafkaPeakLatency !== 0
       )) {
-        setKafkaPeakLatencyData(response);
+        setKafkaPeakLatencyData(response.data.kafkaTracePeakLatencyCount);
       } else {
         setEmptyMessage("No Data to show");
       }
