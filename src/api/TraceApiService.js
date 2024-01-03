@@ -287,10 +287,10 @@ export const TraceFilterOptionWithDate = async (
             page: ${page}
             pagesize: ${pageSize}
             query: {
-              duration: {min:1,max:100000}
-              methodName: ["POST","GET"]
-              serviceName:["order-srv-1","vendor-srv-4"]
-              statusCode: [{min:100,max:200},{min:200,max:600}] 
+              ${payload.duration ? `duration: {min: ${payload.duration.min}, max: ${payload.duration.max}},` : ''}
+              ${payload.methodName ? `methodName: ${JSON.stringify(payload.methodName)},` : ''}
+              ${payload.serviceName ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
+              ${payload.statusCode ? `statusCode: [${payload.statusCode.map(range => `{min: ${range.min}, max: ${range.max}}`).join(',')}]` : ''}
             }
             from: ${JSON.stringify(startDate)}
             to:  ${JSON.stringify(endDate)}
@@ -337,10 +337,10 @@ export const TraceFilterOptionWithDate = async (
         query TraceFilter {
           traceFilter(
             query: {
-              duration: {min:1,max:100000}
-              methodName: ["POST","GET"]
-              serviceName:["order-srv-1","vendor-srv-4"]
-              statusCode: [{min:100,max:200},{min:200,max:600}] 
+              ${payload.duration ? `duration: {min: ${payload.duration.min}, max: ${payload.duration.max}},` : ''}
+              ${payload.methodName ? `methodName: ${JSON.stringify(payload.methodName)},` : ''}
+              ${payload.serviceName ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
+              ${payload.statusCode ? `statusCode: [${payload.statusCode.map(range => `{min: ${range.min}, max: ${range.max}}`).join(',')}]` : ''}
             }
             page: ${page}
             pagesize: ${pageSize}
