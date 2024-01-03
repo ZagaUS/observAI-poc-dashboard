@@ -82,6 +82,7 @@ export const getLogSummaryDataWithDate = async (
   minutesAgo,
   serviceName,
   serviceNameList 
+  
 ) => {
   try {
     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
@@ -90,35 +91,35 @@ export const getLogSummaryDataWithDate = async (
       gqlQuery = `
       query LogMetricsCount {
         logMetricsCount(
+           from: ${JSON.stringify(startDate)}
+           to: ${JSON.stringify(endDate)}
+          serviceNameList: ${JSON.stringify(serviceListData)}
             minutesAgo: 0
-            startDate: ${JSON.stringify(startDate)}
-            endDate: ${JSON.stringify(endDate)}
-            serviceNameList: ${JSON.stringify(serviceListData)}
         ) {
             debugCallCount
             errorCallCount
-            warnCallCount
             serviceName
+            warnCallCount
         }
     }
+    
     `;
 
   } else {
     gqlQuery = `
     query LogMetricsCount {
       logMetricsCount(
+         from: ${JSON.stringify(startDate)}
+         to: null
+          serviceNameList:  ${JSON.stringify(serviceListData)}
           minutesAgo: ${minutesAgo}
-          startDate: ${JSON.stringify(startDate)}
-          endDate: null
-          serviceNameList: ${JSON.stringify(serviceListData)}
       ) {
           debugCallCount
           errorCallCount
-          warnCallCount
           serviceName
+          warnCallCount
       }
   }
-    }  
     `;
   }
     // from=2023-10-18&serviceNameList=order-project&to=2023-10-19

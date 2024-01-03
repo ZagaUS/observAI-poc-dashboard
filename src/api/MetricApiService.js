@@ -47,7 +47,7 @@ const metricURL = process.env.REACT_APP_APIURL_METRICS;
 // };
 
 export const getMetricDataApi = async (
-  service,
+  serviceName,
   startDate,
   endDate,
   minutesAgo
@@ -62,7 +62,7 @@ export const getMetricDataApi = async (
       gqlQuery = `
       query MetricDataByServiceName {
         metricDataByServiceName(
-            serviceName: "order-srv-1"
+            serviceName:${(serviceName)}
             from: ${JSON.stringify(startDate)}
           to: ${JSON.stringify(endDate)}
             minutesAgo: null
@@ -79,7 +79,7 @@ export const getMetricDataApi = async (
       gqlQuery = `
       query MetricDataByServiceName {
         metricDataByServiceName(
-            serviceName: "order-srv-1"
+          serviceName:${(serviceName)}
             from: ${JSON.stringify(startDate)}
           to: null
             minutesAgo:  ${minutesAgo}
