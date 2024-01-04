@@ -16,6 +16,8 @@ import KafkaSummaryChart from "./scenes/dashboard/summary/KafkaSummaryChart";
 import PodDashboardCharts from "./scenes/dashboard/sustainability/PodDashboardCharts";
 import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboardCharts";
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
+import { useEffect } from "react";
+import { isTokenExpired } from "./global/AuthMechanism";
 
 function App() {
   const [theme, colorMode] = useMode();
