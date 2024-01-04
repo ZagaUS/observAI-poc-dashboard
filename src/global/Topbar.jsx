@@ -14,6 +14,8 @@ import { ColorModeContext, tokens } from "../theme";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "./globalContext/GlobalContext";
 import logo from "../assets/zaga-logedit.jpg";
+import { keycloakLogoutAuth } from "../api/LoginApiService";
+import { logout } from "./AuthMechanism";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -24,9 +26,17 @@ function Topbar() {
   const colorMode = useContext(ColorModeContext);
   const { setMetricRender } = useContext(GlobalContext);
 
+  // const handleLogout = () => {
+  //   navigate("/");
+  // };
+
   const handleLogout = () => {
+    localStorage.setItem("loggedOut",true);
+    logout();
     navigate("/");
   };
+
+
   const appBarStyles = {
     height: "50px",
     // width: "768px",
@@ -63,11 +73,11 @@ function Topbar() {
                   // color:"#FFF"
                 }}
               />
-              <Typography sx={{color:"#FFF"}}variant="h4" fontWeight="500" marginLeft={1}>
+              <Typography sx={{ color: "#FFF" }} variant="h4" fontWeight="500" marginLeft={1}>
                 OBSERVABILITY
               </Typography>
             </Box>
-            <Box sx={{display:"flex"}}>
+            <Box sx={{ display: "flex" }}>
               {" "}
               <IconButton
                 aria-label="Toggle Dark Mode"
