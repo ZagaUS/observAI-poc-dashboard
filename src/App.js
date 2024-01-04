@@ -18,6 +18,7 @@ import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboard
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
 import { useEffect } from "react";
 import { isTokenExpired } from "./global/AuthMechanism";
+import LandingPage from "./global/LandingPage";
 
 function App() {
   const [theme, colorMode] = useMode();
