@@ -201,8 +201,8 @@ const Loglists = () => {
     try {
       const correlatedTraceData = await FindByTraceIdForSpans(traceId);
       console.log("TraceData " + JSON.stringify(correlatedTraceData));
-      if (correlatedTraceData.data.length !== 0) {
-        const updatedData = createTimeInWords(correlatedTraceData.data);
+      if (correlatedTraceData.data.findByTraceId.length !== 0) {
+        const updatedData = createTimeInWords(correlatedTraceData.data.findByTraceId);
         setTraceRender(true);
         setLogTrace(updatedData);
         localStorage.setItem("routeName", "Traces");
@@ -213,6 +213,7 @@ const Loglists = () => {
         setNeedFilterCall(false);
         setTraceDisplayService([]);
         setNavActiveTab(1);
+        console.log("updated data" + JSON.stringify(updatedData));
       } else {
         setTraceGlobalEmpty("No Trace Data for this TraceId from Log!");
       }

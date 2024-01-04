@@ -29,7 +29,7 @@ export const findLogByTraceId = async (
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
       query FindLogsByTraceId {
-        findLogsByTraceId(traceId: "c05c9e8a782a3d3ee9e2a983848c23ad") {
+        findLogsByTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
             createdTime
             serviceName
             severityText
@@ -65,48 +65,50 @@ export const findLogByTraceId = async (
     `;
     
 
-  } else {
+  } 
+  
+  // else {
     
-    gqlQuery = ` 
-    query FindLogsByTraceId {
-      findLogsByTraceId(traceId: "c05c9e8a782a3d3ee9e2a983848c23ad") {
-          createdTime
-          serviceName
-          severityText
-          spanId
-          traceId
-          id
-          scopeLogs {
-              logRecords {
-                  flags
-                  observedTimeUnixNano
-                  severityNumber
-                  severityText
-                  spanId
-                  timeUnixNano
-                  traceId
-                  body {
-                      stringValue
-                  }
-                  attributes {
-                      key
-                      value {
-                          intValue
-                          stringValue
-                      }
-                  }
-              }
-              scope {
-                  name
-              }
-          }
-      }
-  }
+  //   gqlQuery = ` 
+  //   query FindLogsByTraceId {
+  //     findLogsByTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+  //         createdTime
+  //         serviceName
+  //         severityText
+  //         spanId
+  //         traceId
+  //         id
+  //         scopeLogs {
+  //             logRecords {
+  //                 flags
+  //                 observedTimeUnixNano
+  //                 severityNumber
+  //                 severityText
+  //                 spanId
+  //                 timeUnixNano
+  //                 traceId
+  //                 body {
+  //                     stringValue
+  //                 }
+  //                 attributes {
+  //                     key
+  //                     value {
+  //                         intValue
+  //                         stringValue
+  //                     }
+  //                 }
+  //             }
+  //             scope {
+  //                 name
+  //             }
+  //         }
+  //     }
+  // }
 
-      `;
+  //     `;
 
 
-    }
+  //   }
 
     const response = await axios.post(
       'http://localhost:7890/graphql',

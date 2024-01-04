@@ -722,9 +722,9 @@ if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
   gqlQuery = `
   query KafkaTraceMetricCount {
     kafkaTraceMetricCount(
-        serviceNameList: ["kafka-srv-5"]
-        from: "2023-10-01"
-        to: "2023-12-31"
+        serviceNameList: ${JSON.stringify(serviceListData)}
+        from: ${JSON.stringify(startDate)}
+        to: ${JSON.stringify(endDate)}
         minutesAgo: 0
     ) {
         kafkaCallCount
@@ -737,10 +737,10 @@ if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
   gqlQuery = `
   query KafkaTraceMetricCount {
     kafkaTraceMetricCount(
-        serviceNameList: ["kafka-srv-5"]
-        from: "2023-10-01"
-        to: "2023-12-31"
-        minutesAgo: 0
+        serviceNameList: ${JSON.stringify(serviceListData)}
+        minutesAgo: ${minutesAgo}
+          from: ${JSON.stringify(startDate)}
+          to: null
     ) {
         kafkaCallCount
         kafkaPeakLatency
@@ -1099,15 +1099,12 @@ export const getKafkaPeakLatencyFilterData = async (
 
 export const FindByTraceIdForSpans = async (traceId) => {
   try {
-    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
-
     let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
         query FindByTraceId {
-          findByTraceId(traceId: "446789aefea9cb5c999e491790526530") {
+          findByTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
             createdTime
             duration
             methodName
