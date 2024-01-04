@@ -191,7 +191,7 @@ const TraceList = () => {
    // setTraceLoading(true);
     const data = await FindByTraceIdForSpans(traceId);
     //console.log("OUTPUT " + JSON.stringify(data.data[0]));
-    setSelectedTrace(data.data[0]);
+    setSelectedTrace(data.data.findByTraceId.data[0]);
     setActiveTraceId(traceId);
     setActiveTraceIcon(true);
    // setTraceLoading(false);
@@ -200,6 +200,8 @@ const TraceList = () => {
     setTraceLoading(false);
   }
 };
+
+
  
   const handleCardClick = (traceId, index) => {
     console.log("Clicked");
@@ -507,9 +509,9 @@ const filterApiCall = useCallback(async () => {
     try {
       const logData = await findLogByTraceId(traceId);
       console.log("Log Data " + JSON.stringify(logData));
-      if (logData.length !== 0) {
+      if (logData.data.findLogsByTraceId.length !== 0) {
         setLogRender(true);
-        setGlobalLogData(logData);
+        setGlobalLogData(logData.data.findLogsByTraceId);
         // localStorage.setItem("routeName", "Logs");
         // setSelected("Logs");
         setApmActiveTab(2);

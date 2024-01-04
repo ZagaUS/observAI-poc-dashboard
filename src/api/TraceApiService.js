@@ -417,17 +417,17 @@ export const TraceFilterOptionWithDate = async (
 
 
 
-export const FindByTraceIdForSpans = async (traceId) => {
-  try {
-    const response = await axios.get(
-      `${traceURL}/findByTraceId?traceId=${traceId}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error retrieving users:", error);
-    return error;
-  }
-};
+// export const FindByTraceIdForSpans = async (traceId) => {
+//   try {
+//     const response = await axios.get(
+//       `${traceURL}/findByTraceId?traceId=${traceId}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     return error;
+//   }
+// };
 
 export const findLogByErrorTrace = async (traceId) => {
   try {
@@ -1097,3 +1097,89 @@ export const getKafkaPeakLatencyFilterData = async (
 };
 
 
+export const FindByTraceIdForSpans = async (traceId) => {
+  try {
+    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+    let gqlQuery;
+
+    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+      gqlQuery = `
+        query FindByTraceId {
+          findByTraceId(traceId: "446789aefea9cb5c999e491790526530") {
+            createdTime
+            duration
+            methodName
+            operationName
+            serviceName
+            spanCount
+            statusCode
+            traceId
+            id
+            spanDTOs {
+              logSpanId
+              logTraceId
+              errorStatus
+              logAttributes {
+                key
+                value {
+                  intValue
+                  stringValue
+                }
+              }
+              errorMessage {
+                stringValue
+              }
+              spans {
+                endTimeUnixNano
+                kind
+                name
+                parentSpanId
+                spanId
+                startTimeUnixNano
+                traceId
+                attributes {
+                  key
+                  value {
+                    intValue
+                    stringValue
+                  }
+                }
+                status {
+                  code
+                }
+              }
+            }
+          }
+        }
+      `;
+    }
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    throw error;
+  }
+};
+
+    

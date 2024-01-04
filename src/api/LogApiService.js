@@ -5,12 +5,130 @@ import { GlobalContext } from "../global/globalContext/GlobalContext";
 const logUrl = process.env.REACT_APP_APIURL_LOGS;
 const graphql_url = "http://localhost:7890/graphql";
 
-export const findLogByTraceId = async (traceId) => {
+// export const findLogByTraceId = async (
+//   traceId) => {
+//   try {
+//     const response = await axios.get(
+//       `${logUrl}/findByTraceId?traceId=${traceId}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
+
+export const findLogByTraceId = async (
+  traceId) => {
   try {
-    const response = await axios.get(
-      `${logUrl}/findByTraceId?traceId=${traceId}`
+    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+    let gqlQuery;
+
+    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+      gqlQuery = `
+      query FindLogsByTraceId {
+        findLogsByTraceId(traceId: "c05c9e8a782a3d3ee9e2a983848c23ad") {
+            createdTime
+            serviceName
+            severityText
+            spanId
+            traceId
+            id
+            scopeLogs {
+                logRecords {
+                    flags
+                    observedTimeUnixNano
+                    severityNumber
+                    severityText
+                    spanId
+                    timeUnixNano
+                    traceId
+                    body {
+                        stringValue
+                    }
+                    attributes {
+                        key
+                        value {
+                            intValue
+                            stringValue
+                        }
+                    }
+                }
+                scope {
+                    name
+                }
+            }
+        }
+    }
+    `;
+    
+
+  } else {
+    
+    gqlQuery = ` 
+    query FindLogsByTraceId {
+      findLogsByTraceId(traceId: "c05c9e8a782a3d3ee9e2a983848c23ad") {
+          createdTime
+          serviceName
+          severityText
+          spanId
+          traceId
+          id
+          scopeLogs {
+              logRecords {
+                  flags
+                  observedTimeUnixNano
+                  severityNumber
+                  severityText
+                  spanId
+                  timeUnixNano
+                  traceId
+                  body {
+                      stringValue
+                  }
+                  attributes {
+                      key
+                      value {
+                          intValue
+                          stringValue
+                      }
+                  }
+              }
+              scope {
+                  name
+              }
+          }
+      }
+  }
+
+      `;
+
+
+    }
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
-    return response.data;
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+    
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
