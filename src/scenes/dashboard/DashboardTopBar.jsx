@@ -380,6 +380,10 @@ const DashboardTopBar = () => {
     }
   };
 
+  const roles = localStorage.getItem('roles') || [];
+
+  // Check if 'admin' role exists in the roles array
+  const isAdmin = roles.includes('admin');
   // { window.location.pathname === "/mainpage/traces" ||
   // window.location.pathname === "/mainpage/metrics" ||
   // window.location.pathname === "/mainpage/logs" ?toggleDrawer:null}
@@ -444,6 +448,7 @@ const DashboardTopBar = () => {
                       />
                     }
                     sx={{ color: "#FFF" }}
+                    disabled={!isAdmin}
                   />
 
                   <Tab
@@ -490,7 +495,7 @@ const DashboardTopBar = () => {
                   indicatorColor="primary"
                 >
                   <Tab label="Observability" sx={{ color: "#FFF" }} />
-                  <Tab label="Sustainability" sx={{ color: "#FFF" }} />
+                  <Tab label="Sustainability" sx={{ color: "#FFF" }} disabled={!isAdmin} />
 
                   <Tab label="APM" sx={{ color: "#FFF" }} />
 
