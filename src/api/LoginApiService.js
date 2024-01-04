@@ -3,7 +3,7 @@ import axios from 'axios';
 const loginURL = process.env.REACT_APP_APIURL_AUTH;
 const CLIENT_SECRET = process.env.REACT_APP_APIURL_CLIENT_SECRET
 const SSO_BASE_URL = process.env.REACT_APP_APIURL_SSO;
-const CLIENT_ID = "observai-login";
+const CLIENT_ID = "react-auth";
 const GRANT_TYPE = "password";
 
 export const keycloakLoginAuth = async (userAuth) => {
@@ -18,6 +18,10 @@ export const keycloakLoginAuth = async (userAuth) => {
         const keycloakInstance = await axios.post(`${SSO_BASE_URL}/token`, data, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                // 'Access-Control-Allow-Origin': '*',
+                // 'Access-Control-Allow-Credentials': true,
+                // 'Access-Control-Allow-Headers': "*"
+
             },
         });
         return { data: keycloakInstance.data, error: null }; // Return the response or perform further actions as needed
