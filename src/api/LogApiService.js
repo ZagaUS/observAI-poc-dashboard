@@ -29,7 +29,7 @@ export const findLogByTraceId = async (
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
       query FindLogsByTraceId {
-        findLogsByTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+        findLogsByTraceId(traceId: "${traceId}") {
             createdTime
             serviceName
             severityText

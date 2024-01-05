@@ -1104,7 +1104,7 @@ export const FindByTraceIdForSpans = async (traceId) => {
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
         query FindByTraceId {
-          findByTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+          findByTraceId(traceId: "${traceId}") {
             createdTime
             duration
             methodName
@@ -1167,7 +1167,7 @@ export const FindByTraceIdForSpans = async (traceId) => {
 
     console.log(response.data);
     if (response.data) {
-      console.log('GraphQL output:', response.data);
+      console.log('GraphQL span flow output:', response.data);
       return response.data;
     } else {
       console.error('GraphQL response is null:', response.data);

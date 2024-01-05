@@ -190,8 +190,10 @@ const TraceList = () => {
   try {
    // setTraceLoading(true);
     const data = await FindByTraceIdForSpans(traceId);
-    console.log("output------" + JSON.stringify(data));
-    //console.log("OUTPUT " + JSON.stringify(data.data[0]));
+    // console.log("output------" + JSON.stringify(data));
+    console.log("OUTPUT " + JSON.stringify(data.data.findByTraceId[0]));
+    setSelectedTrace(data.data.findByTraceId[0]);
+    
     setSelectedTrace(data.data.findByTraceId.data[0]);
     setActiveTraceId(traceId);
     setActiveTraceIcon(true);
