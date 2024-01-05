@@ -546,8 +546,8 @@ const filterApiCall = useCallback(async () => {
     try {
       setTraceLoading(true);
       const data = await findLogByErrorTrace(traceId);
-      console.log("OUTPUT " + JSON.stringify(data.data[0]));
-      setErroredLogData(data.data);
+      console.log("OUTPUT " + JSON.stringify(data.data.findByTraceErrorTraceId[0]));
+      setErroredLogData(data.data.findByTraceErrorTraceId[0]);
       setTraceLoading(false);
     } catch (error) {
       console.log("ERROR " + error);

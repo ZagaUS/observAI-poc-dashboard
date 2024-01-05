@@ -429,17 +429,101 @@ export const TraceFilterOptionWithDate = async (
 //   }
 // };
 
+// export const findLogByErrorTrace = async (traceId) => {
+//   try {
+//     const response = await axios.get(
+//       `${traceURL}/getByErrorTraceId?traceId=${traceId}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     return error;
+//   }
+// };
+
+
+
 export const findLogByErrorTrace = async (traceId) => {
-  try {
-    const response = await axios.get(
-      `${traceURL}/getByErrorTraceId?traceId=${traceId}`
+
+    try {
+  
+      const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+      // const serviceNameListParam = serviceListData.join("&serviceNameList=");
+  
+      let gqlQuery;
+  
+      if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+        gqlQuery = `
+
+        query FindByTraceErrorTraceId {
+          findByTraceErrorTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+              createdTime
+              scopeLogs {
+                  logRecords {
+                      flags
+                      observedTimeUnixNano
+                      severityNumber
+                      severityText
+                      spanId
+                      timeUnixNano
+                      traceId
+                      attributes {
+                          key
+                          value {
+                              intValue
+                              stringValue
+                          }
+                      }
+                      body {
+                          stringValue
+                      }
+                  }
+                  scope {
+                      name
+                  }
+              }
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+          }
+      }
+      `;
+    }
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
-    return response.data;
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL trace error msg output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
   } catch (error) {
     console.error("Error retrieving users:", error);
-    return error;
+    throw error;
   }
 };
+
+
+
+
+
+
+
 
 export const getTraceSummaryData = async (timeMinutesAgo) => {
   try {
