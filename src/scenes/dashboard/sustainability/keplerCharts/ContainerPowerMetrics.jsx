@@ -160,7 +160,7 @@ const ContainerPowerMetrics = ({ containerPowerMetrics }) => {
 
     const chartWidth = isCollapsed ? 'calc(70% - 10px)' : 'calc(73% - 70px)'
 
-    const chartHeight = (isLandscape && isSmallScreen) ? "150%" : (isiphone ? "125%" : "90%");
+    const chartHeight = (isLandscape && isSmallScreen) ? "145%" : (isiphone ? "125%" : "88%");
 
     return (
         <Box height="calc(75vh - 30px)" width={chartWidth} padding="5px" border="1px" style={{
@@ -172,7 +172,7 @@ const ContainerPowerMetrics = ({ containerPowerMetrics }) => {
             //     height: "calc(50vh - 32px)",
             //   }),
         }}>
-            <div style={{ display: "flex", justifyContent: "flex-start" }}>
+            <div style={{ display: "flex", justifyContent: "flex-start"}}>
                 <Button
                     variant="contained"
                     onClick={() => handleApplyButtonClick(-1)} // Navigate to previous page
@@ -180,7 +180,7 @@ const ContainerPowerMetrics = ({ containerPowerMetrics }) => {
                     size="small"
                     color="primary"
                     style={{
-                        height: "30px",
+                        height: "25px",
                         margin: "0px 5px 0px 30px",
                         fontSize: "10px",
                     }}
@@ -194,14 +194,14 @@ const ContainerPowerMetrics = ({ containerPowerMetrics }) => {
                     size="small"
                     color="primary"
                     style={{
-                        height: "30px",
+                        height: "25px",
                         margin: "0px 5px 0px 5px",
                         fontSize: "10px",
                     }}
                 >
                     Next
                 </Button>
-                {containerPowerMetrics.type === "pod" ? (<p style={{ margin: "5px 0px 0px 15%" }} className='chart-title'>{containerPowerMetrics.title}</p>) : <p style={{ margin: "5px 0px 0px 10%" }} className='chart-title'>{containerPowerMetrics.title}</p>}
+                {containerPowerMetrics.type === "pod" ? (<p style={{ marginTop:"0px" }} className='chart-title'>{containerPowerMetrics.title}</p>) : <p style={{ marginTop:"0px"}} className='chart-title'>{containerPowerMetrics.title}</p>}
             </div>
             <ReactApexChart
                 options={options}
