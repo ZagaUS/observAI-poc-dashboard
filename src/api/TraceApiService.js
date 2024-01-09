@@ -183,6 +183,7 @@ export const TraceListPaginationApiWithDate = async (
 
     // let myarray = ["order-srv-1"]
     // let dataToSend = myarray.toString()
+    console.log("graphql"+gqlQuery);
 
     const response = await axios.post(
       'http://localhost:7890/graphql',
@@ -456,9 +457,16 @@ export const findLogByErrorTrace = async (traceId) => {
         gqlQuery = `
 
         query FindByTraceErrorTraceId {
-          findByTraceErrorTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+          findByTraceErrorTraceId(traceId: "${traceId}") {
               createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
               scopeLogs {
+                  scope {
+                      name
+                  }
                   logRecords {
                       flags
                       observedTimeUnixNano
@@ -467,6 +475,9 @@ export const findLogByErrorTrace = async (traceId) => {
                       spanId
                       timeUnixNano
                       traceId
+                      body {
+                          stringValue
+                      }
                       attributes {
                           key
                           value {
@@ -474,23 +485,14 @@ export const findLogByErrorTrace = async (traceId) => {
                               stringValue
                           }
                       }
-                      body {
-                          stringValue
-                      }
-                  }
-                  scope {
-                      name
                   }
               }
-              serviceName
-              severityText
-              spanId
-              traceId
               id
           }
       }
       `;
     }
+    console.log("The GQL Query", gqlQuery);
 
     const response = await axios.post(
       'http://localhost:7890/graphql',
@@ -504,10 +506,19 @@ export const findLogByErrorTrace = async (traceId) => {
       }
     );
 
-    console.log(response.data);
+    console.log("data--------------", response.data);
+    
     if (response.data) {
-      console.log('GraphQL trace error msg output:', response.data);
-      return response.data;
+      // Filter records based on today's date
+      const filteredData = response.data.data.findByTraceErrorTraceId.filter((item) => {
+        const createdTime = new Date(item.createdTime);
+        const today = new Date();
+        return createdTime.toDateString() === today.toDateString();
+      });
+
+      console.log('GraphQL trace error msg output:', filteredData);
+      console.log("the response data is returned");
+      return filteredData;
     } else {
       console.error('GraphQL response is null:', response.data);
       throw new Error('Null response received');
@@ -517,7 +528,6 @@ export const findLogByErrorTrace = async (traceId) => {
     throw error;
   }
 };
-
 
 
 
@@ -1182,6 +1192,7 @@ export const getKafkaPeakLatencyFilterData = async (
 
 
 export const FindByTraceIdForSpans = async (traceId) => {
+  console.log("Enetering traceID"+traceId);
   try {
     let gqlQuery;
 
@@ -1249,6 +1260,8 @@ export const FindByTraceIdForSpans = async (traceId) => {
       }
     );
 
+    
+    console.log("gql query",gqlQuery);
     console.log(response.data);
     if (response.data) {
       console.log('GraphQL span flow output:', response.data);

@@ -172,19 +172,52 @@ const TraceList = () => {
   const pageLimit = 10;
 
   const createTimeInWords = (data) => {
-    // Iterate through data and update createdTime
+    const now = new Date(); // Current date and time in UTC
+  
     const updatedData = data.map((item) => {
-      const createdTime = new Date(item.createdTime); // Convert timestamp to Date object
-      const timeAgo = formatDistanceToNow(createdTime, { addSuffix: true });
-      const formattedTime = format(createdTime, "MMMM dd, yyyy HH:mm:ss a");
-      return {
-        ...item,
-        createdTimeInWords: timeAgo,
-        createdTimeInDate: formattedTime,
-      };
+      try {
+        const createdTimeUTC = new Date(item.createdTime); // Convert timestamp to Date object in UTC
+        const offsetIST = 5.5 * 60 * 60 * 1000; // Offset for IST (5.5 hours ahead of UTC)
+        const createdTimeIST = new Date(createdTimeUTC.getTime() + offsetIST);
+  
+        const timeDifference = Math.floor((now - createdTimeIST) / 1000); // Difference in seconds
+  
+        let timeAgo;
+  
+        if (timeDifference < 60) {
+          timeAgo = `${timeDifference} seconds ago`;
+        } else if (timeDifference < 3600) {
+          const minutes = Math.floor(timeDifference / 60);
+          timeAgo = minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+        } else if (timeDifference < 86400) {
+          const hours = Math.floor(timeDifference / 3600);
+          timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+        } else {
+          const days = Math.floor(timeDifference / 86400);
+          timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
+        }
+  
+        const formattedTime = `${createdTimeIST.toLocaleDateString()} ${createdTimeIST.toLocaleTimeString()}`;
+  
+        return {
+          ...item,
+          createdTimeInWords: timeAgo,
+          createdTimeInDate: formattedTime,
+        };
+      } catch (error) {
+        console.error("Invalid time value:", item.createdTime);
+        return {
+          ...item,
+          createdTimeInWords: "Invalid time",
+          createdTimeInDate: "Invalid time",
+        };
+      }
     });
+  
     return updatedData;
   };
+  
+  
  // setupAxiosInterceptor(setTraceLoading);
  const spanApiCall = async (traceId) => {
   try {
@@ -543,11 +576,12 @@ const filterApiCall = useCallback(async () => {
   };
 
   const getErroredLogsByTraceId = async (traceId) => {
+    console.log("its enteered")
     try {
       setTraceLoading(true);
       const data = await findLogByErrorTrace(traceId);
-      console.log("OUTPUT " + JSON.stringify(data.data.findByTraceErrorTraceId[0]));
-      setErroredLogData(data.data.findByTraceErrorTraceId[0]);
+        console.log("error ++++++++++++   response OUTPUT ", JSON.stringify(data.data.findByTraceErrorTraceId));
+      setErroredLogData(data.data.findByTraceErrorTraceId);
       setTraceLoading(false);
     } catch (error) {
       console.log("ERROR " + error);
