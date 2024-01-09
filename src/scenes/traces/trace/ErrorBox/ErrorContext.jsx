@@ -16,9 +16,16 @@ const ErrorContext = () => {
     const [transformedData, setTransformedData] = useState([]);
 
     const createTimeInWords = (createdTime) => {
-        const formattedTime = format(createdTime, "MMMM dd, yyyy HH:mm:ss a");
-        return formattedTime;
-    };
+        try {
+          const dateObject = new Date(createdTime);
+          const formattedTime = format(dateObject, "MMMM dd, yyyy HH:mm:ss a");
+          return formattedTime;
+        } catch (error) {
+          console.error("Invalid time value:", createdTime);
+          return "Invalid time";
+        }
+      };
+      
 
     const marshellErroredLogs = useCallback(() => {
         // const marshelledData = [];

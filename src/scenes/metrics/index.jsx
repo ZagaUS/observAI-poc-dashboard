@@ -81,36 +81,37 @@ const Metrics = () => {
   //   setMetricRender(false);
   //   setSelectedService(selectedService);
   // };
-
   const handleMetricData = (metricData) => {
     const processedData = metricData.map((metric) => {
-      const timestamp = new Date(metric.date).getTime(); // Convert date string to timestamp
-
+      const utcDate = new Date(metric.date);
+      const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+      const istDate = new Date(utcDate.getTime() + istOffset);
+  
       return {
-        x: timestamp,
+        x: istDate,
         y_cpuUsage: metric.cpuUsage,
         y_memoryUsage: metric.memoryUsage,
       };
     });
-
+  
     const cpuData = processedData.map((data) => ({
       x: data.x,
       y: data.y_cpuUsage,
     }));
-
+  
     const memoryData = processedData.map((data) => ({
       x: data.x,
       y: data.y_memoryUsage,
     }));
-
+  
     // Set state variables with processed data
     setCpuUsageData(cpuData);
     setMemoryUsageData(memoryData);
-
+  
     console.log("CPU Usage Data: ", cpuData);
     console.log("Memory Usage Data: ", memoryData);
   };
-
+  
   const mockMetrics = [
     {
       data: cpuUsageData,
@@ -123,14 +124,14 @@ const Metrics = () => {
       yaxis: "Memory Usage (MB)",
     },
   ];
-
+  
   const getAllMetricsData = useCallback(async (service) => {
     setLoading(true);
     try {
       console.log("Selected service " + service);
       console.log("startTImne in passinf=====", selectedStartDate);
       console.log("endTImne in passinf=====", selectedEndDate);
-
+  
       const metricData = await getMetricDataApi(service, selectedStartDate, selectedEndDate, lookBackVal.value);
       if (metricData.data.metricDataByServiceName.length !== 0) {
         console.log("metric data " + JSON.stringify(metricData.data.metricDataByServiceName));
@@ -150,7 +151,7 @@ const Metrics = () => {
       setLoading(false);
     }
   }, [selectedStartDate, selectedEndDate, setMetricRender, lookBackVal]);
-
+  
   useEffect(() => {
     console.log("Selected Service " + selectedService);
     // setErrorMessage("");
@@ -164,13 +165,13 @@ const Metrics = () => {
     }
     setTraceRender(false);
     setLogRender(false);
-
+  
     // return () => {
     //   setErrorMessage("");
     //   setEmptyMessage("");
     // }
   }, [getAllMetricsData, setTraceRender, lookBackVal, setLogRender, metricRender, selectedService, setTraceSummaryService, setLogSummaryService, setNavActiveTab]);
-
+  
   return (
     <>
       <div style={{ height: "calc(88vh - 70px)", overflowY: "auto" }}>

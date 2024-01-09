@@ -183,6 +183,7 @@ export const TraceListPaginationApiWithDate = async (
 
     // let myarray = ["order-srv-1"]
     // let dataToSend = myarray.toString()
+    console.log("graphql"+gqlQuery);
 
     const response = await axios.post(
       'http://localhost:7890/graphql',
@@ -447,18 +448,24 @@ export const findLogByErrorTrace = async (traceId) => {
 
     try {
   
-      const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-      // const serviceNameListParam = serviceListData.join("&serviceNameList=");
-  
-      let gqlQuery;
-  
-      if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+       //   gqlQuery = `
+    const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+    console.log('needHistoricalData:', needHistoricalData);
+    let gqlQuery;
+    if (true) {    
         gqlQuery = `
 
         query FindByTraceErrorTraceId {
-          findByTraceErrorTraceId(traceId: "9fa3fc79122f2355667ea169dd2ad351") {
+          findByTraceErrorTraceId(traceId: "${traceId}") {
               createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
               scopeLogs {
+                  scope {
+                      name
+                  }
                   logRecords {
                       flags
                       observedTimeUnixNano
@@ -467,6 +474,9 @@ export const findLogByErrorTrace = async (traceId) => {
                       spanId
                       timeUnixNano
                       traceId
+                      body {
+                          stringValue
+                      }
                       attributes {
                           key
                           value {
@@ -474,23 +484,14 @@ export const findLogByErrorTrace = async (traceId) => {
                               stringValue
                           }
                       }
-                      body {
-                          stringValue
-                      }
-                  }
-                  scope {
-                      name
                   }
               }
-              serviceName
-              severityText
-              spanId
-              traceId
               id
           }
       }
       `;
     }
+    console.log("The GQL Query", gqlQuery);
 
     const response = await axios.post(
       'http://localhost:7890/graphql',
@@ -504,10 +505,12 @@ export const findLogByErrorTrace = async (traceId) => {
       }
     );
 
-    console.log(response.data);
+    console.log("data--------------",response.data);
     if (response.data) {
       console.log('GraphQL trace error msg output:', response.data);
+      console.log("the response data is returned");
       return response.data;
+
     } else {
       console.error('GraphQL response is null:', response.data);
       throw new Error('Null response received');
@@ -1182,10 +1185,16 @@ export const getKafkaPeakLatencyFilterData = async (
 
 
 export const FindByTraceIdForSpans = async (traceId) => {
+  console.log("Enetering traceID"+traceId);
   try {
-    let gqlQuery;
+    // let gqlQuery;
 
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+    // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+    //   gqlQuery = `
+    const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+    console.log('needHistoricalData:', needHistoricalData);
+    let gqlQuery;
+    if (true) {     
       gqlQuery = `
         query FindByTraceId {
           findByTraceId(traceId: "${traceId}") {
@@ -1236,8 +1245,7 @@ export const FindByTraceIdForSpans = async (traceId) => {
         }
       `;
     }
-
-    const response = await axios.post(
+       const response = await axios.post(
       'http://localhost:7890/graphql',
       {
         query: gqlQuery
@@ -1249,7 +1257,9 @@ export const FindByTraceIdForSpans = async (traceId) => {
       }
     );
 
-    console.log(response.data);
+    console.log("GraphQL Query:", gqlQuery);
+    console.log("GraphQL Response:", response.data);
+
     if (response.data) {
       console.log('GraphQL span flow output:', response.data);
       return response.data;
@@ -1258,9 +1268,8 @@ export const FindByTraceIdForSpans = async (traceId) => {
       throw new Error('Null response received');
     }
   } catch (error) {
-    console.error("Error retrieving users:", error);
+    console.error('Error retrieving spans:', error);
     throw error;
   }
 };
-
     

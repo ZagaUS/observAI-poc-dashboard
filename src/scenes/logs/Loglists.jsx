@@ -25,7 +25,7 @@ import {
 import "./Loglists.css";
 import React, { useContext, useState } from "react";
 import { FindByTraceIdForSpans } from "../../api/TraceApiService";
-import { format, formatDistanceToNow } from "date-fns";
+// import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { useCallback } from "react";
@@ -38,6 +38,10 @@ import Loading from "../../global/Loading/Loading";
 import { searchLogs } from "../../api/LogApiService";
 import PaginationItem from "@mui/material/PaginationItem";
 import CloseIcon from "@mui/icons-material/Close";
+
+import { formatDistanceToNow, format } from 'date-fns';
+import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+
 
 import './Loglists.css';
 
@@ -181,20 +185,86 @@ const Loglists = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // const createTimeInWords = (data) => {
+  //   // Iterate through data and update createdTime
+  //   const updatedData = data.map((item) => {
+  //     const createdTime = new Date(item.createdTime); // Convert timestamp to Date object
+  //     const timeAgo = formatDistanceToNow(createdTime, { addSuffix: true });
+  //     const formattedTime = format(createdTime, "MMMM dd, yyyy HH:mm:ss a");
+  //     return {
+  //       ...item,
+  //       createdTimeInWords: timeAgo,
+  //       createdTimeInDate: formattedTime,
+  //     };
+  //   });
+  //   return updatedData;
+    
+  // };
+
   const createTimeInWords = (data) => {
-    // Iterate through data and update createdTime
+    const now = new Date(); // Current date and time in UTC
+  
     const updatedData = data.map((item) => {
-      const createdTime = new Date(item.createdTime); // Convert timestamp to Date object
-      const timeAgo = formatDistanceToNow(createdTime, { addSuffix: true });
-      const formattedTime = format(createdTime, "MMMM dd, yyyy HH:mm:ss a");
-      return {
-        ...item,
-        createdTimeInWords: timeAgo,
-        createdTimeInDate: formattedTime,
-      };
+      try {
+        const createdTimeUTC = new Date(item.createdTime); // Convert timestamp to Date object in UTC
+        const offsetIST = 5.5 * 60 * 60 * 1000; // Offset for IST (5.5 hours ahead of UTC)
+        const createdTimeIST = new Date(createdTimeUTC.getTime() + offsetIST);
+  
+        const timeDifference = Math.floor((now - createdTimeIST) / 1000); // Difference in seconds
+  
+        let timeAgo;
+  
+        if (timeDifference < 60) {
+          timeAgo = `${timeDifference} seconds ago`;
+        } else if (timeDifference < 3600) {
+          const minutes = Math.floor(timeDifference / 60);
+          timeAgo = minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+        } else if (timeDifference < 86400) {
+          const hours = Math.floor(timeDifference / 3600);
+          timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+        } else {
+          const days = Math.floor(timeDifference / 86400);
+          timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
+        }
+  
+        const formattedTime = `${createdTimeIST.toLocaleDateString()} ${createdTimeIST.toLocaleTimeString()}`;
+  
+        return {
+          ...item,
+          createdTimeInWords: timeAgo,
+          createdTimeInDate: formattedTime,
+        };
+      } catch (error) {
+        console.error("Invalid time value:", item.createdTime);
+        return {
+          ...item,
+          createdTimeInWords: "Invalid time",
+          createdTimeInDate: "Invalid time",
+        };
+      }
     });
+  
     return updatedData;
   };
+  
+  // Example usage:
+  
+// const createTimeInWords = (data) => {
+//   // Iterate through data and update createdTime
+//   const updatedData = data.map((item) => {
+//     const createdTimeUTC = new Date(item.createdTime); // Convert timestamp to Date object
+//     const createdTimeIST = createdTimeUTC.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }); // Convert to IST
+//     const timeAgoIST = formatDistanceToNow(new Date(createdTimeIST), { addSuffix: true }); // Calculate time difference in IST
+//     const formattedTimeIST = format(new Date(createdTimeIST), "MMMM dd, yyyy HH:mm:ss a");
+//     return {
+//       ...item,
+//       createdTimeInWords: timeAgoIST,
+//       createdTimeInDate: formattedTimeIST,
+//     };
+//   });
+//   return updatedData;
+// };
+  
 
   const handleLogToTrace = async (traceId) => {
     console.log("TraceId " + JSON.stringify(traceId));
@@ -467,6 +537,7 @@ const Loglists = () => {
           console.log("DATA " + JSON.stringify(data));
           const updatedData = createTimeInWords(data.sortOrderLogs.logs);
           const finalOutput = mapLogData(updatedData);
+          console.log("updated data", updatedData);
           setLogData(finalOutput);
           setTotalPageCount(Math.ceil(totalCount / pageLimit));
         } else {
