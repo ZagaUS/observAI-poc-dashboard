@@ -568,6 +568,7 @@ const Loglists = () => {
           pageLimit,
           logFilterApiBody
         );
+        console.log("filtering the log GraphQL Response:", data); 
         const totalCount = data.filterLogs.totalCount;
         if (data.filterLogs.logs.length !== 0) {
           const updatedData = createTimeInWords(data.filterLogs.logs);
