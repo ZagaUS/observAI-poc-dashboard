@@ -469,7 +469,7 @@ const DashboardTopBar = () => {
               window.location.pathname === "/mainpage/sustainability" ||
               window.location.pathname === "/mainpage/sustainability/node" ||
               window.location.pathname === "/mainpage/sustainability/host" ||
-              window.location.pathname === "/mainpage/apm" ||
+              // window.location.pathname === "/mainpage/apm" ||
               window.location.pathname === "/mainpage/apm/metrics" ||
               window.location.pathname === "/mainpage/apm/logs" ||
               window.location.pathname === "/mainpage/dashboard/logSummary" ||
