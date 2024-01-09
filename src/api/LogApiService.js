@@ -21,12 +21,10 @@ const graphql_url = "http://localhost:7890/graphql";
 export const findLogByTraceId = async (
   traceId) => {
   try {
-    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
-
-    let gqlQuery;
-
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+     const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+     console.log('needHistoricalData:', needHistoricalData);
+     let gqlQuery;
+     if (true) {    
       gqlQuery = `
       query FindLogsByTraceId {
         findLogsByTraceId(traceId: "${traceId}") {
