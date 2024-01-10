@@ -95,7 +95,7 @@ export const getMetricDataApi = async (
      }
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const traceURL = process.env.REACT_APP_APIURL_TRACES;
+const graphql_url = process.env.REACT_APP_GRAPHQLURL_TRACES;
 
 export const TraceListPaginationApi = async (
   page,
@@ -96,38 +97,18 @@ export const TraceListPaginationApiWithDate = async (
           to:  ${JSON.stringify(endDate)}
           minutesAgo: null
         ) {
-            totalCount
-            traces {
-                createdTime
-                duration
-                methodName
-                operationName
-                serviceName
-                spanCount
-                statusCode
-                traceId
-                id
-                spans {
-                    endTimeUnixNano
-                    kind
-                    name
-                    parentSpanId
-                    spanId
-                    startTimeUnixNano
-                    traceId
-                    attributes {
-                        key
-                        value {
-                            intValue
-                            stringValue
-                        }
-                    }
-                    status {
-                        code
-                    }
-                }
-            }
-        }
+          traces {
+              createdTime
+              duration
+              methodName
+              operationName
+              serviceName
+              spanCount
+              statusCode
+              traceId
+           }
+          totalCount
+      }
     }
    `;
   }
@@ -143,39 +124,19 @@ export const TraceListPaginationApiWithDate = async (
           from: ${JSON.stringify(startDate)}
           to: null
           minutesAgo:  ${minutesAgo}
-      ) {
-          totalCount
-          traces {
-              createdTime
-              duration
-              methodName
-              operationName
-              serviceName
-              spanCount
-              statusCode
-              traceId
-              id
-              spans {
-                  endTimeUnixNano
-                  kind
-                  name
-                  parentSpanId
-                  spanId
-                  startTimeUnixNano
-                  traceId
-                  attributes {
-                      key
-                      value {
-                          intValue
-                          stringValue
-                      }
-                  }
-                  status {
-                      code
-                  }
-              }
-          }
-      }
+      ){
+        traces {
+            createdTime
+            duration
+            methodName
+            operationName
+            serviceName
+            spanCount
+            statusCode
+            traceId
+         }
+        totalCount
+    }
   }
   `;
 }
@@ -186,7 +147,7 @@ export const TraceListPaginationApiWithDate = async (
     console.log("graphql"+gqlQuery);
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -387,7 +348,7 @@ export const TraceFilterOptionWithDate = async (
     }
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery,
       },
@@ -492,7 +453,7 @@ export const findLogByErrorTrace = async (traceId) => {
     console.log("The GQL Query", gqlQuery);
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -644,7 +605,7 @@ export const getTraceSummaryDataWithDate = async (
     }
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -733,7 +694,7 @@ export const getDbSummaryDataWithDate = async (
        }
 
        const response = await axios.post(
-        'http://localhost:7890/graphql',
+        'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
         {
           query: gqlQuery
         },
@@ -835,7 +796,7 @@ if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
 `;
 }
 const response = await axios.post(
-  'http://localhost:7890/graphql',
+  'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
   {
     query: gqlQuery
   },
@@ -925,7 +886,7 @@ export const getPeakLatencyFilterData = async (
     }
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -1039,7 +1000,7 @@ export const getDBPeakLatencyFilterData = async (
      }
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -1155,7 +1116,7 @@ export const getKafkaPeakLatencyFilterData = async (
      }
 
      const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
@@ -1244,7 +1205,7 @@ export const FindByTraceIdForSpans = async (traceId) => {
       `;
     }
        const response = await axios.post(
-      'http://localhost:7890/graphql',
+      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
       {
         query: gqlQuery
       },
