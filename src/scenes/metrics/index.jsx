@@ -89,12 +89,17 @@ const Metrics = () => {
   //   setSelectedService(selectedService);
   // };
 
+  // const handleMetricData = (metricData) => {
+  //   const processedData = metricData.map((metric) => {
+  //     const timestamp = new Date(metric.date).getTime(); // Convert date string to timestamp
   const handleMetricData = (metricData) => {
     const processedData = metricData.map((metric) => {
-      const timestamp = new Date(metric.date).getTime(); // Convert date string to timestamp
+      const utcDate = new Date(metric.date);
+      const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+      const istDate = new Date(utcDate.getTime() + istOffset);
 
       return {
-        x: timestamp,
+        x: istDate,
         y_cpuUsage: metric.cpuUsage,
         y_memoryUsage: metric.memoryUsage,
       };
@@ -139,14 +144,14 @@ const Metrics = () => {
       console.log("endTImne in passinf=====", selectedEndDate);
 
       const metricData = await getMetricDataApi(service, selectedStartDate, selectedEndDate, lookBackVal.value);
-      if (metricData.length !== 0) {
-        console.log("metric data " + JSON.stringify(metricData));
-        handleMetricData(metricData);
+      if (metricData.data.metricDataByServiceName.length !== 0) {
+        console.log("metric data " + JSON.stringify(metricData.data.metricDataByServiceName));
+        handleMetricData(metricData.data.metricDataByServiceName);
         setErrorMessage("");
         setEmptyMessage("");
       } else {
         console.log("No metric data");
-        handleMetricData(metricData);
+        handleMetricData(metricData.data.metricDataByServiceName);
         setEmptyMessage("No Metric Data to show!");
       }
     } catch (error) {
