@@ -147,7 +147,7 @@ export const TraceListPaginationApiWithDate = async (
     console.log("graphql"+gqlQuery);
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -348,7 +348,7 @@ export const TraceFilterOptionWithDate = async (
     }
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery,
       },
@@ -453,7 +453,7 @@ export const findLogByErrorTrace = async (traceId) => {
     console.log("The GQL Query", gqlQuery);
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -605,7 +605,7 @@ export const getTraceSummaryDataWithDate = async (
     }
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -694,7 +694,7 @@ export const getDbSummaryDataWithDate = async (
        }
 
        const response = await axios.post(
-        'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+        graphql_url,
         {
           query: gqlQuery
         },
@@ -796,7 +796,7 @@ if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
 `;
 }
 const response = await axios.post(
-  'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+  graphql_url,
   {
     query: gqlQuery
   },
@@ -886,7 +886,7 @@ export const getPeakLatencyFilterData = async (
     }
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -1000,7 +1000,7 @@ export const getDBPeakLatencyFilterData = async (
      }
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -1116,7 +1116,7 @@ export const getKafkaPeakLatencyFilterData = async (
      }
 
      const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -1205,7 +1205,7 @@ export const FindByTraceIdForSpans = async (traceId) => {
       `;
     }
        const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+        graphql_url,
       {
         query: gqlQuery
       },
