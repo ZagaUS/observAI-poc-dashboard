@@ -103,7 +103,6 @@ export const TraceListPaginationApiWithDate = async (
               methodName
               operationName
               serviceName
-              spanCount
               statusCode
               traceId
            }
@@ -131,7 +130,6 @@ export const TraceListPaginationApiWithDate = async (
             methodName
             operationName
             serviceName
-            spanCount
             statusCode
             traceId
          }
