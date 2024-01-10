@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const metricURL = process.env.REACT_APP_APIURL_METRICS;
+const graphql_url = process.env.REACT_APP_GRAPHQLURL_METRICS;
 
 // export const getMetricDataApi = async (service,startDate,endDate) => {
 //     console.log("Start---------",startDate);
@@ -95,7 +96,7 @@ export const getMetricDataApi = async (
      }
 
     const response = await axios.post(
-      'http://observai-graphql-testing-space.apps.zagaopenshift.zagaopensource.com/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
