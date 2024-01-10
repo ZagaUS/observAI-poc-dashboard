@@ -397,7 +397,7 @@ export const TraceFilterOptionWithDate = async (
         },
       }
     );
-    console.log("GraphQL Query:", gqlQuery);
+    console.log("Trace filter GraphQL Query:", gqlQuery);
     console.log("GraphQL Response:", response.data);
 
     console.log(response, "================>");
@@ -447,9 +447,7 @@ export const TraceFilterOptionWithDate = async (
 export const findLogByErrorTrace = async (traceId) => {
 
     try {
-  
-       //   gqlQuery = `
-    const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+      const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
     console.log('needHistoricalData:', needHistoricalData);
     let gqlQuery;
     if (true) {    

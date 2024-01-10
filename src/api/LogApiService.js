@@ -585,6 +585,145 @@ export const LogFilterOption = async (minutesAgo, page, pageSize, payload) => {
 //   }
 // };
 
+// export const LogFilterOptionWithDate = async (
+//   startDate,
+//   endDate,
+//   minutesAgo,
+//   sortOrder,
+//   page,
+//   pageSize,
+//   payload
+// ) => {
+//   try {
+//     let gqlQuery;
+
+//     // Condition to check for historical data
+//     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+//       gqlQuery = `
+//       query FilterLogs {
+//         filterLogs(
+//           page: ${page}
+//           pageSize: ${pageSize}
+//           query: { 
+//             serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} 
+//           }
+//           from: ${JSON.stringify(startDate)}
+//           to: ${JSON.stringify(endDate)}
+//           minutesAgo: 0
+//           sortOrder: ${JSON.stringify(sortOrder)}
+//         )  {
+//             logs {
+//                 createdTime
+//                 serviceName
+//                 severityText
+//                 spanId
+//                 traceId
+//                 id
+//                 scopeLogs {
+//                     logRecords {
+//                         flags
+//                         observedTimeUnixNano
+//                         severityNumber
+//                         severityText
+//                         spanId
+//                         timeUnixNano
+//                         traceId
+//                         attributes {
+//                             key
+//                             value {
+//                                 intValue
+//                                 stringValue
+//                             }
+//                         }
+//                         body {
+//                             stringValue
+//                         }
+//                     }
+//                     scope {
+//                         name
+//                     }
+//                 }
+//             }
+//             totalCount
+//         }
+//     }
+//       `;
+//     } else {
+//       gqlQuery = `
+//         query FilterLogs {
+//           filterLogs(
+//             page: ${page}
+//             pageSize: ${pageSize}
+//             query: { serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} }
+//             from: ${JSON.stringify(startDate)}
+//             to: null
+//             minutesAgo: ${minutesAgo}
+//             sortOrder: ${JSON.stringify(sortOrder)}
+//           )  {
+//             logs {
+//                 createdTime
+//                 serviceName
+//                 severityText
+//                 spanId
+//                 traceId
+//                 id
+//                 scopeLogs {
+//                     logRecords {
+//                         flags
+//                         observedTimeUnixNano
+//                         severityNumber
+//                         severityText
+//                         spanId
+//                         timeUnixNano
+//                         traceId
+//                         attributes {
+//                             key
+//                             value {
+//                                 intValue
+//                                 stringValue
+//                             }
+//                         }
+//                         body {
+//                             stringValue
+//                         }
+//                     }
+//                     scope {
+//                         name
+//                     }
+//                 }
+//             }
+//             totalCount
+//         }
+//     }
+//       `;
+//     }
+// console.log("log filter query",gqlQuery);
+//     const response = await axios.post(
+//       'http://localhost:7890/graphql',
+//       {
+//         query: gqlQuery,
+//         variables: {},
+//       },
+//       {
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       }
+//     );
+//     console.log(response.data, "================>");
+//     if (response.data) {
+//       console.log('GraphQL output:', response.data.data);
+//       return response.data;
+//     } else {
+//       console.error('GraphQL response is null:', response);
+//       throw new Error('Null response received');
+//     }
+//   } catch (error) {
+//     console.error('Error retrieving logs:', error);
+//     throw error;
+//   }
+// };
+
 export const LogFilterOptionWithDate = async (
   startDate,
   endDate,
@@ -597,54 +736,56 @@ export const LogFilterOptionWithDate = async (
   try {
     let gqlQuery;
 
-    // Condition to check for historical data
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
       gqlQuery = `
-      query FilterLogs {
-        filterLogs(
-          page: ${page}
-          pageSize: ${pageSize}
-          query: { serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} }
-          from: ${JSON.stringify(startDate)}
-          to: ${JSON.stringify(endDate)}
-          minutesAgo: 0
-          sortOrder: ${JSON.stringify(sortOrder)}
-        )  {
+        query FilterLogs {
+          filterLogs(
+            page: ${page}
+            pageSize: ${pageSize}
+            query: { 
+              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
+            }
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: 0
+            sortOrder: ${JSON.stringify(sortOrder)}
+          ) {
             logs {
-                createdTime
-                serviceName
-                severityText
-                spanId
-                traceId
-                id
-                scopeLogs {
-                    logRecords {
-                        flags
-                        observedTimeUnixNano
-                        severityNumber
-                        severityText
-                        spanId
-                        timeUnixNano
-                        traceId
-                        attributes {
-                            key
-                            value {
-                                intValue
-                                stringValue
-                            }
-                        }
-                        body {
-                            stringValue
-                        }
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                logRecords {
+                  flags
+                  observedTimeUnixNano
+                  severityNumber
+                  severityText
+                  spanId
+                  timeUnixNano
+                  traceId
+                  attributes {
+                    key
+                    value {
+                      intValue
+                      stringValue
                     }
-                    scope {
-                        name
-                    }
+                  }
+                  body {
+                    stringValue
+                  }
                 }
+                scope {
+                  name
+                }
+              }
             }
             totalCount
+          }
         }
-    }
       `;
     } else {
       gqlQuery = `
@@ -652,49 +793,57 @@ export const LogFilterOptionWithDate = async (
           filterLogs(
             page: ${page}
             pageSize: ${pageSize}
-            query: { serviceName: ${JSON.stringify(payload.service)}, severityText: ${JSON.stringify(payload.severityText)} }
+            query: { 
+              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
+            }
             from: ${JSON.stringify(startDate)}
             to: null
             minutesAgo: ${minutesAgo}
             sortOrder: ${JSON.stringify(sortOrder)}
-          )  {
+          ) {
             logs {
-                createdTime
-                serviceName
-                severityText
-                spanId
-                traceId
-                id
-                scopeLogs {
-                    logRecords {
-                        flags
-                        observedTimeUnixNano
-                        severityNumber
-                        severityText
-                        spanId
-                        timeUnixNano
-                        traceId
-                        attributes {
-                            key
-                            value {
-                                intValue
-                                stringValue
-                            }
-                        }
-                        body {
-                            stringValue
-                        }
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                logRecords {
+                  flags
+                  observedTimeUnixNano
+                  severityNumber
+                  severityText
+                  spanId
+                  timeUnixNano
+                  traceId
+                  attributes {
+                    key
+                    value {
+                      intValue
+                      stringValue
                     }
-                    scope {
-                        name
-                    }
+                  }
+                  body {
+                    stringValue
+                  }
                 }
+                scope {
+                  name
+                }
+              }
             }
             totalCount
+          }
         }
-    }
       `;
     }
+
+
+
+
+    console.log("Log filter query:", gqlQuery);
 
     const response = await axios.post(
       'http://localhost:7890/graphql',
@@ -708,7 +857,9 @@ export const LogFilterOptionWithDate = async (
         },
       }
     );
-    console.log(response.data, "================>");
+
+    console.log("GraphQL Response:", response.data);
+
     if (response.data) {
       console.log('GraphQL output:', response.data.data);
       return response.data;
@@ -721,7 +872,6 @@ export const LogFilterOptionWithDate = async (
     throw error;
   }
 };
-
 
 
 
