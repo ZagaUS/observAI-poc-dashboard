@@ -421,7 +421,7 @@ const Loglists = () => {
         } else {
           serviceListData = logSummaryService;
         }
-        const { data, totalCount } = await GetAllLogBySortsWithDate(
+        const { data} = await GetAllLogBySortsWithDate(
           selectedStartDate,
           selectedEndDate,
           lookBackVal.value,
@@ -430,10 +430,12 @@ const Loglists = () => {
           selectedOption,
           serviceListData
         );
-        if (data.length !== 0) {
+        const totalCount = data.sortOrderLogs.totalCount;
+        if (data.sortOrderLogs.logs.length !== 0) {
           console.log("DATA " + JSON.stringify(data));
-          const updatedData = createTimeInWords(data);
+          const updatedData = createTimeInWords(data.sortOrderLogs.logs);
           const finalOutput = mapLogData(updatedData);
+          console.log("updated data", updatedData);
           setLogData(finalOutput);
           setTotalPageCount(Math.ceil(totalCount / pageLimit));
         } else {
@@ -441,9 +443,11 @@ const Loglists = () => {
         }
       } catch (error) {
         console.log("error " + error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
+   
     [
       selectedStartDate,
       selectedEndDate,
@@ -455,11 +459,11 @@ const Loglists = () => {
   );
 
   const logFilterApiCall = useCallback(async () => {
-    // setLoading(true);
+    setLoading(true);
     console.log("Filter Body " + logFilterApiBody);
     try {
       console.log("Filter callback ");
-      const { data, totalCount } = await LogFilterOptionWithDate(
+      const { data} = await LogFilterOptionWithDate(
         selectedStartDate,
         selectedEndDate,
         lookBackVal.value,
@@ -468,11 +472,13 @@ const Loglists = () => {
         pageLimit,
         logFilterApiBody
       );
-      if (data.length !== 0) {
-        const updatedData = createTimeInWords(data);
+      console.log("filtering the log GraphQL Response:", data); 
+      const totalCount = data.filterLogs.totalCount;
+      if (data.filterLogs.logs.length !== 0) {
+        const updatedData = createTimeInWords(data.filterLogs.logs);
         const finalOutput = mapLogData(updatedData);
         setLogData(finalOutput);
-        console.log("finalOutput filter body", finalOutput);
+        console.log(finalOutput);
         setTotalPageCount(Math.ceil(totalCount / pageLimit));
       } else {
         setFilterMessage("No Matched data for this filter!");
@@ -482,7 +488,9 @@ const Loglists = () => {
     } finally {
       setLoading(false);
     }
-  }, [
+  },
+  
+ [
     selectedStartDate,
     selectedEndDate,
     lookBackVal,

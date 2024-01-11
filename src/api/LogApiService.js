@@ -115,6 +115,7 @@ export const getAllLogBySorts = async (
   }
 };
 
+
 export const GetAllLogBySortsWithDate = async (
   startDate,
   endDate,
@@ -122,36 +123,137 @@ export const GetAllLogBySortsWithDate = async (
   page,
   pageSize,
   sortOrder,
-  serviceListData
+  serviceName,
+
 ) => {
   try {
-    // Get the list of service names from localStorage and parse it
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
-    console.log(
-      "GET ALL " +
-        `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
-    );
-    // Construct the URL with the service names
-    var finalUrl;
-    console.log(
-      "HIST " + JSON.parse(localStorage.getItem("needHistoricalData"))
-    );
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call+${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`
-      );
-      finalUrl = `${logUrl}/getallLogdata-sortorder?endDate=${startDate}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call+${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/getallLogdata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&startDate=${startDate}`;
+    let gqlQuery;
+
+    // Condition to check for historical data
+    if (JSON.parse(localStorage.getItem('needHistoricalData'))) {
+      gqlQuery = `
+      query SortOrderLogs {
+        sortOrderLogs(
+            page: ${page}
+            pageSize: ${pageSize}
+            sortOrder: ${JSON.stringify(sortOrder)}
+            serviceNameList: ${JSON.stringify(serviceName)}
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: null
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }    
+    `;
     }
 
-    const response = await axios.get(finalUrl);
-    return response.data;
+    else {
+      gqlQuery = `
+      query SortOrderLogs {
+        sortOrderLogs(
+             page: ${page}
+            pageSize: ${pageSize}
+            sortOrder: ${JSON.stringify(sortOrder)}
+            serviceNameList: ${JSON.stringify(serviceName)}
+            from: ${JSON.stringify(startDate)}
+            to: null
+            minutesAgo: ${minutesAgo}
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }    
+    `;
+    }
+
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL Log sortorder output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+
   } catch (error) {
-    console.error("Error retrieving users:", error);
+    console.error('Error retrieving logs:', error);
     throw error;
   }
 };
@@ -192,6 +294,8 @@ export const LogFilterOption = async (minutesAgo, page, pageSize, payload) => {
   }
 };
 
+
+
 export const LogFilterOptionWithDate = async (
   startDate,
   endDate,
@@ -202,38 +306,151 @@ export const LogFilterOptionWithDate = async (
   payload
 ) => {
   try {
-    console.log(
-      `${logUrl}/filterLogs?endDate=${startDate}&page=${page}&pageSize=${pageSize}&startDate=${endDate}` +
-        JSON.stringify(payload)
-    );
-    var finalUrl;
-
-    // endDate=2023-10-25&page=1&pageSize=10&sortOrder=error&startDate=2023-10-25
-    // minutesAgo=720&page=1&pageSize=10&sortOrder=error&startDate=2023-10-25
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${logUrl}/filterLogs?endDate=${startDate}&page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&startDate=${endDate}`
-      );
-      finalUrl = `${logUrl}/filterLogs?endDate=${startDate}&page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&startDate=${endDate}`;
+      gqlQuery = `
+        query FilterLogs {
+          filterLogs(
+            page: ${page}
+            pageSize: ${pageSize}
+            query: { 
+              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
+            }
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: 0
+            sortOrder: ${JSON.stringify(sortOrder)}
+          ) {
+            logs {
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                logRecords {
+                  flags
+                  observedTimeUnixNano
+                  severityNumber
+                  severityText
+                  spanId
+                  timeUnixNano
+                  traceId
+                  attributes {
+                    key
+                    value {
+                      intValue
+                      stringValue
+                    }
+                  }
+                  body {
+                    stringValue
+                  }
+                }
+                scope {
+                  name
+                }
+              }
+            }
+            totalCount
+          }
+        }
+      `;
     } else {
-      console.log(
-        `Minutes call + ${logUrl}/filterLogs?minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/filterLogs?minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}&startDate=${startDate}`;
+      gqlQuery = `
+        query FilterLogs {
+          filterLogs(
+            page: ${page}
+            pageSize: ${pageSize}
+            query: { 
+              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
+            }
+            from: ${JSON.stringify(startDate)}
+            to: null
+            minutesAgo: ${minutesAgo}
+            sortOrder: ${JSON.stringify(sortOrder)}
+          ) {
+            logs {
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                logRecords {
+                  flags
+                  observedTimeUnixNano
+                  severityNumber
+                  severityText
+                  spanId
+                  timeUnixNano
+                  traceId
+                  attributes {
+                    key
+                    value {
+                      intValue
+                      stringValue
+                    }
+                  }
+                  body {
+                    stringValue
+                  }
+                }
+                scope {
+                  name
+                }
+              }
+            }
+            totalCount
+          }
+        }
+      `;
     }
 
-    const response = await axios.post(finalUrl, payload, {
-      headers: {
-        "Content-Type": "application/json", // Set the Content-Type header
+
+
+
+    console.log("Log filter query:", gqlQuery);
+    console.log("Payload for service filtering:", payload.service);
+
+
+    const response = await axios.post(
+      'http://localhost:7890/graphql',
+      
+      {
+        query: gqlQuery,
+        variables: {},
       },
-    });
-    return response.data;
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log("GraphQL Response:", response.data);
+
+    if (response.data) {
+      console.log('GraphQL Filter option output:', response.data.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response);
+      throw new Error('Null response received');
+    }
   } catch (error) {
-    console.error("Error retrieving users:", error);
+    console.error('Error retrieving logs:', error);
     throw error;
   }
 };
+
+
+
+
 
 export const searchLogs = async (
   keyword,
