@@ -46,10 +46,10 @@ const DBCallsCount = () => {
         selectedEndDate,
         lookBackVal.value
       );
-      if (response.some(
+      if (response.data.dBTracePeakLatencyCount.some(
         (item) => item.dbPeakLatencyCount !== 0
       )) {
-        setDbPeakLatencyData(response);
+        setDbPeakLatencyData(response.data.dBTracePeakLatencyCount);
       } else {
         setEmptyMessage("No Data to show");
       }
