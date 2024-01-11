@@ -67,8 +67,8 @@ const LogBarChart = () => {
         needHistoricalData
       );
       // const traceSummaryData = JSON.parse(JSON.stringify(response));
-      if (response.length !== 0) {
-        setintegrationdata(response);
+      if (response.data.logMetricsCount.length !== 0) {
+        setintegrationdata(response.data.logMetricsCount);
       } else {
         setEmptyMessage("No Data to Show");
       }
