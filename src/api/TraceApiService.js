@@ -783,25 +783,71 @@ export const getKafkaPeakLatencyFilterData = async (
 
 ) => {
   try {
-    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
 
-    var finalUrl;
+    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/KafkaSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&serviceNameList=${serviceNameListParam}&to=${endDate}`
-      );
-      finalUrl = ` ${traceURL}/KafkaSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&serviceNameList=${serviceNameListParam}&to=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call + ${traceURL}/KafkaSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`
-      );
-      finalUrl = `${traceURL}/KafkaSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+      gqlQuery = `
+      query KafkaTracePeakLatencyCount {
+        kafkaTracePeakLatencyCount(
+            serviceNameList:  ${JSON.stringify(serviceListData)}
+            from:  ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: 0
+            minPeakLatency:${JSON.stringify(minPeakLatency)}
+            maxPeakLatency: ${JSON.stringify(maxPeakLatency)}
+        ) {
+            kafkaCallCount
+            kafkaPeakLatency
+            serviceName
+        }
     }
+    `;
+    
 
-    const response = await axios.get(finalUrl);
-    return response.data;
+    } else {
+       gqlQuery = `
+       query KafkaTracePeakLatencyCount {
+        kafkaTracePeakLatencyCount(
+          serviceNameList:  ${JSON.stringify(serviceListData)}
+          from:  ${JSON.stringify(startDate)}
+          to:null
+          minutesAgo:${minutesAgo}
+          minPeakLatency:${JSON.stringify(minPeakLatency)}
+          maxPeakLatency: ${JSON.stringify(maxPeakLatency)}
+        ) {
+            kafkaCallCount
+            kafkaPeakLatency
+            serviceName
+        }
+    }
+    `;
+     }
+
+     const response = await axios.post(
+      graphql_url,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL  output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+    
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
