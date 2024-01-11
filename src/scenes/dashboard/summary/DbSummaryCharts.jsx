@@ -89,8 +89,8 @@ const DbSummaryCharts = () => {
         lookBackVal.value
       );
       console.log("db", response);
-      if (response.length !== 0) {
-        setintegrationdata(response);
+      if (response.data.dBTraceMetricCount.length !== 0) {
+        setintegrationdata(response.data.dBTraceMetricCount);
       } else {
         setEmptyMessage("No Data to show");
       }

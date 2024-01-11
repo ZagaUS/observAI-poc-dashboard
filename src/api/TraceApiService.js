@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const traceURL = process.env.REACT_APP_APIURL_TRACES;
+const traceURL = process.env.REACT_APP_GRAPHQLURL_TRACES;
 
 export const TraceListPaginationApi = async (
   page,
@@ -229,59 +229,172 @@ export const getDbSummaryDataWithDate = async (
     // Get the list of service names from localStorage and parse it
     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
 
-    // Construct the URL with the service names
-    // const serviceNameListParam = serviceListData.join('&serviceNameList=');
 
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
-
-    var finalUrl;
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/DBSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`
-      );
-      finalUrl = `${traceURL}/DBSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`;
+      gqlQuery = `
+      query DBTraceMetricCount {
+        dBTraceMetricCount(
+            minutesAgo: 0
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            serviceNameList: ${JSON.stringify(serviceListData)}
+        ) {
+            dbCallCount
+            dbPeakLatencyCount
+            serviceName
+        }
+    }
+    `;
     } else {
-      console.log(
-        `Minutes call + ${traceURL}/DBSumaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&to=${startDate}`
+      gqlQuery = `
+      query DBTraceMetricCount {
+        dBTraceMetricCount(
+          minutesAgo: ${minutesAgo}
+          from: ${JSON.stringify(startDate)}
+          to: null
+          serviceNameList: ${JSON.stringify(serviceListData)}
+        ) {
+            dbCallCount
+            dbPeakLatencyCount
+            serviceName
+        }
+    }
+    `;
+       }
+
+       const response = await axios.post(
+        traceURL,
+        {
+          query: gqlQuery
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
-      finalUrl = `${traceURL}/DBSumaryChartDataCount?from=${startDate}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
     }
 
-    const response = await axios.get(finalUrl);
-    return response.data;
-  } catch (error) {
+      } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
   }
 };
 
-export const getKafkaSummaryData = async (startDate, endDate, minutesAgo) => {
+
+// export const getKafkaSummaryData = async (startDate, endDate, minutesAgo) => {
+//   try {
+//     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+//     const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+//     var finalUrl;
+
+//     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+//       console.log(
+//         `History call + ${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`
+//       );
+//       finalUrl = `${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`;
+//     } else {
+//       console.log(
+//         `Minutes call + ${traceURL}/KafkaSumaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&to=${startDate}`
+//       );
+//       finalUrl = `${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+//     }
+
+//     const response = await axios.get(finalUrl);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
+
+export const getKafkaSummaryData = async (
+  startDate,
+   endDate, 
+   minutesAgo
+   ) => {
   try {
-    const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
+// Get the list of service names from localStorage and parse it
+const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
 
-    var finalUrl;
+// Construct the URL with the service names
+// const serviceNameListParam = serviceListData.join('&serviceNameList=');
 
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`
-      );
-      finalUrl = `${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&serviceNameList=${serviceNameListParam}&to=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call + ${traceURL}/KafkaSumaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&to=${startDate}`
-      );
-      finalUrl = `${traceURL}/KafkaSumaryChartDataCount?from=${startDate}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+// const serviceNameListParam = serviceListData.join("&serviceNameList=");
+
+let gqlQuery;
+
+if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+
+  gqlQuery = `
+  query KafkaTraceMetricCount {
+    kafkaTraceMetricCount(
+        serviceNameList: ${JSON.stringify(serviceListData)}
+        from: ${JSON.stringify(startDate)}
+        to: ${JSON.stringify(endDate)}
+        minutesAgo: 0
+    ) {
+        kafkaCallCount
+        kafkaPeakLatency
+        serviceName
     }
-
-    const response = await axios.get(finalUrl);
-    return response.data;
-  } catch (error) {
-    console.error("Error retrieving users:", error);
-    throw error;
+}
+`;
+} else {
+  gqlQuery = `
+  query KafkaTraceMetricCount {
+    kafkaTraceMetricCount(
+        serviceNameList: ${JSON.stringify(serviceListData)}
+        minutesAgo: ${minutesAgo}
+          from: ${JSON.stringify(startDate)}
+          to: null
+    ) {
+        kafkaCallCount
+        kafkaPeakLatency
+        serviceName
+    }
+}
+`;
+}
+const response = await axios.post(
+  traceURL,
+  {
+    query: gqlQuery
+  },
+  {
+    headers: {
+      'Content-Type': 'application/json',
+    },
   }
+);
+
+console.log(response.data);
+if (response.data) {
+  console.log('GraphQL output:', response.data);
+  return response.data;
+} else {
+  console.error('GraphQL response is null:', response.data);
+  throw new Error('Null response received');
+}
+
+} catch (error) {
+console.error("Error retrieving users:", error);
+throw error;
+}
 };
+
+
 
 export const getPeakLatencyFilterData = async (
   startDate,
@@ -326,29 +439,76 @@ export const getDBPeakLatencyFilterData = async (
 ) => {
   try {
     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
+    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
 
-    var finalUrl;
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/DBSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&serviceNameList=${serviceNameListParam}&to=${endDate}`
-      );
-      finalUrl = ` ${traceURL}/DBSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&serviceNameList=${serviceNameListParam}&to=${endDate}`;
+      gqlQuery = `
+      query DBTracePeakLatencyCount {
+        dBTracePeakLatencyCount(
+          from: ${JSON.stringify(startDate)}
+          to: ${JSON.stringify(endDate)}
+            minutesAgo: 0
+            serviceNameList: ${JSON.stringify(serviceListData)}
+            minPeakLatency: ${JSON.stringify(minPeakLatency)}
+            maxPeakLatency: ${JSON.stringify(maxPeakLatency)}
+        ) {
+            dbCallCount
+            dbPeakLatencyCount
+            serviceName
+        }
+    }
+    
+      `;
+
     } else {
-      console.log(
-        `Minutes call + ${traceURL}/DBSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`
-      );
-      finalUrl = `${traceURL}/DBSumaryChartPeakLatencyCount?from=${startDate}&maxpeakLatency=${maxPeakLatency}&minpeakLatency=${minPeakLatency}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+      gqlQuery = `
+      query DBTracePeakLatencyCount {
+        dBTracePeakLatencyCount(
+          from: ${JSON.stringify(startDate)}
+          to: null
+            minutesAgo:  ${minutesAgo}
+            serviceNameList: ${JSON.stringify(serviceListData)}
+            minPeakLatency: ${JSON.stringify(minPeakLatency)}
+            maxPeakLatency: ${JSON.stringify(maxPeakLatency)}
+        ) {
+            dbCallCount
+            dbPeakLatencyCount
+            serviceName
+        }
+    }
+     
+      `;
+     }
+
+    const response = await axios.post(
+      traceURL,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL getDBPeakLatencyFilterData output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
     }
 
-    const response = await axios.get(finalUrl);
-    return response.data;
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
   }
 };
+
 
 export const getKafkaPeakLatencyFilterData = async (
   startDate,

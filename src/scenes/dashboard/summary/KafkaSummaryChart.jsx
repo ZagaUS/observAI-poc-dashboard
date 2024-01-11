@@ -44,9 +44,9 @@ const KafkaSummaryChart = () => {
         lookBackVal.value,
         needHistoricalData
       );
-      console.log("kafka summary data " + response);
-      if (response.length !== 0) {
-        setintegrationdata(response);
+      console.log("kafka summary data " + response.data.kafkaTraceMetricCount);
+      if (response.data.kafkaTraceMetricCount.length !== 0) {
+        setintegrationdata(response.data.kafkaTraceMetricCount);
       } else {
         setEmptyMessage("No Data to show");
       }
