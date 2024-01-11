@@ -124,7 +124,7 @@ const DbSummaryCharts = () => {
   //   setActiveTab(2);
   // }, []);
 
-  console.log("integrationdata", integrationdata);
+  // console.log("integrationdata", integrationdata);
 
   const handleBarClick = (selectedDataPointIndex) => {
     const serviceName = integrationdata[selectedDataPointIndex].serviceName;
