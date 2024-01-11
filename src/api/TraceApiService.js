@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const traceURL = process.env.REACT_APP_APIURL_TRACES;
+const graphql_url = process.env.REACT_APP_GRAPHQLURL_TRACES;
 
 export const TraceListPaginationApi = async (
   page,
@@ -28,44 +29,99 @@ export const TraceListPaginationApi = async (
 
 export const TraceListPaginationApiWithDate = async (
   page,
-  itemsPerPage,
+  pageSize,
   startDate,
   endDate,
   minutesAgo,
   sortOrder,
-  serviceListData
+  serviceName
 ) => {
   try {
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
+    let gqlQuery;
 
-    // const serviceNameListParam = "order-project";
+    // Condition to check for historical data
+    if (JSON.parse(localStorage.getItem('needHistoricalData'))) {
+      gqlQuery = `
+      query SortOrderTrace {
+        sortOrderTrace(
+          sortOrder:  ${JSON.stringify(sortOrder)}
+          serviceNameList:${JSON.stringify(serviceName)}
+          page: ${page}
+          pageSize: ${pageSize}
+          from: ${JSON.stringify(startDate)}
+          to:  ${JSON.stringify(endDate)}
+          minutesAgo: null
+        ) {
+          traces {
+              createdTime
+              duration
+              methodName
+              operationName
+              serviceName
+              statusCode
+              traceId
+           }
+          totalCount
+      }
+    }
+   `;
+  }
+  
+  else {
+    gqlQuery = `
+    query SortOrderTrace {
+      sortOrderTrace(
+          sortOrder:  ${JSON.stringify(sortOrder)}
+          serviceNameList:${JSON.stringify(serviceName)}
+          page: ${page}
+          pageSize: ${pageSize}
+          from: ${JSON.stringify(startDate)}
+          to: null
+          minutesAgo:  ${minutesAgo}
+      ){
+        traces {
+            createdTime
+            duration
+            methodName
+            operationName
+            serviceName
+            statusCode
+            traceId
+         }
+        totalCount
+    }
+  }
+  `;
+}
 
-    var finalUrl;
 
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call +${traceURL}/getalldata-sortorder?from=${endDate}&page=${page}&pageSize=${itemsPerPage}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&to=${startDate}`
-      );
-      finalUrl = `${traceURL}/getalldata-sortorder?from=${endDate}&page=${page}&pageSize=${itemsPerPage}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&to=${startDate}`;
+    // let myarray = ["order-srv-1"]
+    // let dataToSend = myarray.toString()
+    console.log("graphql"+gqlQuery);
+
+    const response = await axios.post(
+      graphql_url,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
     } else {
-      console.log(
-        `Minutes call + ${traceURL}/getalldata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${itemsPerPage}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&to=${startDate}`
-      );
-      finalUrl = ` ${traceURL}/getalldata-sortorder?minutesAgo=${minutesAgo}&page=${page}&pageSize=${itemsPerPage}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}&to=${startDate}`;
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
     }
 
-    // from=2023-10-18&page=1&pageSize=10&serviceNameList=order-project&sortOrder=new&to=2023-10-19
-    // minutesAgo=120&page=1&pageSize=10&serviceNameList=order-project&sortOrder=new&to=2023-10-19
-    // Get the list of service names from localStorage and parse it
-    // const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
-
-    // Construct the URL with the service names
-    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
-    // console.log(`${traceURL}/getalldata-sortorder?minutesAgo=${interval}&page=${page}&pageSize=${itemsPerPage}&serviceNameList=${serviceNameListParam}&sortOrder=${sortOrder}`);
-    const response = await axios.get(finalUrl);
-    return response.data;
   } catch (error) {
-    console.error("Error retrieving users:", error);
+    console.error('Error retrieving logs:', error);
     throw error;
   }
 };
@@ -98,54 +154,261 @@ export const TraceFilterOptionWithDate = async (
   payload
 ) => {
   try {
-    var finalUrl;
+    let gqlQuery;
 
+    // Condition to check for historical data
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/TraceQueryFilter?from=${endDate}&page=${page}&pageSize=${pageSize}&sortOrder=${sortorder}&to=${startDate}`
-      );
-      finalUrl = `${traceURL}/TraceQueryFilter?from=${endDate}&page=${page}&pageSize=${pageSize}&sortOrder=${sortorder}&to=${startDate}`;
+      gqlQuery = `
+      query TraceFilter {
+        traceFilter(
+            page: ${page}
+            pagesize: ${pageSize}
+            query: {
+              ${payload.duration ? `duration: {min: ${payload.duration.min}, max: ${payload.duration.max}},` : ''}
+              ${payload.methodName ? `methodName: ${JSON.stringify(payload.methodName)},` : ''}
+              ${payload.serviceName ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
+              ${payload.statusCode ? `statusCode: [${payload.statusCode.map(range => `{min: ${range.min}, max: ${range.max}}`).join(',')}]` : ''}
+            }
+            from: ${JSON.stringify(startDate)}
+            to:  ${JSON.stringify(endDate)}
+            minutesAgo: null
+            sortorder: ${JSON.stringify(sortorder)}
+        ) {
+          traces {
+              createdTime
+              duration
+              methodName
+              operationName
+              serviceName
+              statusCode
+              traceId
+           }
+          totalCount
+      }
+    }
+    
+      `;
     } else {
-      console.log(
-        `Minutes call + ${traceURL}/TraceQueryFilter?from=${startDate}&minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&sortOrder=${sortorder}`
-      );
-      finalUrl = `${traceURL}/TraceQueryFilter?from=${startDate}&minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}&sortOrder=${sortorder}`;
+      gqlQuery = `
+        query TraceFilter {
+          traceFilter(
+            query: {
+              ${payload.duration ? `duration: {min: ${payload.duration.min}, max: ${payload.duration.max}},` : ''}
+              ${payload.methodName ? `methodName: ${JSON.stringify(payload.methodName)},` : ''}
+              ${payload.serviceName ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
+              ${payload.statusCode ? `statusCode: [${payload.statusCode.map(range => `{min: ${range.min}, max: ${range.max}}`).join(',')}]` : ''}
+            }
+            page: ${page}
+            pagesize: ${pageSize}
+            from: ${JSON.stringify(startDate)}
+            to: null
+            minutesAgo: ${minutesAgo}
+            sortorder: ${JSON.stringify(sortorder)}
+          ) {
+            traces {
+                createdTime
+                duration
+                methodName
+                operationName
+                serviceName
+                statusCode
+                traceId
+             }
+            totalCount
+        }
+        }
+      `;
     }
 
-    const response = await axios.post(finalUrl, payload, {
-      headers: {
-        "Content-Type": "application/json", // Set the Content-Type header
+    const response = await axios.post(
+      graphql_url,
+      {
+        query: gqlQuery,
       },
-    });
-    return response.data;
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log("Trace filter GraphQL Query:", gqlQuery);
+    console.log("GraphQL Response:", response.data);
+
+    console.log(response, "================>");
+
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
   } catch (error) {
-    console.error("Error retrieving users:", error);
+    console.error('Error retrieving traces:', error);
     throw error;
   }
 };
 
 export const FindByTraceIdForSpans = async (traceId) => {
+  console.log("Enetering traceID"+traceId);
   try {
-    const response = await axios.get(
-      `${traceURL}/findByTraceId?traceId=${traceId}`
+    // let gqlQuery;
+
+    // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+   const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+    console.log('needHistoricalData:', needHistoricalData);
+    let gqlQuery;
+    if (true) {     
+      gqlQuery = `
+        query FindByTraceId {
+          findByTraceId(traceId: "${traceId}") {
+            createdTime
+            duration
+            methodName
+            operationName
+            serviceName
+            spanCount
+            statusCode
+            traceId
+            id
+            spanDTOs {
+              logSpanId
+              logTraceId
+              errorStatus
+              logAttributes {
+                key
+                value {
+                  intValue
+                  stringValue
+                }
+              }
+              errorMessage {
+                stringValue
+              }
+              spans {
+                endTimeUnixNano
+                kind
+                name
+                parentSpanId
+                spanId
+                startTimeUnixNano
+                traceId
+                attributes {
+                  key
+                  value {
+                    intValue
+                    stringValue
+                  }
+                }
+                status {
+                  code
+                }
+              }
+            }
+          }
+        }
+      `;
+    }
+       const response = await axios.post(
+        graphql_url,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
-    return response.data;
+
+    console.log("GraphQL Query:", gqlQuery);
+    console.log("GraphQL Response:", response.data);
+
+    if (response.data) {
+      console.log('GraphQL span flow output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
   } catch (error) {
-    console.error("Error retrieving users:", error);
-    return error;
+    console.error('Error retrieving spans:', error);
+    throw error;
   }
 };
 
 export const findLogByErrorTrace = async (traceId) => {
   try {
-    const response = await axios.get(
-      `${traceURL}/getByErrorTraceId?traceId=${traceId}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error retrieving users:", error);
-    return error;
+    const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+  console.log('needHistoricalData:', needHistoricalData);
+  let gqlQuery;
+  if (true) {    
+      gqlQuery = `
+
+      query FindByTraceErrorTraceId {
+        findByTraceErrorTraceId(traceId: "${traceId}") {
+            createdTime
+            serviceName
+            severityText
+            spanId
+            traceId
+            scopeLogs {
+                scope {
+                    name
+                }
+                logRecords {
+                    flags
+                    observedTimeUnixNano
+                    severityNumber
+                    severityText
+                    spanId
+                    timeUnixNano
+                    traceId
+                    body {
+                        stringValue
+                    }
+                    attributes {
+                        key
+                        value {
+                            intValue
+                            stringValue
+                        }
+                    }
+                }
+            }
+            id
+        }
+    }
+    `;
   }
+  console.log("The GQL Query", gqlQuery);
+
+  const response = await axios.post(
+    graphql_url,
+    {
+      query: gqlQuery
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  console.log("data--------------",response.data);
+  if (response.data) {
+    console.log('GraphQL trace error msg output:', response.data);
+    console.log("the response data is returned");
+    return response.data;
+
+  } else {
+    console.error('GraphQL response is null:', response.data);
+    throw new Error('Null response received');
+  }
+} catch (error) {
+  console.error("Error retrieving users:", error);
+  throw error;
+}
 };
 
 export const getTraceSummaryData = async (timeMinutesAgo) => {
