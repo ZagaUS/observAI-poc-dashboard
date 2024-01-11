@@ -518,7 +518,7 @@ const Loglists = () => {
   const handleSearch= async () => {
     setLoading(true);
     try {
-      const { data, totalCount } = await searchLogsWithDate(
+      const { data } = await searchLogsWithDate(
         searchQuery,
         selectedStartDate,
         selectedEndDate,
@@ -526,16 +526,21 @@ const Loglists = () => {
         currentPage,
         pageLimit
       );
+      
+      console.log("testing--->",searchQuery);
+
       // Process and set the search results
-      console.log("datalength", data.length);
-      if (data.length > 0) {
-        const updatedData = createTimeInWords(data);
+      const totalCount = data.searchFunction.totalCount;
+
+      console.log("testing--->",totalCount);
+
+      if (data.searchFunction.logs.length !== 0) {
+        const updatedData = createTimeInWords(data.searchFunction.logs);
         const finalOutput = mapLogData(updatedData);
         setSearchResults(finalOutput);
-        // setLogData(finalOutput)
         setTotalPageCount(Math.ceil(totalCount / pageLimit));
-        // console.log("Search RESULTS" + JSON.stringify(data));
-        console.log(" sEARCH API BODY", finalOutput);
+        console.log("Search " + JSON.stringify(data));
+        console.log("API", finalOutput);
       } else {
         setSearchResults([]);
         // setLogData([]);

@@ -2,19 +2,99 @@ import axios from "axios";
 import { useContext } from "react";
 import { GlobalContext } from "../global/globalContext/GlobalContext";
 
-const logUrl = process.env.REACT_APP_APIURL_LOGS;
+const logUrl = process.env.REACT_APP_GRAPHQLURL_LOGS;
 
-export const findLogByTraceId = async (traceId) => {
+// export const findLogByTraceId = async (traceId) => {
+//   try {
+//     const response = await axios.get(
+//       `${logUrl}/findByTraceId?traceId=${traceId}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error retrieving users:", error);
+//     throw error;
+//   }
+// };
+
+
+export const findLogByTraceId = async (
+  traceId) => {
   try {
-    const response = await axios.get(
-      `${logUrl}/findByTraceId?traceId=${traceId}`
+     const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+     console.log('needHistoricalData:', needHistoricalData);
+     let gqlQuery;
+     if (true) {    
+      gqlQuery = `
+      query FindLogsByTraceId {
+        findLogsByTraceId(traceId: "${traceId}") {
+            createdTime
+            serviceName
+            severityText
+            spanId
+            traceId
+            id
+            scopeLogs {
+                logRecords {
+                    flags
+                    observedTimeUnixNano
+                    severityNumber
+                    severityText
+                    spanId
+                    timeUnixNano
+                    traceId
+                    body {
+                        stringValue
+                    }
+                    attributes {
+                        key
+                        value {
+                            intValue
+                            stringValue
+                        }
+                    }
+                }
+                scope {
+                    name
+                }
+            }
+        }
+    }
+    `;
+    
+
+  } 
+  
+
+    const response = await axios.post(
+      logUrl,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
-    return response.data;
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL LogbyTraceid output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+    
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
   }
 };
+
+
+
+
 
 export const getLogSummaryData = async (timeMinutesAgo) => {
   try {
@@ -36,37 +116,76 @@ export const getLogSummaryData = async (timeMinutesAgo) => {
   }
 };
 
+
 export const getLogSummaryDataWithDate = async (
   startDate,
   endDate,
-  minutesAgo
+  minutesAgo,
+  serviceName,
+  serviceNameList 
+  
 ) => {
   try {
-    // Get the list of service names from localStorage and parse it
     const serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
+    let gqlQuery;
+    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {     
+      gqlQuery = `
+      query LogMetricsCount {
+        logMetricsCount(
+           from: ${JSON.stringify(startDate)}
+           to: ${JSON.stringify(endDate)}
+          serviceNameList: ${JSON.stringify(serviceListData)}
+            minutesAgo: 0
+        ) {
+            debugCallCount
+            errorCallCount
+            serviceName
+            warnCallCount
+        }
+    }
+    
+    `;
 
-    // Construct the URL with the service names
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
+  } else {
+    gqlQuery = `
+    query LogMetricsCount {
+      logMetricsCount(
+         from: ${JSON.stringify(startDate)}
+         to: null
+          serviceNameList:  ${JSON.stringify(serviceListData)}
+          minutesAgo: ${minutesAgo}
+      ) {
+          debugCallCount
+          errorCallCount
+          serviceName
+          warnCallCount
+      }
+  }
+    `;
+  }
+   
 
-    var finalUrl;
+    const response = await axios.post(
+      logUrl,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/LogSummaryChartDataCount?endDate=${endDate}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
     } else {
-      console.log(
-        `Minutes call + ${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/LogSummaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&startDate=${startDate}`;
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
     }
 
-    // from=2023-10-18&serviceNameList=order-project&to=2023-10-19
-    //minutesAgo=120&serviceNameList=order-project&to=2023-10-19
-
-    const response = await axios.get(finalUrl);
-    return response.data;
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
@@ -492,21 +611,124 @@ export const searchLogsWithDate = async (
   pageSize
 ) => {
   try {
-    var finalUrl;
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`
-      );
-      finalUrl = `${logUrl}/searchFunction?endDate=${startDate}&keyword=${keyword}&page=${page}&pageSize=${pageSize}&startDate=${endDate}`;
-    } else {
-      console.log(
-        `Minutes call + ${logUrl}/filterLogs?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`
-      );
-      finalUrl = `${logUrl}/searchFunction?keyword=${keyword}&minutesAgo=${minutesAgo}&&page=${page}&pageSize=${pageSize}&startDate=${startDate}`;
+      gqlQuery=`
+      query SearchFunction {
+        searchFunction(
+            page: ${page}
+            pageSize: ${pageSize}
+            keyword: ${JSON.stringify(keyword)}
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: null
+        ) {
+            totalCount
+            logs {
+                createdTime
+                serviceName
+                severityText
+                spanId
+                traceId
+                id
+                scopeLogs {
+                    logRecords {
+                        flags
+                        observedTimeUnixNano
+                        severityNumber
+                        severityText
+                        spanId
+                        timeUnixNano
+                        traceId
+                        attributes {
+                            key
+                            value {
+                                intValue
+                                stringValue
+                            }
+                        }
+                        body {
+                            stringValue
+                        }
+                    }
+                    scope {
+                        name
+                    }
+                }
+            }
+        }
+    }   
+      `;  
+   } else {
+    gqlQuery = `
+    query SearchFunction {
+      searchFunction(
+        page: ${page}
+        pageSize: ${pageSize}
+        keyword: ${keyword}
+        from: ${JSON.stringify(startDate)}
+        to: null
+        minutesAgo: ${minutesAgo}
+      ) {
+          totalCount
+          logs {
+              createdTime
+              serviceName
+              severityText
+              spanId
+              traceId
+              id
+              scopeLogs {
+                  logRecords {
+                      flags
+                      observedTimeUnixNano
+                      severityNumber
+                      severityText
+                      spanId
+                      timeUnixNano
+                      traceId
+                      attributes {
+                          key
+                          value {
+                              intValue
+                              stringValue
+                          }
+                      }
+                      body {
+                          stringValue
+                      }
+                  }
+                  scope {
+                      name
+                  }
+              }
+          }
+      }
+  }   
+    `;
     }
-    const response = await axios.get(finalUrl);
-    return response.data;
+
+    const response = await axios.post(
+      logUrl,
+      {
+        query: gqlQuery,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log(response.data, "================>");
+    console.log(gqlQuery, "================>");
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response);
+      throw new Error('Null response received');
+    }
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;
