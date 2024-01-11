@@ -462,9 +462,9 @@ const TraceList = () => {
     try {
       const logData = await findLogByTraceId(traceId);
       console.log("Log Data " + JSON.stringify(logData));
-      if (logData.length !== 0) {
+      if (logData.data.findLogsByTraceId.length !== 0) {
         setLogRender(true);
-        setGlobalLogData(logData);
+        setGlobalLogData(logData.data.findLogsByTraceId);
         // localStorage.setItem("routeName", "Logs");
         // setSelected("Logs");
         setApmActiveTab(2);

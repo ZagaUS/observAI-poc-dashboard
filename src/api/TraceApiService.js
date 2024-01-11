@@ -255,7 +255,8 @@ export const FindByTraceIdForSpans = async (traceId) => {
     // let gqlQuery;
 
     // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-   const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
+    //   gqlQuery = `
+    const needHistoricalData = JSON.parse(localStorage.getItem("needHistoricalData"));
     console.log('needHistoricalData:', needHistoricalData);
     let gqlQuery;
     if (true) {     
