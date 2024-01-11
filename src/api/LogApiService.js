@@ -315,7 +315,7 @@ export const LogFilterOptionWithDate = async (
             page: ${page}
             pageSize: ${pageSize}
             query: { 
-              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.serviceName && payload.serviceName.length ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
               ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
             }
             from: ${JSON.stringify(startDate)}
@@ -366,7 +366,7 @@ export const LogFilterOptionWithDate = async (
             page: ${page}
             pageSize: ${pageSize}
             query: { 
-              ${payload.service && payload.service.length ? `serviceName: ${JSON.stringify(payload.service)},` : ''}
+              ${payload.service && payload.serviceName.length ? `serviceName: ${JSON.stringify(payload.serviceName)},` : ''}
               ${payload.severityText && payload.severityText.length ? `severityText: ${JSON.stringify(payload.severityText)},` : ''}
             }
             from: ${JSON.stringify(startDate)}
