@@ -261,41 +261,23 @@ export const GetAllLogBySortsWithDate = async (
             from: ${JSON.stringify(startDate)}
             to: ${JSON.stringify(endDate)}
             minutesAgo: null
-        ) {
-            totalCount
-            logs {
-                createdTime
-                serviceName
-                severityText
-                spanId
-                traceId
-                id
-                scopeLogs {
-                    logRecords {
-                        flags
-                        observedTimeUnixNano
-                        severityNumber
-                        severityText
-                        spanId
-                        timeUnixNano
-                        traceId
-                        attributes {
-                            key
-                            value {
-                                intValue
-                                stringValue
-                            }
-                        }
-                        body {
-                            stringValue
-                        }
-                    }
-                    scope {
-                        name
-                    }
-                }
-            }
-        }
+        )  {
+          logs {
+              createdTime
+              serviceName
+              severityText
+              traceId
+              scopeLogs {
+                  logRecords {
+                      body {
+                          stringValue
+                      }
+                      severityText
+                  }
+              }
+          }
+          totalCount
+      }
     }    
     `;
     }
@@ -311,41 +293,23 @@ export const GetAllLogBySortsWithDate = async (
             from: ${JSON.stringify(startDate)}
             to: null
             minutesAgo: ${minutesAgo}
-        ) {
-            totalCount
-            logs {
-                createdTime
-                serviceName
-                severityText
-                spanId
-                traceId
-                id
-                scopeLogs {
-                    logRecords {
-                        flags
-                        observedTimeUnixNano
-                        severityNumber
-                        severityText
-                        spanId
-                        timeUnixNano
-                        traceId
-                        attributes {
-                            key
-                            value {
-                                intValue
-                                stringValue
-                            }
-                        }
-                        body {
-                            stringValue
-                        }
-                    }
-                    scope {
-                        name
-                    }
-                }
-            }
-        }
+        )  {
+          logs {
+              createdTime
+              serviceName
+              severityText
+              traceId
+              scopeLogs {
+                  logRecords {
+                      body {
+                          stringValue
+                      }
+                      severityText
+                  }
+              }
+          }
+          totalCount
+      }
     }    
     `;
     }
@@ -442,41 +406,23 @@ export const LogFilterOptionWithDate = async (
             to: ${JSON.stringify(endDate)}
             minutesAgo: 0
             sortOrder: ${JSON.stringify(sortOrder)}
-          ) {
+          )  {
             logs {
-              createdTime
-              serviceName
-              severityText
-              spanId
-              traceId
-              id
-              scopeLogs {
-                logRecords {
-                  flags
-                  observedTimeUnixNano
-                  severityNumber
-                  severityText
-                  spanId
-                  timeUnixNano
-                  traceId
-                  attributes {
-                    key
-                    value {
-                      intValue
-                      stringValue
+                createdTime
+                serviceName
+                severityText
+                traceId
+                scopeLogs {
+                    logRecords {
+                        body {
+                            stringValue
+                        }
+                        severityText
                     }
-                  }
-                  body {
-                    stringValue
-                  }
                 }
-                scope {
-                  name
-                }
-              }
             }
             totalCount
-          }
+        }
         }
       `;
     } else {
@@ -493,41 +439,23 @@ export const LogFilterOptionWithDate = async (
             to: null
             minutesAgo: ${minutesAgo}
             sortOrder: ${JSON.stringify(sortOrder)}
-          ) {
+          )  {
             logs {
-              createdTime
-              serviceName
-              severityText
-              spanId
-              traceId
-              id
-              scopeLogs {
-                logRecords {
-                  flags
-                  observedTimeUnixNano
-                  severityNumber
-                  severityText
-                  spanId
-                  timeUnixNano
-                  traceId
-                  attributes {
-                    key
-                    value {
-                      intValue
-                      stringValue
+                createdTime
+                serviceName
+                severityText
+                traceId
+                scopeLogs {
+                    logRecords {
+                        body {
+                            stringValue
+                        }
+                        severityText
                     }
-                  }
-                  body {
-                    stringValue
-                  }
                 }
-                scope {
-                  name
-                }
-              }
             }
             totalCount
-          }
+        }
         }
       `;
     }
@@ -618,47 +546,29 @@ export const searchLogsWithDate = async (
       gqlQuery=`
       query SearchFunction {
         searchFunction(
-            page: ${page}
-            pageSize: ${pageSize}
+          page: ${page}
+          pageSize: ${pageSize}
             keyword: ${JSON.stringify(keyword)}
             from: ${JSON.stringify(startDate)}
             to: ${JSON.stringify(endDate)}
             minutesAgo: null
         ) {
-            totalCount
-            logs {
-                createdTime
-                serviceName
-                severityText
-                spanId
-                traceId
-                id
-                scopeLogs {
-                    logRecords {
-                        flags
-                        observedTimeUnixNano
-                        severityNumber
-                        severityText
-                        spanId
-                        timeUnixNano
-                        traceId
-                        attributes {
-                            key
-                            value {
-                                intValue
-                                stringValue
-                            }
-                        }
-                        body {
-                            stringValue
-                        }
-                    }
-                    scope {
-                        name
-                    }
-                }
-            }
-        }
+          logs {
+              createdTime
+              serviceName
+              severityText
+              traceId
+              scopeLogs {
+                  logRecords {
+                      body {
+                          stringValue
+                      }
+                      severityText
+                  }
+              }
+          }
+          totalCount
+      }
     }   
       `;  
    } else {
@@ -672,44 +582,26 @@ export const searchLogsWithDate = async (
         to: null
         minutesAgo: ${minutesAgo}
       ) {
-          totalCount
-          logs {
-              createdTime
-              serviceName
-              severityText
-              spanId
-              traceId
-              id
-              scopeLogs {
-                  logRecords {
-                      flags
-                      observedTimeUnixNano
-                      severityNumber
-                      severityText
-                      spanId
-                      timeUnixNano
-                      traceId
-                      attributes {
-                          key
-                          value {
-                              intValue
-                              stringValue
-                          }
-                      }
-                      body {
-                          stringValue
-                      }
-                  }
-                  scope {
-                      name
-                  }
-              }
-          }
-      }
+        logs {
+            createdTime
+            serviceName
+            severityText
+            traceId
+            scopeLogs {
+                logRecords {
+                    body {
+                        stringValue
+                    }
+                    severityText
+                }
+            }
+        }
+        totalCount
+    }
   }   
     `;
     }
-
+    
     const response = await axios.post(
       graphql_url,
       {
