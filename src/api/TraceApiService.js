@@ -577,7 +577,7 @@ export const getDbSummaryDataWithDate = async (
        }
 
        const response = await axios.post(
-        traceURL,
+        graphql_url,
         {
           query: gqlQuery
         },
@@ -590,7 +590,7 @@ export const getDbSummaryDataWithDate = async (
 
     console.log(response.data);
     if (response.data) {
-      console.log('GraphQL output:', response.data);
+      console.log('GraphQL getDbSummaryDataWithDate output:', response.data);
       return response.data;
     } else {
       console.error('GraphQL response is null:', response.data);
@@ -680,7 +680,7 @@ if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
 `;
 }
 const response = await axios.post(
-  traceURL,
+  graphql_url,
   {
     query: gqlQuery
   },
@@ -795,7 +795,7 @@ export const getDBPeakLatencyFilterData = async (
      }
 
     const response = await axios.post(
-      traceURL,
+      graphql_url,
       {
         query: gqlQuery
       },
