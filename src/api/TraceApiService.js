@@ -448,24 +448,72 @@ export const getTraceSummaryDataWithDate = async (
     // Construct the URL with the service names
     // const serviceNameListParam = serviceListData.join('&serviceNameList=');
 
-    const serviceNameListParam = serviceListData.join("&serviceNameList=");
+    // const serviceNameListParam = serviceListData.join("&serviceNameList=");
 
-    var finalUrl;
+    let gqlQuery;
 
     if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-      console.log(
-        `History call + ${traceURL}/TraceSumaryChartDataCount?from=${endDate}&serviceNameList=${serviceNameListParam}&to=${startDate}`
-      );
-      finalUrl = `${traceURL}/TraceSumaryChartDataCount?from=${endDate}&serviceNameList=${serviceNameListParam}&to=${startDate}`;
+
+      gqlQuery = `
+      query TraceMetricCount {
+        traceMetricCount(
+            serviceNameList: ${JSON.stringify(serviceListData)}
+            from: ${JSON.stringify(startDate)}
+            to: ${JSON.stringify(endDate)}
+            minutesAgo: null
+        ) {
+            apiCallCount
+            peakLatency
+            serviceName
+            totalErrorCalls
+            totalSuccessCalls
+        }
+    }
+    `;
+
     } else {
-      console.log(
-        `Minutes call + ${traceURL}/TraceSumaryChartDataCount?minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}&to=${startDate}`
-      );
-      finalUrl = `${traceURL}/TraceSumaryChartDataCount?from=${startDate}&minutesAgo=${minutesAgo}&serviceNameList=${serviceNameListParam}`;
+      gqlQuery = `
+      query TraceMetricCount {
+        traceMetricCount(
+            serviceNameList: ${JSON.stringify(serviceListData)}
+            from: ${JSON.stringify(startDate)}
+            to: null
+            minutesAgo: ${minutesAgo}
+        ) {
+            apiCallCount
+            peakLatency
+            serviceName
+            totalErrorCalls
+            totalSuccessCalls
+        }
+    }
+      `;
+    
+
     }
 
-    const response = await axios.get(finalUrl);
-    return response.data;
+    const response = await axios.post(
+      graphql_url,
+      {
+        query: gqlQuery
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+
+    console.log(response.data);
+    if (response.data) {
+      console.log('GraphQL output:', response.data);
+      return response.data;
+    } else {
+      console.error('GraphQL response is null:', response.data);
+      throw new Error('Null response received');
+    }
+
   } catch (error) {
     console.error("Error retrieving users:", error);
     throw error;

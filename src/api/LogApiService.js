@@ -2,7 +2,8 @@ import axios from "axios";
 import { useContext } from "react";
 import { GlobalContext } from "../global/globalContext/GlobalContext";
 
-const logUrl = process.env.REACT_APP_GRAPHQLURL_LOGS;
+const logUrl = process.env.REACT_APP_APIURL_LOGS;
+const graphql_url = process.env.REACT_APP_GRAPHQLURL_LOGS;
 
 // export const findLogByTraceId = async (traceId) => {
 //   try {
@@ -66,7 +67,7 @@ export const findLogByTraceId = async (
   
 
     const response = await axios.post(
-      logUrl,
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -166,7 +167,7 @@ export const getLogSummaryDataWithDate = async (
    
 
     const response = await axios.post(
-      logUrl,
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -351,7 +352,7 @@ export const GetAllLogBySortsWithDate = async (
 
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      graphql_url,
       {
         query: gqlQuery
       },
@@ -539,7 +540,7 @@ export const LogFilterOptionWithDate = async (
 
 
     const response = await axios.post(
-      'http://localhost:7890/graphql',
+      graphql_url,
       
       {
         query: gqlQuery,
@@ -710,7 +711,7 @@ export const searchLogsWithDate = async (
     }
 
     const response = await axios.post(
-      logUrl,
+      graphql_url,
       {
         query: gqlQuery,
       },
