@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const traceURL = process.env.REACT_APP_APIURL_TRACES;
+const graphql_url = process.env.REACT_APP_GRAPHQLURL_TRACES;
 
 export const TraceListPaginationApi = async (
   page,
