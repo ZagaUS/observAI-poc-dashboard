@@ -56,31 +56,37 @@ theme.breakpoints.only("issurfacepro")
 
   // const [FiteredData,setFiteredData] = useState([]);
 
-  const PeaklatencyFiltered = useCallback(
-    async (minDuration, maxDuration) => {
-      try {
-        setLoading(true);
-        var response = await getPeakLatencyFilterData(
-          selectedStartDate,
-          minDuration,
-          maxDuration,
-          selectedEndDate,
-          lookBackVal.value
-        );
-        if (response.some((item) => item.peakLatency !== 0)) {
-          setPeakLatencyData(response);
-        } else {
-          setEmptyMessage("No Data to show");
-        }
-      } catch (error) {
-        console.log("ERROR on peaklatency filter api " + error);
-        setErrorMessage("An error Occurred!");
-      } finally {
-        setLoading(false);
+  const PeaklatencyFiltered = useCallback(async (minDuration,maxDuration) => {
+    try {
+      setLoading(true);
+      var response = await getPeakLatencyFilterData(
+        selectedStartDate,
+        minDuration,
+        maxDuration,
+        selectedEndDate,
+        lookBackVal.value
+      );
+      if (response.data.peakLatency.some(
+        (item) => item.peakLatency !== 0
+      )) {
+        setPeakLatencyData(response.data.peakLatency);
+      } else {
+        setEmptyMessage("No Data to show");
       }
-    },
-    [selectedStartDate, selectedEndDate, lookBackVal]
-  );
+      
+      console.log(response.data.peakLatency);
+
+    } catch (error) {
+      console.log("ERROR on peaklatency filter api " + error);
+      setErrorMessage("An error Occurred!");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    selectedStartDate,
+    selectedEndDate,
+    lookBackVal,
+  ]);
 
   const handleMinChange = (event) => {
     const newValue = parseInt(event.target.value);

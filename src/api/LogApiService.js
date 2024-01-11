@@ -667,7 +667,7 @@ export const searchLogsWithDate = async (
       searchFunction(
         page: ${page}
         pageSize: ${pageSize}
-        keyword: ${keyword}
+        keyword: ${JSON.stringify(keyword)}
         from: ${JSON.stringify(startDate)}
         to: null
         minutesAgo: ${minutesAgo}
