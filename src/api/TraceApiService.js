@@ -693,7 +693,7 @@ const response = await axios.post(
 
 console.log(response.data);
 if (response.data) {
-  console.log('GraphQL output:', response.data);
+  console.log('GraphQL kafkasummary output:', response.data);
   return response.data;
 } else {
   console.error('GraphQL response is null:', response.data);
