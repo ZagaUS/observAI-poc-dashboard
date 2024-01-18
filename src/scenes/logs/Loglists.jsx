@@ -542,12 +542,15 @@ const Loglists = () => {
 
   const handlePageChange = async (event, selectedPage) => {
     setCurrentPage(Number(selectedPage));
+    // console.log(totalPageCount,"------------->");
+    // console.log(currentPage, "-----=============--which page----->");
+    console.log(selectedPage, "-----=============--which page----->");
   };
 
 
 
 
-  const handleSearch= async () => {
+  const handleSearch= async (selectedPage) => {
     setLoading(true);
     try {
       const { data } = await searchLogsWithDate(
@@ -559,7 +562,7 @@ const Loglists = () => {
         pageLimit
       );
       
-      console.log("testing--->",searchQuery);
+      console.log("testing----searchQuery-->",searchQuery);
 
       // Process and set the search results
       const totalCount = data.searchFunction.totalCount;
@@ -573,6 +576,8 @@ const Loglists = () => {
         setTotalPageCount(Math.ceil(totalCount / pageLimit));
         console.log("Search " + JSON.stringify(data));
         console.log("API", finalOutput);
+      console.log("-------currentPage--->",currentPage);
+    // setCurrentPage(Number(selectedPage));
       } else {
         setSearchResults([]);
         // setLogData([]);
@@ -592,18 +597,17 @@ const Loglists = () => {
     console.log("searchQuery", searchQuery);
     setLogRender(true);
     setSearchQuery(searchQuery);
-    const inputValueLength = searchQuery.length;
-    console.log(inputValueLength);
-    if (inputValueLength === 0) {
-      setSearchResults([]);
-    }
+    // const inputValueLength = searchQuery.length;
+    // console.log(inputValueLength);
+    // if (inputValueLength === 0) {
+    //   setSearchResults([]);
+    // }
   };
 
   const handleSearchKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSearch();
-    } else {
-    }
+    } 
   };
 
   const createFilterData = () => {
@@ -627,7 +631,7 @@ const Loglists = () => {
     if (needLogFilterCall) {
       setFilteredOptions(createFilterData());
       console.log("From Filter");
-      setSearchResults([]);
+      // setSearchResults([]);
       setIsCardVisible(false);
       // setIsCollapsed(false);
       logFilterApiCall();
@@ -640,20 +644,20 @@ const Loglists = () => {
       const finalOutput = mapLogData(updatedData);
       setLogData(finalOutput);
       // logFilterApiCall();
-    } else if (searchQuery   !== "" && logRender) {
+    } else if (searchQuery  && logRender) {
       setClearLogFilter(false);
       console.log("SEARCH WORD ---------------" + searchQuery);
       // setSearchResults([]);
       setIsCardVisible(false);
       // setIsCollapsed(false);
-      // handleSearch()
+      handleSearch()
     } else {
       setClearLogFilter(false);
       console.log("From get ALL");
       setIsCardVisible(false);
       console.log("SEARCH --------------- " + searchQuery);
-      setSearchQuery("");
-      setSearchResults([]);
+      // setSearchQuery("");
+      // setSearchResults([]);
       // setIsCollapsed(false);
       handleGetAllLogData(currentPage);
     }
@@ -670,7 +674,7 @@ const Loglists = () => {
     setTraceRender,
     handleGetAllLogData,
     logRender,
-    // searchQuery,
+    searchQuery,
     currentPage,
     setMetricRender,
     setTraceSummaryService,
