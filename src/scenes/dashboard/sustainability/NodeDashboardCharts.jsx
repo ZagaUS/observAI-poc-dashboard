@@ -85,9 +85,9 @@ const NodeDashboardCharts = () => {
         try {
             setLoading(true);
             const keplerResponse = await getKeplerMetricDataPaginated(selectedStartDate, selectedEndDate, lookBackVal.value, "node",keplerTypeList,nodeCurrentPage,10);
-            if (keplerResponse.length !== 0) {
-                setPowerMetrics(keplerResponse);
-                createPodMetricData(keplerResponse);
+            if (keplerResponse.data.allKeplerMetricDatas.length !== 0) {
+                setPowerMetrics(keplerResponse.data.allKeplerMetricDatas);
+                createPodMetricData(keplerResponse.data.allKeplerMetricDatas);
                 // console.log("Response metric " + JSON.stringify(keplerResponse));
             } else {
                 setEmptyMessage("No Data to show");

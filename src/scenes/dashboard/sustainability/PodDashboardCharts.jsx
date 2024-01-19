@@ -93,9 +93,11 @@ const PodDashboardCharts = () => {
         try {
             setLoading(true);
             const keplerResponse = await getKeplerMetricDataPaginated(selectedStartDate, selectedEndDate, lookBackVal.value, "pod", keplerTypeList,keplerCurrentPage,10);
-            if (keplerResponse.length !== 0) {
-                setPowerMetrics(keplerResponse);
-                createPodMetricData(keplerResponse);
+            console.log(keplerResponse.data.allKeplerMetricDatas,"<--------data------->")
+
+            if (keplerResponse.data.allKeplerMetricDatas.length !== 0) {
+                setPowerMetrics(keplerResponse.data.allKeplerMetricDatas);
+                createPodMetricData(keplerResponse.data.allKeplerMetricDatas);
                 // console.log("Response metric " + JSON.stringify(keplerResponse));
             } else {
                 setEmptyMessage("No Data to show");
