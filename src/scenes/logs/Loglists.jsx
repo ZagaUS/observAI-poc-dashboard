@@ -204,16 +204,60 @@ const Loglists = () => {
   const createTimeInWords = (data) => {
     const now = new Date(); // Current date and time in UTC
   
+    // const updatedData = data.map((item) => {
+    //   try {
+    //     const createdTimeUTC = new Date(item.createdTime); // Convert timestamp to Date object in UTC
+    //     const offsetIST = 5.5 * 60 * 60 * 1000; // Offset for IST (5.5 hours ahead of UTC)
+    //     const createdTimeIST = new Date(createdTimeUTC.getTime() + offsetIST);
+  
+    //     const timeDifference = Math.floor((now - createdTimeIST) / 1000); // Difference in seconds
+  
+    //     let timeAgo;
+  
+    //     if (timeDifference < 60) {
+    //       timeAgo = `${timeDifference} seconds ago`;
+    //     } else if (timeDifference < 3600) {
+    //       const minutes = Math.floor(timeDifference / 60);
+    //       timeAgo = minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+    //     } else if (timeDifference < 86400) {
+    //       const hours = Math.floor(timeDifference / 3600);
+    //       timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    //     } else {
+    //       const days = Math.floor(timeDifference / 86400);
+    //       timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
+    //     }
+  
+    //     const formattedTime = `${createdTimeIST.toLocaleDateString()} ${createdTimeIST.toLocaleTimeString()}`;
+    //     console.log("Timestamp in UTC:", createdTimeUTC);
+    //     console.log("Timestamp in IST:", createdTimeIST);
+    //     console.log("Time difference (seconds):", timeDifference);
+        
+    //     return {
+    //       ...item,
+    //       createdTimeInWords: timeAgo,
+    //       createdTimeInDate: formattedTime,
+    //     };
+    //   } catch (error) {
+    //     console.error("Invalid time value:", item.createdTime);
+    //     return {
+    //       ...item,
+    //       createdTimeInWords: "Invalid time",
+    //       createdTimeInDate: "Invalid time",
+    //     };
+    //   }
+    // });
+  
+    // return updatedData;
     const updatedData = data.map((item) => {
       try {
         const createdTimeUTC = new Date(item.createdTime); // Convert timestamp to Date object in UTC
         const offsetIST = 5.5 * 60 * 60 * 1000; // Offset for IST (5.5 hours ahead of UTC)
         const createdTimeIST = new Date(createdTimeUTC.getTime() + offsetIST);
-  
+    
         const timeDifference = Math.floor((now - createdTimeIST) / 1000); // Difference in seconds
-  
+    
         let timeAgo;
-  
+    
         if (timeDifference < 60) {
           timeAgo = `${timeDifference} seconds ago`;
         } else if (timeDifference < 3600) {
@@ -223,12 +267,15 @@ const Loglists = () => {
           const hours = Math.floor(timeDifference / 3600);
           timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
         } else {
-          const days = Math.floor(timeDifference / 86400);
+          const days = Math.ceil(timeDifference / 86400); // Use Math.ceil for correct rounding
           timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
         }
-  
+    
         const formattedTime = `${createdTimeIST.toLocaleDateString()} ${createdTimeIST.toLocaleTimeString()}`;
-  
+        console.log("Timestamp in UTC:", createdTimeUTC);
+        console.log("Timestamp in IST:", createdTimeIST);
+        console.log("Time difference (seconds):", timeDifference);
+    
         return {
           ...item,
           createdTimeInWords: timeAgo,
@@ -243,8 +290,9 @@ const Loglists = () => {
         };
       }
     });
-  
+    
     return updatedData;
+    
   };
 
   const handleLogToTrace = async (traceId) => {

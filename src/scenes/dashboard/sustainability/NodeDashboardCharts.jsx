@@ -39,10 +39,12 @@ const NodeDashboardCharts = () => {
         //PROCESS THE FILTERED DATA
         const processedData = filteredData.flatMap((podData) => {
             return podData.containerPowerMetrics.map((metric) => {
-                const timestamp = new Date(metric.createdTime).getTime(); // Convert date string to timestamp
-                setTotalPages(Math.ceil(podData.totalCount / 10));
+                const utcDate = new Date(metric.createdTime);
+                const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+                const istDate = new Date(utcDate.getTime() + istOffset);
+        
                 return {
-                    x: timestamp,
+                    x: istDate.getTime(), 
                     y: metric.consumptionValue
                 };
             });

@@ -45,17 +45,30 @@ const PodDashboardCharts = () => {
         const filteredData = keplerMetricData.filter((data) => data.displayName === podName, selectedPodName === "" ? setSelectedPodName(lastValue) : null);
 
         //PROCESS THE FILTERED DATA
+        // const processedData = filteredData.flatMap((podData) => {
+        //     return podData.containerPowerMetrics.map((metric) => {
+        //         const timestamp = new Date(metric.createdTime).getTime(); // Convert date string to timestamp
+        //         setTotalPages(Math.ceil(podData.totalCount / 10));
+        //         console.log("Time format", timestamp);
+        //         return {
+        //             x: timestamp,
+        //             y: metric.consumptionValue
+        //         };
+        //     });
+        // });
+      
         const processedData = filteredData.flatMap((podData) => {
             return podData.containerPowerMetrics.map((metric) => {
-                const timestamp = new Date(metric.createdTime).getTime(); // Convert date string to timestamp
-                setTotalPages(Math.ceil(podData.totalCount / 10));
+                const utcDate = new Date(metric.createdTime);
+                const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+                const istDate = new Date(utcDate.getTime() + istOffset);
+        
                 return {
-                    x: timestamp,
-                    y: metric.consumptionValue
+                    x: istDate.getTime(), // Convert IST date to timestamp
+                    y: metric.consumptionValue,
                 };
             });
         });
-
         setContainerPowerUsage(processedData);
         // console.log("Container Usage Data: ", JSON.stringify(filteredData));
     }

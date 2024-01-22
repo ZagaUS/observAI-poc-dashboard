@@ -206,9 +206,10 @@ const TraceList = () => {
           const hours = Math.floor(timeDifference / 3600);
           timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
         } else {
-          const days = Math.floor(timeDifference / 86400);
+          const days = Math.ceil(timeDifference / 86400);
           timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
         }
+  
   
         const formattedTime = createdTimeIST.toLocaleString('en-US', {
           year: 'numeric',
