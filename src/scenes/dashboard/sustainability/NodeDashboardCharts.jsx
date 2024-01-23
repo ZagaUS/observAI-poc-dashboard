@@ -42,6 +42,7 @@ const NodeDashboardCharts = () => {
                 const utcDate = new Date(metric.createdTime);
                 const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
                 const istDate = new Date(utcDate.getTime() + istOffset);
+                setTotalPages(Math.ceil(podData.totalCount / 10));
         
                 return {
                     x: istDate.getTime(), 

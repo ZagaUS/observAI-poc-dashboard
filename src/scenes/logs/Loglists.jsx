@@ -261,13 +261,13 @@ const Loglists = () => {
         if (timeDifference < 60) {
           timeAgo = `${timeDifference} seconds ago`;
         } else if (timeDifference < 3600) {
-          const minutes = Math.floor(timeDifference / 60);
+          const minutes = Math.ceil(timeDifference / 60);
           timeAgo = minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
         } else if (timeDifference < 86400) {
-          const hours = Math.floor(timeDifference / 3600);
+          const hours = Math.ceil(timeDifference / 3600);
           timeAgo = hours === 1 ? "1 hour ago" : `${hours} hours ago`;
         } else {
-          const days = Math.ceil(timeDifference / 86400); // Use Math.ceil for correct rounding
+          const days = Math.floor(timeDifference / 86400); // Use Math.floor for correct rounding
           timeAgo = days === 1 ? "1 day ago" : `${days} days ago`;
         }
     
