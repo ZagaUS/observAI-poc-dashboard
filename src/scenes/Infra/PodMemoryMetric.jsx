@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { GlobalContext } from '../../global/globalContext/GlobalContext';
 import { Box, Card, CardContent, Grid, Table, TableBody, TableCell, TableRow, Typography, useMediaQuery } from '@mui/material';
-import { PodMetricData } from '../Infra/PodStaticData'; 
+// import { PodMetricData } from '../Infra/PodStaticData'; 
 import Loading from '../../global/Loading/Loading';
 import MemoryMetricDashboard from './MemoryMetricDashboard';
+import { getPodMetricDataPaginated } from '../../api/InfraApiService';
 
 export const PodMemoryMetric = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -13,6 +14,16 @@ export const PodMemoryMetric = () => {
     const [selectedPodName, setSelectedPodName] = useState("");
     const [containerPowerUsage, setContainerPowerUsage] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
+    const [powerMetrics, setPowerMetrics] = useState("");
+    
+
+    const { lookBackVal,
+      selectedStartDate,
+      selectedEndDate,
+      needHistoricalData,
+      keplerCurrentPage,
+      setKeplerCurrentPage
+  } = useContext(GlobalContext);
 
     const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
     const isLandscape = useMediaQuery("(max-width: 1000px) and (orientation: landscape)");
@@ -60,18 +71,47 @@ export const PodMemoryMetric = () => {
       }
   ];
 
+  const fetchPodMetrics = useCallback(async () => {
+    // setPowerMetrics(keplerContainerInfo);
+    try {
+        setLoading(true);
+        const podResponse = await getPodMetricDataPaginated(selectedStartDate, selectedEndDate, lookBackVal.value, keplerCurrentPage,10);
+        console.log("POD REESPONSE I GOT",podResponse)
+        if (podResponse.length !== 0) {
+          setPowerMetrics(podResponse);
+            createPodMetricData(podResponse);
+            // console.log("Response metric " + JSON.stringify(keplerResponse));
+        } else {
+            setEmptyMessage("No Data to show");
+        }
+        setLoading(false);
+    } catch (error) {
+        console.log("ERROR on kepler metric " + error)
+        setErrorMessage("An error Occurred!");
+        setLoading(false);
+    }
+}, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData,keplerCurrentPage])
+
+
     useEffect(() => {
       setInfraActiveTab(0);
       setInfraPodActiveTab(1);
       setLoading(true);
-      if (Array.isArray(PodMetricData) && PodMetricData.length > 0) {
-        console.log("PODMETRIC_______________",PodMetricData);
-          createPodMetricData(PodMetricData);
-      } else {
-          setEmptyMessage("No Data to show");
+      
+      // setKeplerActiveTab(0);
+      fetchPodMetrics();
+      return () => {
+        setErrorMessage("");
+        setEmptyMessage("");
       }
-      setLoading(false);
-  }, []);
+      // if (Array.isArray(PodMetricData) && PodMetricData.length > 0) {
+      //   console.log("PODMETRIC_______________",PodMetricData);
+      //     createPodMetricData(PodMetricData);
+      // } else {
+      //     setEmptyMessage("No Data to show");
+      // }
+      // setLoading(false);
+  }, [setErrorMessage,setEmptyMessage,setKeplerCurrentPage, fetchPodMetrics]);
   
 
 const handlePodClick = (clickedPodName) => {
@@ -81,7 +121,7 @@ const handlePodClick = (clickedPodName) => {
     // console.log("Clicked pod data:", clickedPodData);
     // if (clickedPodData) {
         // setSelectedPodData(PodMetricData); 
-        processMetricData(PodMetricData, clickedPodName); 
+        processMetricData( clickedPodName); 
     // } else {
     //     console.error("Clicked pod data not found:", clickedPodName);
     // }

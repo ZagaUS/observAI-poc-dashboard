@@ -77,6 +77,7 @@ const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
   const [keplerActiveTab, setKeplerActiveTab] = useState(0);
   const [apmActiveTab, setApmActiveTab] = useState(0);
   const [keplerCurrentPage, setKeplerCurrentPage] = useState(1);
+  const [podCurrentPage, setPodCurrentPage] = useState(1);
   const [nodeCurrentPage, setNodeCurrentPage] = useState(1);
   const [notificationCount, setNotificationCount] = useState(0);
   const [alertResponse, setAlertResponse] = useState({
@@ -219,6 +220,8 @@ const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
         setInfraNodeActiveTab,
         keplerCurrentPage,
         setKeplerCurrentPage,
+        podCurrentPage,
+        setPodCurrentPage,
         nodeCurrentPage,
         setNodeCurrentPage,
         notificationCount,

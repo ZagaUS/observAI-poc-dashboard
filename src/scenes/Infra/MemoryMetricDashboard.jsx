@@ -144,7 +144,7 @@ const MemoryMetricDashboard = ({ podData }) => {
           color="primary"
           style={{ height: "25px", margin: "0px 5px 0px 30px", fontSize: "10px" }}
           onClick={() => handleApplyButtonClick(-1)} // Navigate to previous page
-                    // disabled={containerPowerMetrics.type === "pod" ? (keplerCurrentPage === 1) : (nodeCurrentPage === 1)} // Disable if on the first page
+                    disabled={(podCurrentPage === 1)} // Disable if on the first page
                    
         >
           Previous
@@ -155,7 +155,7 @@ const MemoryMetricDashboard = ({ podData }) => {
           color="primary"
           style={{ height: "25px", margin: "0px 5px 0px 5px", fontSize: "10px" }}
           onClick={() => handleApplyButtonClick(1)} // Navigate to next page
-        //   disabled={containerPowerMetrics.type === "pod" ? (keplerCurrentPage === totalPages) : (nodeCurrentPage === totalPages)} // Disable if on the last page
+          disabled={ (podCurrentPage === totalPages)} // Disable if on the last page
           
         >
           Next
