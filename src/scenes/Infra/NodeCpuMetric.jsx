@@ -61,6 +61,7 @@ const NodeCpuMetric = () => {
 
       // Update state with processed data
       setContainerPowerUsage(processedData);
+      console.log("Processed Data", processedData)
   }
 
   const createNodeMetricData = (nodeCpuContainerData) => {
@@ -84,16 +85,17 @@ const NodeCpuMetric = () => {
     console.log("node data", nodeCpuContainerData)
   }
 
-  const nodeMetricsData = [
+  const nodeCpuMetricsData = [
     {
       data: containerPowerUsage,
-      title: `Node Container Data - ${selectedNodeName}`,
+      title: `Node CPU Container Data - ${selectedNodeName}`,
       yaxis: "CPU Usage"
     }
   ]
 
   console.log("Node Data-------", containerPowerUsage)
   console.log("node metric", nodeMetric)
+  console.log("Node Names", selectedNodeName)
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
@@ -201,7 +203,7 @@ const NodeCpuMetric = () => {
                           <Box style={{ display: "flex", flexDirection: "row", }} >
                                   {hasContainerNodeMetrics ? (
                                     <Box style={{ width: "85%", paddingRight: "10px" }}>
-                                      <NodeCpuMetricChart nodeMetrics={nodeMetricsData[0]} />
+                                      <NodeCpuMetricChart nodeMetrics={nodeCpuMetricsData[0]} />
                                     </Box>
                                   ) : (
                                     <div

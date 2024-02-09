@@ -113,7 +113,7 @@ const NodeCpuMetricChart = ({ nodeMetrics }) => {
 
     const series = [
         {
-            name: 'CPU Usage',
+            name: nodeMetrics.yaxis,
             // data: nodeMetrics.data,
             data: Array.isArray(nodeMetrics.data) ? nodeMetrics.data : [],
             // data: nodeMetrics.map(item => ({ x: item.date, y: item.cpuUsage })),
