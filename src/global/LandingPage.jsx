@@ -105,7 +105,7 @@ const LandingPage = () => {
 
     const handleInfra = () => {
       if (authenticated) {
-        if ((userRole.includes("admin") || userRole.includes("vendor") || userRole.includes("infra"))) {
+        if ((userRole.includes("admin") || userRole.includes("infra"))) {
           navigate("/mainpage/infraPod");
         } else {
           navigate("/notAuth");
@@ -117,7 +117,7 @@ const LandingPage = () => {
 
     const handleSustainability = () => {
       if (authenticated) {
-        if ((userRole.includes("admin") || userRole.includes("vendor") || userRole.includes("sustainability"))) {
+        if ((userRole.includes("admin") || userRole.includes("sustainability"))) {
           navigate("/mainpage/sustainability");
         } else {
           navigate("/notAuth");
