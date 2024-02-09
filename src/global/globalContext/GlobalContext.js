@@ -71,9 +71,9 @@ const GlobalContextProvider = ({ children }) => {
 
   const [logSelectedService, setLogSelectedService] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
-const [InfraActiveTab,setInfraActiveTab] = useState(0);
-const [InfraPodActiveTab,setInfraPodActiveTab] = useState(0);
-const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
+  const [InfraActiveTab,setInfraActiveTab] = useState(0);
+  const [InfraPodActiveTab,setInfraPodActiveTab] = useState(0);
+  const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
   const [keplerActiveTab, setKeplerActiveTab] = useState(0);
   const [apmActiveTab, setApmActiveTab] = useState(0);
   const [keplerCurrentPage, setKeplerCurrentPage] = useState(1);
@@ -89,7 +89,6 @@ const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [keycloackroles, setKeyClockRoles] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const [serviceListData, setServiceListData] = useState([]);
 
@@ -236,8 +235,6 @@ const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
         setUsername,
         password,
         setPassword,
-        // keycloackroles,
-        // setKeyClockRoles,
       }}
     >
       {children}
