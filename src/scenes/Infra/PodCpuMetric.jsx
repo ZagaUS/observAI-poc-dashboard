@@ -17,7 +17,10 @@ const PodCpuMetric = () => {
     const [containerPowerUsage, setContainerPowerUsage] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
 
-    const { lookBackVal,
+    const { 
+        InfraPodActiveTab,
+        setInfraPodActiveTab,
+        lookBackVal,
       selectedStartDate,
       selectedEndDate,
       needHistoricalData,
@@ -30,7 +33,7 @@ const PodCpuMetric = () => {
     const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
 
     const processMetricData = (podMetrics, podName) => {
-      console.log("Processing Metric Data",podName+ JSON.stringify(podMetrics));
+    //   console.log("Processing Metric Data",podName+ JSON.stringify(podMetrics));
         // const filteredData = podMetrics.filter((pod) => pod.podName === podName);
         const filteredData = podMetrics.filter((podMet) => `${podMet.namespaceName}/${podMet.pods[0]?.podName}` === podName);
         // console.log("filterdata+++",filteredData)
@@ -41,7 +44,7 @@ const PodCpuMetric = () => {
               // console.log("If condtion ", podData.pods[0].metrics);
                 return podData.pods[0].metrics.map((metric) => {
                   // console.log("timestamp ", metric.date + " " + metric.cpuUsage);
-                  console.log("Total Count ----------", podData.totalCount);
+                //   console.log("Total Count ----------", podData.totalCount);
                   setTotalPages(Math.ceil(podData.totalCount / 10));
                   // console.log("Total Count ----------", totalPages);
                     const timestamp = new Date(metric.date).getTime();
@@ -60,9 +63,9 @@ const PodCpuMetric = () => {
     };
 
     const createPodMetricData = (podMetrics) => {
-      console.log("------------createdPodMetricData----------", podMetrics)
+    //   console.log("------------createdPodMetricData----------", podMetrics)
         let podNames = podMetrics.map((item) => ({ podName: `${item.namespaceName}/${item.pods[0]?.podName}` }));
-        console.log("Pods: " , podNames)
+        // console.log("Pods: " , podNames[0].podName);
         setPodDisplayName(podNames);
         processMetricData(podMetrics, podNames[0].podName);
     };
@@ -73,7 +76,6 @@ const PodCpuMetric = () => {
           title: `Pod CPU Usage - ${selectedPodName}`,
           yaxis: "CPU Usage",
           totalCount: totalPages,
-          // type:"pod"
       }
   ];
 
@@ -104,6 +106,8 @@ const PodCpuMetric = () => {
     useEffect(() => {
 
       // setKeplerActiveTab(0);
+      setInfraPodActiveTab(0);
+      console.log("useeffect called------>PodMetrics");
       fetchPodMetrics();
       return () => {
         setErrorMessage("");
@@ -163,7 +167,22 @@ const handlePodClick = (clickedPodName) => {
                         {emptyMessage}
                     </Typography>
                 </div>
-            ) : (
+            ) : errorMessage ? (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        height: "80vh",
+
+                    }}
+                >
+                    <Typography variant="h6" align="center">
+                        {errorMessage}
+                    </Typography>
+                </div>
+            ):(
                 <div style={{
                     maxHeight: "73vh",
                     minWidth: "100%"

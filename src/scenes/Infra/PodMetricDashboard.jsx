@@ -4,10 +4,14 @@ import { Box, Button, useMediaQuery, useTheme } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 
 const PodMetricDashboard = ({ podData }) => {
-    console.log("podData------------", podData);
+
+
     const [filteredData, setFilteredData] = useState([]);
     const { isCollapsed, podCurrentPage, setPodCurrentPage } = useContext(GlobalContext);
   const theme = useTheme();
+
+
+
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery("(max-width: 1000px) and (orientation: landscape)");
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
@@ -16,6 +20,8 @@ const PodMetricDashboard = ({ podData }) => {
 
 
     useEffect(() => {
+        console.log("chart useeffect caleed ----->>>");
+        console.log(podData.data,"podData");
         if (podData) {
             setFilteredData(podData.data); // Set filtered data to the metrics of selected pod
         }
@@ -124,14 +130,6 @@ const PodMetricDashboard = ({ podData }) => {
         },
     },
   };
-
-//   const handleApplyButtonClick = (increment) => {
-//     if (containerPowerMetrics.type === "pod") {
-//         setKeplerCurrentPage((prevPage) => prevPage + increment);
-//     } else {
-//         setNodeCurrentPage((prevPage) => prevPage + increment);
-//     }
-// };
 
   const chartWidth = isCollapsed ? 'calc(100% - 10px)' : 'calc(100% - 10px)';
   const chartHeight = (isLandscape && isSmallScreen) ? "145%" : (isiphone ? "125%" : "88%");
