@@ -271,7 +271,12 @@ const ClusterInfo = () => {
                       <TableCell
                         sx={{ color: "white", backgroundColor: "#00888C" }}
                       >
-                        Instrumented
+                        Instrument Status
+                      </TableCell>
+                      <TableCell
+                        sx={{ color: "white", backgroundColor: "#00888C" }}
+                      >
+                        Action
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -283,6 +288,7 @@ const ClusterInfo = () => {
                           <TableCell>{item.namespaceName}</TableCell>
                           <TableCell>{item.createdTime}</TableCell>
                           <TableCell>{item.serviceName || "Nil"}</TableCell>
+                          <TableCell>{item.instrumented === "true"?"Instrumented":"Un-Instrumented"}</TableCell>
                           <TableCell>
                             {item.instrumented === "true" ? (
                               <Button

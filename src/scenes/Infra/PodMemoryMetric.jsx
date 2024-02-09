@@ -56,7 +56,7 @@ export const PodMemoryMetric = () => {
     const createPodMetricData = (podMetrics) => {
       console.log("createdPodMetricData", podMetrics)
         let podNames = podMetrics.map((item) => ({ podName: `${item.namespaceName}/${item.pods[0]?.podName}` }));
-        console.log("Pods: " , podNames)
+        console.log("Pods: " , podNames[0].podName)
         setPodDisplayName(podNames);
         processMetricData(podMetrics, podNames[0].podName);
     };
@@ -121,7 +121,7 @@ const handlePodClick = (clickedPodName) => {
     // console.log("Clicked pod data:", clickedPodData);
     // if (clickedPodData) {
         // setSelectedPodData(PodMetricData); 
-        processMetricData( clickedPodName); 
+        processMetricData(powerMetrics,clickedPodName); 
     // } else {
     //     console.error("Clicked pod data not found:", clickedPodName);
     // }
@@ -151,7 +151,22 @@ const {setInfraActiveTab,setInfraPodActiveTab } = useContext(GlobalContext);
                         {emptyMessage}
                     </Typography>
                 </div>
-            ) : (
+            ) :errorMessage ? (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        height: "80vh",
+
+                    }}
+                >
+                    <Typography variant="h6" align="center">
+                        {errorMessage}
+                    </Typography>
+                </div>
+            ): (
                 <div style={{
                     maxHeight: "73vh",
                     minWidth: "100%"
