@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
+  Box,
+  Collapse,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -7,10 +10,15 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TextField,
   Paper,
   Button,
+  Grid,
+  styled,
 } from "@mui/material";
-import { getAllRules } from "../../api/LoginApiService";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { getAllRules, updateServiceList } from "../../api/LoginApiService";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +31,103 @@ function createData(serviceName, rules) {
     serviceName,
     rules,
   };
+}
+
+function Row({ row }) {
+  const [open, setOpen] = useState(false);
+  // const [editable, setEditable] = useState(false);
+  // const [editedRules, setEditedRules] = useState(row.rules);
+  const [selectedRuleType, setSelectedRuleType] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("")
+  const [selectedRule, setSelectedRule] = useState(null);
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const StyledTableCell = styled(TableCell)(() => ({
+    borderBottom: "none",
+  }));
+
+  const handleOpenPopup = (rule) => {
+    setSelectedRule(rule);
+    setOpen(true);
+  };
+
+  // const handleRuleTypeClick = (ruleType) => {
+  //   setSelectedRuleType(ruleType === selectedRuleType ? null : ruleType);
+  // };
+
+  return (
+    <>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          <Typography variant="h6">{row.serviceName}</Typography>
+        </TableCell>
+
+        {/* <TableCell component="th" scope="row">
+          <Button variant="contained" color="primary">
+            Edit
+          </Button>
+        </TableCell> */}
+
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h4">Rules</Typography>
+              {row.rules ? (
+                  <Box sx={{ marginTop: 2 }}>
+                    <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+                      <Table size="small" aria-label="rule-details">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Rule Type</TableCell>
+                          <TableCell>Start Date</TableCell>
+                          <TableCell>Expiry Date</TableCell>
+                          <TableCell>Action</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {row.rules.map((rule, index) => (
+                        <TableRow key={index}>
+                          <StyledTableCell>{rule.ruleType}</StyledTableCell>
+                          <StyledTableCell>{rule.startDateTime}</StyledTableCell>
+                          <StyledTableCell>{rule.expiryDateTime}</StyledTableCell>
+                          <StyledTableCell>
+                            <Button variant="contained" color="primary" onClick={() => handleOpenPopup(rule)}>
+                              Open
+                            </Button>
+                          </StyledTableCell>
+                        </TableRow>
+                      ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                // ))
+              ) : (
+                <Typography variant="body2">No rules available.</Typography>
+              )}
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+
+      {selectedRule && (
+        <RuleDetailsPopup rule={selectedRule} serviceName={row.serviceName} />
+      )}
+    </>
+  );
 }
 
 const rows = [
@@ -71,17 +176,13 @@ const rows = [
   ]),
 ];
 
-const RulesDetails = ({ row}) => {
+const RulesDetails = () => {
   const navigate = useNavigate();
   const { serviceListData, setServiceListData } = useContext(GlobalContext)
   const [rows, setRows] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("")
-  const [selectedRule, setSelectedRule] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  console.log("rules----------", rows)
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const payload = {
@@ -115,9 +216,8 @@ const RulesDetails = ({ row}) => {
     navigate("/admin/addRules");
   };
 
-  const handleOpenPopup = (rule) => {
-    setSelectedRule(rule);
-    setOpen(true);
+  const handleServiceClick = (serviceName) => {
+    setSelectedService(serviceName);
   };
 
   return (
@@ -158,56 +258,28 @@ const RulesDetails = ({ row}) => {
             </Button>
           </div>
 
-          <TableContainer component={Paper} sx={{ maxHeight: "500px", marginTop:"10px", overflowY: "auto" }}>
-            <Table stickyHeader aria-label="sticky table">
+          <TableContainer component={Paper} sx={{marginTop:"10px"}}>
+            <Table aria-label="collapsible table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
-                    Rule Type
-                  </TableCell>
+                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }} />
                   <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
                     Service Name
                   </TableCell>
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
-                    Start Date
-                  </TableCell>
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
-                    Expiry Date
-                  </TableCell>
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
+                  {/* <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
                     Action
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) =>
-                  row.rules && row.rules.map((rule, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{rule.ruleType}</TableCell>
-                      <TableCell>{row.serviceName}</TableCell>
-                      <TableCell>{rule.startDateTime}</TableCell>
-                      <TableCell>{rule.expiryDateTime}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleOpenPopup(rule)}
-                        >
-                          Open
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-                      {selectedRule && (
-                        <RuleDetailsPopup rule={selectedRule} 
-                        // serviceName={row.serviceName}
-                            serviceName={rows.find(row => row.rules && row.rules.some(r => r === selectedRule))?.serviceName || '-'} 
-
-                         handleOpenPopup={handleOpenPopup} />
-                      )}
+                {rows.map((row) => (
+              <Row
+                key={row.serviceName}
+                row={row}
+                onClick={() => handleServiceClick(row.serviceName)}
+              />
+            ))}
               </TableBody>
-
             </Table>
           </TableContainer>
         </>

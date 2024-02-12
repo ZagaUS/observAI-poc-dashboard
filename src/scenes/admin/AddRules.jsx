@@ -527,7 +527,7 @@ const AddRules = () => {
                     onChange={(e) => setLogAlertSeverityText(e.target.value)}
                     style={{ width: "226px", marginBottom: "10px" }}
                   >
-                    <MenuItem>Select Log Alert Severity</MenuItem>
+                    <MenuItem value="" disabled>Select Log Alert Severity</MenuItem>
                     {severityTextRule.map((logSeverity, index) => (
                       <MenuItem key={index} value={logSeverity} sx={{ color: 'black' }}>
                         {logSeverity}
