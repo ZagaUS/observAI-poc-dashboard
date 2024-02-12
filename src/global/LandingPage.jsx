@@ -106,7 +106,7 @@ const LandingPage = () => {
     const handleInfra = () => {
       if (authenticated) {
         if ((userRole.includes("admin") || userRole.includes("vendor") || userRole.includes("infra"))) {
-          navigate("/mainpage/infraPod");
+          navigate("/mainpage/infraNode");
         } else {
           navigate("/notAuth");
         }

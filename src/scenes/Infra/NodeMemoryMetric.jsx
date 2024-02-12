@@ -94,7 +94,7 @@ const NodeMemoryMetric = () => {
     }
 
     useEffect(() => {
-        setInfraActiveTab(1);
+        setInfraActiveTab(0);
         setInfraNodeActiveTab(1);
 
         getNodeCpuMetrics();
