@@ -160,8 +160,9 @@ function App() {
             <Route path="dashboard/*" element={<DashboardSection />} />
             <Route path="sustainability/*" element={<SustainabilitySection />}/>
             <Route path="apm/*" element={<ApmSection />} />
-            <Route path="infraPod/*" element={<InfrastructurePodDetailsSection />} />
             <Route path="infraNode/*" element={<InfrastructureNodeDetailsSection />} />
+            <Route path="infraPod/*" element={<InfrastructurePodDetailsSection />} />
+           
           </Routes>
         </main>
       </div>

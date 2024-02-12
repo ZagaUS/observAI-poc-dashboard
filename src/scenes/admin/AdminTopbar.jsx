@@ -77,7 +77,7 @@ const AdminTopbar = () => {
           </Box>
 
           <div style={{ marginLeft: "5px", marginTop: "5px" }}>
-          {((location.pathname === "/admin/clusterDashboard" || "/admin/clusterDashboard/rulesInfo") && location.pathname !== "/admin/adminMainpage") && (
+          {((location.pathname === "/admin/clusterDashboard" || "/admin/clusterDashboard/rulesInfo") && (location.pathname !== "/admin/adminMainpage" && location.pathname !== "/admin/addRules")) && (
               <>
                 <span style={{ color: "white" }}>Home</span>
                 <IconButton aria-label="Account" onClick={handleClusterRoute}>

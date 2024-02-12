@@ -39,22 +39,22 @@ const LandingPage = () => {
   // Memoize the function to prevent unnecessary re-renders
   const memoizedCheckTokenExpiration = useMemo(() => checkTokenExpiration, []);
 
-    useEffect(() => {
-      const userDetails = localStorage.getItem("userInfo");
-      // checkTokenExpiration();
-      memoizedCheckTokenExpiration();
-  
-      if (userDetails) {
-        const user = JSON.parse(userDetails);
-        const checkRole = user.roles;
-        setAuthenticated(!!checkRole);
-        setUserRole(user.roles)
-      }
-    }, [memoizedCheckTokenExpiration]);
-  
-    const handleLogin = () => {
-      navigate("/login");
-    };
+  useEffect(() => {
+    const userDetails = localStorage.getItem("userInfo");
+    // checkTokenExpiration();
+    memoizedCheckTokenExpiration();
+
+    if (userDetails) {
+      const user = JSON.parse(userDetails);
+      const checkRole = user.roles;
+      setAuthenticated(!!checkRole);
+      setUserRole(user.roles);
+    }
+  }, [memoizedCheckTokenExpiration]);
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
 
   const handleLogout = async () => {
     // Check if the token is expired
@@ -91,55 +91,59 @@ const LandingPage = () => {
     setAuthenticated(false);
   };
 
-    const handleObservability = () => {
-      if (authenticated) {
-        if ((userRole.includes("admin") || userRole.includes("vendor") || userRole.includes("apm"))) {
-          navigate("/mainpage/dashboard");
-        } else {
-          navigate("/notAuth");
-        }
+  const handleObservability = () => {
+    if (authenticated) {
+      if (
+        userRole.includes("admin") ||
+        userRole.includes("vendor") ||
+        userRole.includes("apm")
+      ) {
+        navigate("/mainpage/dashboard");
       } else {
-        navigate("/login");
+        navigate("/notAuth");
       }
+    } else {
+      navigate("/login");
     }
+  };
 
-    const handleInfra = () => {
-      if (authenticated) {
-        if ((userRole.includes("admin") || userRole.includes("infra"))) {
-          navigate("/mainpage/infraPod");
-        } else {
-          navigate("/notAuth");
-        }
+  const handleInfra = () => {
+    if (authenticated) {
+      if (userRole.includes("admin") || userRole.includes("infra")) {
+        navigate("/mainpage/infraNode");
       } else {
-        navigate("/login");
+        navigate("/notAuth");
       }
+    } else {
+      navigate("/login");
     }
+  };
 
-    const handleSustainability = () => {
-      if (authenticated) {
-        if ((userRole.includes("admin") || userRole.includes("sustainability"))) {
-          navigate("/mainpage/sustainability");
-        } else {
-          navigate("/notAuth");
-        }
+  const handleSustainability = () => {
+    if (authenticated) {
+      if (userRole.includes("admin") || userRole.includes("sustainability")) {
+        navigate("/mainpage/sustainability");
       } else {
-        navigate("/login");
+        navigate("/notAuth");
       }
-    }  
-
-    const handleAdminPage = () => {
-      // navigate(authenticated ? "/admin" : "/notAuth");
-      if (authenticated) {
-        // If the user is authenticated
-        if (userRole.includes("admin") ) {
-          navigate("/admin/adminMainpage");
-        } else {
-          navigate("/notAuth");
-        }
-      } else {
-        navigate("/login");
-      }
+    } else {
+      navigate("/login");
     }
+  };
+
+  const handleAdminPage = () => {
+    // navigate(authenticated ? "/admin" : "/notAuth");
+    if (authenticated) {
+      // If the user is authenticated
+      if (userRole.includes("admin")) {
+        navigate("/admin/adminMainpage");
+      } else {
+        navigate("/notAuth");
+      }
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="container">
@@ -155,7 +159,14 @@ const LandingPage = () => {
             marginBottom: "70px",
           }}
         >
-          <div style={{ flex: 1, display: "flex", justifyContent: "center",paddingLeft:"75px" }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              paddingLeft: "75px",
+            }}
+          >
             <Box
               component="img"
               sx={{
@@ -177,11 +188,11 @@ const LandingPage = () => {
               // marginRight:"10px"
             }}
           >
-            <div style={{ marginTop: "8px"}}>
-              {authenticated &&userInfo? (
+            <div style={{ marginTop: "8px" }}>
+              {authenticated && userInfo ? (
                 // Display username only when authenticated
                 <Typography sx={{ color: "#FFF" }} variant="h6">
-                   {userInfo.username}
+                  {userInfo.username}
                 </Typography>
               ) : (
                 <Typography sx={{ color: "#FFF" }} variant="h6">
@@ -192,11 +203,23 @@ const LandingPage = () => {
 
             {authenticated ? (
               <IconButton onClick={handleLogout}>
-                <LogoutIcon style={{ fontSize: "20px", color: "#FFF" ,marginRight:"15px"}} />
+                <LogoutIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "#FFF",
+                    marginRight: "15px",
+                  }}
+                />
               </IconButton>
             ) : (
               <IconButton onClick={handleLogin}>
-                <LoginIcon style={{ fontSize: "20px", color: "#FFF",marginRight:"15px" }} />
+                <LoginIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "#FFF",
+                    marginRight: "15px",
+                  }}
+                />
               </IconButton>
             )}
           </div>
@@ -213,7 +236,10 @@ const LandingPage = () => {
             marginTop: "-50px",
           }}
         >
-          <Typography variant="h4" style={{ color: "#FFF", fontWeight: "bold" }}>
+          <Typography
+            variant="h4"
+            style={{ color: "#FFF", fontWeight: "bold" }}
+          >
             Knative Observability Platform - One Place where you can observe
             both Application and Infrastructure
           </Typography>
