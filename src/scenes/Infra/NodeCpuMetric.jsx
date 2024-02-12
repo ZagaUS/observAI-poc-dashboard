@@ -130,7 +130,7 @@ const NodeCpuMetric = () => {
   }
 
     useEffect(() => {
-        setInfraActiveTab(1);
+        setInfraActiveTab(0);
         setInfraNodeActiveTab(0);
         
         getNodeCpuMetrics();

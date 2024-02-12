@@ -94,7 +94,7 @@ export const PodMemoryMetric = () => {
 
 
     useEffect(() => {
-      setInfraActiveTab(0);
+      setInfraActiveTab(1);
       setInfraPodActiveTab(1);
       setLoading(true);
       
