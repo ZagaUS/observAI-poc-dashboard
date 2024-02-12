@@ -1,0 +1,23 @@
+/* styles.css */
+/* .custom-text-field {
+  height: 30px !important;
+  padding: 5px !important;
+} */
+
+.custom-input {
+  width: 320px;
+  height: 38px;
+  padding: 13px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* .custom-input:focus {
+  outline: none;
+  border-color: #007bff; /* Example focus color */
+/* } */
+*/ .custom-input:hover {
+  border-color: black; /* Change border color on hover */
+}
