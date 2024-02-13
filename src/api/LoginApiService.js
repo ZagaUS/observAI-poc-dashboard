@@ -3,7 +3,7 @@ import axios from "axios";
 const loginURL = process.env.REACT_APP_APIURL_AUTH;
 const CLIENT_SECRET = process.env.REACT_APP_APIURL_CLIENT_SECRET;
 const SSO_BASE_URL = process.env.REACT_APP_APIURL_SSO;
-const CLIENT_ID = "react-auth";
+const CLIENT_ID = "React-auth";
 const GRANT_TYPE = "password";
 const openshiftLoginURL = process.env.REACT_APP_APIURL_OPENSHIFT;
 
