@@ -8,12 +8,13 @@ import { MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, T
 import { updateServiceList } from "../../api/LoginApiService";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, toISOString } from 'date-fns';
 
 const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
     const [open, setOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedRules, setEditedRules] = useState({...rule});
+    const [loading, setLoading] = useState(true);
     const severityChanges = ['ERROR', 'SEVERE', 'WARN', 'INFO']
     const constraints = ['greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual']
     const constraint = ['present', 'notpresent']
@@ -21,17 +22,27 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    useEffect(() => {
-        setOpen(true);
-    }, [rule]);
-
     const handleClose = () => {
         setOpen(false);
         setIsEditing(false);
-        if (onClose) {
-          onClose();
-        }
+        // if (onClose) {
+        //   onClose();
+        // }
     };
+
+  //   const handleClose = () => {
+  //     try {
+  //       setLoading(true);
+  //       setOpen(false);
+  //       setIsEditing(false);
+  //       if (onClose) {
+  //         onClose();
+  //       }
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setLoading(false);
+  //     }      
+  // };
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -52,25 +63,30 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
           }
     };
 
-    const handleFieldChange = (e) => {
-      const { name, value } = e.target;
+    const handleFieldChange = (value, name) => {
       let newValue;
-      // if (name === 'severityText') {
-      //     newValue = value.split(',');
-      //     newValue = newValue.map(text => text.trim().toUpperCase());
-      //     // newValue = value.split(',').map(text => text.trim().toUpperCase());
-      // } else {
-      //     newValue = value;
-      // }
-      newValue = value;
+
+      if (name === 'startDateTime') {
+        newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
+      } else if (name === 'expiryDateTime') {
+        newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
+      } else {
+          newValue = value;
+      }
+  
       setEditedRules(prevState => ({
           ...prevState,
           [name]: newValue,
       }));
-  };
+    };
+
+    useEffect(() => {
+      setOpen(true);
+      setIsEditing(false);
+  }, [rule]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open}>
       <DialogTitle>{`Rule Details - ${serviceName} - ${rule.ruleType}`}</DialogTitle>
       <DialogContent>
 
@@ -95,11 +111,16 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                 <TableCell>Start Date</TableCell>
                 <TableCell>
                     {isEditing ? (
-                        <TextField
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
                         name="startDateTime"
-                        value={editedRules.startDateTime}
-                        onChange={handleFieldChange}
+                        // value={editedRules.startDateTime}
+                        value={editedRules.startDateTime ? new Date(editedRules.startDateTime) : null}
+                        // onChange={handleFieldChange}
+                        onChange={(value) => handleFieldChange(value, 'startDateTime')}
+                        disableFuture
                         />
+                      </LocalizationProvider>
                     ) : (
                         rule.startDateTime
                     )}
@@ -109,11 +130,16 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                 <TableCell>Expiry Date</TableCell>
                 <TableCell>
                     {isEditing ? (
-                        <TextField
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
                             name="expiryDateTime"
-                            value={editedRules.expiryDateTime}
-                            minDate={editedRules.startDateTime}
-                            onChange={handleFieldChange}                        />
+                            // value={editedRules.expiryDateTime}
+                            value={editedRules.expiryDateTime ? new Date(editedRules.expiryDateTime) : null}
+                            minDate={editedRules.startDateTime ? new Date(editedRules.startDateTime) : null}
+                            // onChange={handleFieldChange}
+                            onChange={(value) => handleFieldChange(value, 'expiryDateTime')}
+                        />
+                      </LocalizationProvider>
                     ) : (
                         rule.expiryDateTime
                     )}
@@ -130,7 +156,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                                 name="duration"
                                 type="number"
                                 value={editedRules.duration}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'duration')}
                             />
                         ) : (
                             rule.duration
@@ -144,7 +171,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                             <Select
                                 name="durationConstraint"
                                 value={editedRules.durationConstraint}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'durationConstraint')}
                             >
                               <MenuItem value="" disabled>Select Rule Type</MenuItem>
                               {constraints.map((constraintDuration, index) => (
@@ -165,7 +193,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                             <Select
                                 name="tracecAlertSeverityText"
                                 value={editedRules.tracecAlertSeverityText}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'tracecAlertSeverityText')}
                             >
                               <MenuItem value="" disabled>Select Trace Alert Severity</MenuItem>
                               {severityTextRule.map((traceSeverity, index) => (
@@ -192,7 +221,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                                 name="memoryLimit"
                                 type="number"
                                 value={editedRules.memoryLimit}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'memoryLimit')}
                             />
                         ) : (
                             rule.memoryLimit
@@ -206,7 +236,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                         <Select
                           name="memoryConstraint"
                           value={editedRules.memoryConstraint}
-                          onChange={handleFieldChange}
+                          // onChange={handleFieldChange}
+                          onChange={(event) => handleFieldChange(event.target.value, 'memoryConstraint')}
                         >
                           <MenuItem value="" disabled>Select Memory Constraint</MenuItem>
                           {constraints.map((constraintMemory, index) => (
@@ -227,7 +258,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                         <Select
                           name="memoryAlertSeverityText"
                           value={editedRules.memoryAlertSeverityText}
-                          onChange={handleFieldChange}
+                          // onChange={handleFieldChange}
+                          onChange={(event) => handleFieldChange(event.target.value, 'memoryAlertSeverityText')}
                         >
                           <MenuItem>Select Memory Alert Severity</MenuItem>
                           {severityTextRule.map((memorySeverity, index) => (
@@ -249,7 +281,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                           name="cpuLimit"
                           type="number"
                           value={editedRules.cpuLimit}
-                          onChange={handleFieldChange}
+                          // onChange={handleFieldChange}
+                          onChange={(event) => handleFieldChange(event.target.value, 'cpuLimit')}
                         />
                       ) : (
                         rule.cpuLimit
@@ -263,7 +296,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                         <Select
                           name="cpuConstraint"
                           value={editedRules.cpuConstraint}
-                          onChange={handleFieldChange}
+                          // onChange={handleFieldChange}
+                          onChange={(event) => handleFieldChange(event.target.value, 'cpuConstraint')}
                         >
                          <MenuItem value="" disabled>Select CPU Constraint</MenuItem>
                         {constraints.map((constraintCpu, index) => (
@@ -284,7 +318,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                         <Select
                           name="cpuAlertSeverityText"
                           value={editedRules.cpuAlertSeverityText}
-                          onChange={handleFieldChange}
+                          // onChange={handleFieldChange}
+                          onChange={(event) => handleFieldChange(event.target.value, 'cpuAlertSeverityText')}
                         >
                           <MenuItem>Select CPU Alert Severity</MenuItem>
                           {severityTextRule.map((cpuSeverity, index) => (
@@ -311,7 +346,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                                 multiple
                                 name="severityText"
                                 value={editedRules.severityText}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'severityText')}
                             >
                               <MenuItem value="" disabled>Select Severity Text</MenuItem>
                               {severityChanges.map((severityTextSelect, index) => (
@@ -332,7 +368,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                             <Select
                                 name="severityConstraint"
                                 value={editedRules.severityConstraint}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'severityConstraint')}
                             >
                               <MenuItem value="" disabled>Select Severity Constraint</MenuItem>
                               {constraint.map((constraintSeverity, index) => (
@@ -353,7 +390,8 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
                             <Select
                                 name="logAlertSeverityText"
                                 value={editedRules.logAlertSeverityText}
-                                onChange={handleFieldChange}
+                                // onChange={handleFieldChange}
+                                onChange={(event) => handleFieldChange(event.target.value, 'logAlertSeverityText')}
                             >
                               <MenuItem value="" disabled>Select Log Alert Severity</MenuItem>
                               {severityTextRule.map((logSeverity, index) => (

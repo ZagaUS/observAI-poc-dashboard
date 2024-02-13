@@ -1,11 +1,13 @@
 import {
   Box,
   Button,
+  Chip,
   Container,
   IconButton,
   MenuItem,
   Paper,
   Select,
+  Stack,
   TextField,
   Typography,
   useMediaQuery,
@@ -202,14 +204,33 @@ const AddRules = () => {
     clearFields();
   }, [ruleType]);
 
+  const handleDelete = () => {
+    console.log("Delete Icon Clicked!")
+    setStartDateTime("");
+    setExpiryDateTime("");
+    setSelectedService("");
+    setDuration(0);
+    setDurationConstraint("");
+    setTracecAlertSeverityText("");
+    setMemoryLimit(0);
+    setMemoryConstraint("");
+    setCpuLimit(0.0);
+    setCpuConstraint("");
+    setMemoryAlertSeverityText("");
+    setCpuAlertSeverityText("");
+    setSeverityText([]);
+    setSeverityConstraint("");
+    setLogAlertSeverityText("");
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column"}}>
       <div>
         <IconButton onClick={handleBack}>
-          <ArrowBackIcon />
-          <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
+          <ArrowBackIcon variant="outlined" />
+          {/* <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
             Back
-          </Typography>
+          </Typography> */}
         </IconButton>
       </div>
       
@@ -366,7 +387,6 @@ const AddRules = () => {
                     maxHeight: 38,
                   }}
                   value={selectedService}
-                  // onChange={handleSelectedServiceChange}
                   onChange={(e) => setSelectedService(e.target.value)}
                   style={{
                     width: "320px",
@@ -419,15 +439,6 @@ const AddRules = () => {
 
               {ruleType === "trace" && (
                 <>
-                  {/* <TextField
-                  // className="custom-text-field"
-                  required
-                  id="filled-required"
-                  label="Duration"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  variant="outlined"
-                /> */}
                   <div
                     style={{
                       display: "flex",
@@ -534,14 +545,6 @@ const AddRules = () => {
 
               {ruleType === "metric" && (
                 <>
-                  {/* <TextField
-                    required
-                    id="filled-required"
-                    label="Memory Limit"
-                    value={memoryLimit}
-                    onChange={(e) => setMemoryLimit(e.target.value)}
-                    variant="outlined"
-                  /> */}
                   <div
                     style={{
                       display: "flex",
@@ -642,15 +645,6 @@ const AddRules = () => {
                       ))}
                     </Select>
                   </div>
-
-                  {/* <TextField
-                    required
-                    id="filled-required"
-                    label="CPU Limit"
-                    value={cpuLimit}
-                    onChange={(e) => setCpuLimit(e.target.value)}
-                    variant="outlined"
-                  /> */}
 
                   <div
                     style={{
@@ -871,20 +865,26 @@ const AddRules = () => {
               )}
               {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{
-                  marginTop: 2,
-                  backgroundColor: "#091365",
-                  color: "white",
-                  "&:hover": { backgroundColor: "#091365" },
-                }}
-                onClick={handleAddRules}
-              >
-                Submit
-              </Button>
+              <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
+                <Stack sx={{ marginRight: "10px" }}>
+                  <Chip label="Cancel" variant="outlined" onDelete={handleDelete} />
+                </Stack>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    // marginTop: 2,
+                    backgroundColor: "#091365",
+                    color: "white",
+                    "&:hover": { backgroundColor: "#091365" },
+                  }}
+                  onClick={handleAddRules}
+                >
+                  Submit
+                </Button>
+              </div>
             </div>
           </Box>
         </Paper>
