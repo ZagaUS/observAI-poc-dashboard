@@ -203,18 +203,22 @@ const AddRules = () => {
   }, [ruleType]);
 
   return (
-    <div>
-      <IconButton onClick={handleBack}>
-        <ArrowBackIcon />
-        <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
-          Back
-        </Typography>
-      </IconButton>
+    <div style={{ display: "flex", flexDirection: "column"}}>
+      <div>
+        <IconButton onClick={handleBack}>
+          <ArrowBackIcon />
+          <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
+            Back
+          </Typography>
+        </IconButton>
+      </div>
+      
+      <div>
       <Container
         component="main"
         maxWidth="xs"
         sx={{
-          // marginTop: "px",
+          marginBottom: "5px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -229,7 +233,7 @@ const AddRules = () => {
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "center",
-            height: "82vh",
+            height: "84vh",
             width: "500px",
           }}
         >
@@ -443,7 +447,7 @@ const AddRules = () => {
                       className="custom-input"
                       required
                       id="filled-required"
-                      type="text"
+                      type="number"
                       value={duration}
                       onChange={(e) => setDuration(e.target.value)}
                     />
@@ -530,17 +534,42 @@ const AddRules = () => {
 
               {ruleType === "metric" && (
                 <>
-                  <TextField
+                  {/* <TextField
                     required
                     id="filled-required"
                     label="Memory Limit"
                     value={memoryLimit}
                     onChange={(e) => setMemoryLimit(e.target.value)}
                     variant="outlined"
-                  />
+                  /> */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      marginLeft: "5px",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: "12px",
+                      }}
+                    >
+                      Memory Limit
+                    </label>
+                    <input
+                      className="custom-input"
+                      required
+                      id="filled-required"
+                      type="number"
+                      value={memoryLimit}
+                      onChange={(e) => setMemoryLimit(e.target.value)}
+                    />
+                  </div>
 
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -555,11 +584,11 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={memoryConstraint}
                       onChange={(e) => setMemoryConstraint(e.target.value)}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem value="" disabled>
                         Select Memory Constraint
@@ -578,6 +607,7 @@ const AddRules = () => {
 
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -592,13 +622,13 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={memoryAlertSeverityText}
                       onChange={(e) =>
                         setMemoryAlertSeverityText(e.target.value)
                       }
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem>Select Memory Alert Severity</MenuItem>
                       {severityTextRule.map((memorySeverity, index) => (
@@ -613,17 +643,43 @@ const AddRules = () => {
                     </Select>
                   </div>
 
-                  <TextField
+                  {/* <TextField
                     required
                     id="filled-required"
                     label="CPU Limit"
                     value={cpuLimit}
                     onChange={(e) => setCpuLimit(e.target.value)}
                     variant="outlined"
-                  />
+                  /> */}
 
                   <div
                     style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      marginLeft: "5px",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: "12px",
+                      }}
+                    >
+                      CPU Limit
+                    </label>
+                    <input
+                      className="custom-input"
+                      required
+                      id="filled-required"
+                      type="number"
+                      value={cpuLimit}
+                      onChange={(e) => setCpuLimit(e.target.value)}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -638,11 +694,11 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={cpuConstraint}
                       onChange={(e) => setCpuConstraint(e.target.value)}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem value="" disabled>
                         Select CPU Constraint
@@ -661,6 +717,7 @@ const AddRules = () => {
 
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -675,11 +732,11 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={cpuAlertSeverityText}
                       onChange={(e) => setCpuAlertSeverityText(e.target.value)}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem>Select CPU Alert Severity</MenuItem>
                       {severityTextRule.map((cpuSeverity, index) => (
@@ -700,6 +757,7 @@ const AddRules = () => {
                 <>
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -714,12 +772,12 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       multiple
                       value={severityText}
                       onChange={handleSeverity}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem value="" disabled>
                         Select Severity Text
@@ -738,6 +796,7 @@ const AddRules = () => {
 
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -752,11 +811,11 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={severityConstraint}
                       onChange={(e) => setSeverityConstraint(e.target.value)}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
                       <MenuItem value="" disabled>
                         Select Severity Constraint
@@ -775,6 +834,7 @@ const AddRules = () => {
 
                   <div
                     style={{
+                      marginTop: "3px",
                       display: "flex",
                       flexDirection: "column",
                       marginLeft: "5px",
@@ -789,13 +849,13 @@ const AddRules = () => {
                     </label>
                     <Select
                       sx={{
-                        maxHeight: 35,
+                        maxHeight: 38,
                       }}
                       value={logAlertSeverityText}
                       onChange={(e) => setLogAlertSeverityText(e.target.value)}
-                      style={{ width: "226px", marginBottom: "10px" }}
+                      style={{ width: "320px", marginBottom: "10px" }}
                     >
-                      <MenuItem>Select Log Alert Severity</MenuItem>
+                      <MenuItem value="" disabled>Select Log Alert Severity</MenuItem>
                       {severityTextRule.map((logSeverity, index) => (
                         <MenuItem
                           key={index}
@@ -829,6 +889,7 @@ const AddRules = () => {
           </Box>
         </Paper>
       </Container>
+      </div>
     </div>
   );
 };
