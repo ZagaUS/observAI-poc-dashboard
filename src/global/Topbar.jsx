@@ -34,7 +34,10 @@ import { useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { isTokenExpired, logout } from "./AuthMechanism";
 import { useTokenExpirationCheck } from "./TokenExpiry";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
+import { GiPortal } from "react-icons/gi";
+import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
+import WindowIcon from "@mui/icons-material/Window";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -291,7 +294,13 @@ function Topbar() {
             <IconButton style={{ marginLeft: "5px" }}>
               <Person style={{ fontSize: "20px", color: "#FFF" }} />
             </IconButton>
-            <span style={{ color: colors.tabColor[500], marginRight: "5px",paddingTop:"5px" }}>
+            <span
+              style={{
+                color: colors.tabColor[500],
+                marginRight: "5px",
+                paddingTop: "5px",
+              }}
+            >
               User: {user}
             </span>
             <IconButton onClick={handleIconClick}>
@@ -343,13 +352,11 @@ function Topbar() {
                                   lineHeight: "1",
                                   backgroundColor: "white",
                                   // color:"black"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
+                                  color: data.alertData.includes("CRITICAL")
                                     ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
+                                    : data.alertData.includes("WARNING")
+                                    ? "yellow"
+                                    : "black",
                                 }}
                               >
                                 {data.alertData}
@@ -399,13 +406,11 @@ function Topbar() {
                                   lineHeight: "1",
                                   backgroundColor: "white",
                                   // color:"red"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
+                                  color: data.alertData.includes("CRITICAL")
                                     ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
+                                    : data.alertData.includes("WARNING")
+                                    ? "yellow"
+                                    : "black",
                                 }}
                               >
                                 {data.alertData}
@@ -455,13 +460,11 @@ function Topbar() {
                                   lineHeight: "1",
                                   backgroundColor: "white",
                                   // color:"black"
-                                  color:data.alertData.includes(
-                                    "CRITICAL"
-                                  )
+                                  color: data.alertData.includes("CRITICAL")
                                     ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
+                                    : data.alertData.includes("WARNING")
+                                    ? "yellow"
+                                    : "black",
                                 }}
                               >
                                 {data.alertData}
@@ -584,10 +587,16 @@ function Topbar() {
                 )}
               </>
             </Popover> */}
-            <div style={{ marginLeft: "5px",marginTop:"5px" }}>
-                <span style={{color:"white"}}>Portal</span>
-                <IconButton aria-label="Account" onClick={handleHomepage}>
-                <HomeIcon style={{ fontSize: "20px", color: "#FFF",marginBottom:"5px" }} />
+            <div style={{ marginLeft: "5px", marginTop: "5px" }}>
+              <span style={{ color: "white" }}>Portal</span>
+              <IconButton aria-label="Account" onClick={handleHomepage}>
+                <WindowIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "#FFF",
+                    marginBottom: "5px",
+                  }}
+                />
               </IconButton>
             </div>
           </Toolbar>

@@ -10,6 +10,11 @@ import {
 import logo from "../../assets/zaga-logedit.jpg";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
+import { GiPortal } from "react-icons/gi";
+import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
+import WindowIcon from "@mui/icons-material/Window";
+import HomeMaxIcon from "@mui/icons-material/HomeMax";
+
 const AdminTopbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,8 +23,8 @@ const AdminTopbar = () => {
   };
 
   const handleClusterRoute = () => {
-    navigate("/admin/adminMainpage")
-  }
+    navigate("/admin/adminMainpage");
+  };
 
   return (
     <div>
@@ -66,7 +71,7 @@ const AdminTopbar = () => {
                 borderLeft: "4px solid white",
                 paddingLeft: "20px",
                 fontWeight: "bold",
-                paddingTop:"15px"
+                paddingTop: "15px",
               }}
               variant="h3"
               fontWeight="500"
@@ -77,20 +82,26 @@ const AdminTopbar = () => {
           </Box>
 
           <div style={{ marginLeft: "5px", marginTop: "5px" }}>
-          {((location.pathname === "/admin/clusterDashboard" || "/admin/clusterDashboard/rulesInfo") && location.pathname !== "/admin/adminMainpage") && (
-              <>
-                <span style={{ color: "white" }}>Home</span>
-                <IconButton aria-label="Account" onClick={handleClusterRoute}>
-                  <HomeIcon
-                    style={{ fontSize: "20px", color: "#FFF", marginBottom: "5px" }}
-                  />
-                </IconButton>
-              </>
-            )}
+            {(location.pathname === "/admin/clusterDashboard" ||
+              "/admin/clusterDashboard/rulesInfo") &&
+              location.pathname !== "/admin/adminMainpage" && (
+                <>
+                  <span style={{ color: "white" }}>Home</span>
+                  <IconButton aria-label="Account" onClick={handleClusterRoute}>
+                    <HomeIcon
+                      style={{
+                        fontSize: "20px",
+                        color: "#FFF",
+                        marginBottom: "5px",
+                      }}
+                    />
+                  </IconButton>
+                </>
+              )}
 
             <span style={{ color: "white" }}>Portal</span>
             <IconButton aria-label="Account" onClick={handleHomepage}>
-              <HomeIcon
+              <WindowIcon
                 style={{ fontSize: "20px", color: "#FFF", marginBottom: "5px" }}
               />
             </IconButton>
