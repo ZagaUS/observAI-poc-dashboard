@@ -34,7 +34,10 @@ import { useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { isTokenExpired, logout } from "./AuthMechanism";
 import { useTokenExpirationCheck } from "./TokenExpiry";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
+import { GiPortal } from "react-icons/gi";
+import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
+import WindowIcon from "@mui/icons-material/Window";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -183,210 +186,212 @@ function Topbar() {
               <Person style={{ fontSize: "20px", color: "#FFF" }} />
             </IconButton>
             <span style={{ color: colors.tabColor[500] }}>User: {user}</span> */}
+              <>
+                {location.pathname !== "/mainpage/sustainability" &&
+                  location.pathname !== "/mainpage/sustainability/node" &&
+                  location.pathname !== "/mainpage/infraPod" &&
+                  location.pathname !== "/mainpage/infraPod/podMemory" &&
+                  location.pathname !== "/mainpage/infraNode" &&
+                  location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                    <IconButton onClick={handleIconClick}>
+                      <Badge badgeContent={notificationCount} color="error">
+                        <NotificationImportantIcon
+                          style={{ fontSize: "20px", color: "#FFF" }}
+                        />
+                      </Badge>
+                    </IconButton>
+                  )}
 
-            <>
-            {(location.pathname !== "/mainpage/sustainability" && 
-              location.pathname !== "/mainpage/sustainability/node" &&
-              location.pathname !== "/mainpage/infraPod" &&
-              location.pathname !== "/mainpage/infraPod/podMemory" &&
-              location.pathname !== "/mainpage/infraNode" &&
-              location.pathname !== "/mainpage/infraNode/nodeMemory") && (
-            <IconButton onClick={handleIconClick}>
-              <Badge badgeContent={notificationCount} color="error">
-                <NotificationImportantIcon
-                  style={{ fontSize: "20px", color: "#FFF" }}
-                />
-              </Badge>
-            </IconButton>
-            )}
+                {location.pathname !== "/mainpage/sustainability" &&
+                  location.pathname !== "/mainpage/sustainability/node" &&
+                  location.pathname !== "/mainpage/infraPod" &&
+                  location.pathname !== "/mainpage/infraPod/podMemory" &&
+                  location.pathname !== "/mainpage/infraNode" &&
+                  location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                    <Popover
+                      id={id}
+                      open={open}
+                      anchorEl={anchorEl}
+                      onClose={handleCloseModal}
+                      style={{ top: "28px", right: "0%", left: "-60px" }}
+                      PaperProps={{
+                        style: {
+                          borderRadius: "10px",
+                        },
+                      }}
+                    >
+                      <ListItem>
+                        <Accordion
+                          style={{
+                            width: "430px",
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? "gray"
+                                : colors.primary[400],
+                          }}
+                        >
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h5" color={"#fff"}>
+                              Metric Alerts
+                            </Typography>
+                          </AccordionSummary>
 
-            {(location.pathname !== "/mainpage/sustainability" && 
-              location.pathname !== "/mainpage/sustainability/node" &&
-              location.pathname !== "/mainpage/infraPod" &&
-              location.pathname !== "/mainpage/infraPod/podMemory" &&
-              location.pathname !== "/mainpage/infraNode" &&
-              location.pathname !== "/mainpage/infraNode/nodeMemory") && (
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleCloseModal}
-              style={{ top: "28px", right: "0%", left: "-60px" }}
-              PaperProps={{
-                style: {
-                  borderRadius: "10px",
-                },
-              }}
-            >
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Metric Alerts
-                    </Typography>
-                  </AccordionSummary>
-
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.metric.length > 0 ? (
-                        <>
-                          {alertResponse.metric.map((data, index) => (
-                            <div key={`metric-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"black"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.metric.length - 1 && (
-                                <Divider />
+                          <AccordionDetails>
+                            <FormGroup>
+                              {alertResponse.metric.length > 0 ? (
+                                <>
+                                  {alertResponse.metric.map((data, index) => (
+                                    <div key={`metric-${index}`}>
+                                      <Typography
+                                        variant="h6"
+                                        sx={{
+                                          p: 2,
+                                          lineHeight: "1",
+                                          backgroundColor: "white",
+                                          // color:"black"
+                                          color: data.alertData.includes(
+                                            "CRITICAL"
+                                          )
+                                            ? "red"
+                                            : data.alertData.includes("WARNING")
+                                            ? "yellow"
+                                            : "black",
+                                        }}
+                                      >
+                                        {data.alertData}
+                                      </Typography>
+                                      {index !==
+                                        alertResponse.metric.length - 1 && (
+                                        <Divider />
+                                      )}
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <div style={{ color: "#000" }}>
+                                  There is no metric alert
+                                </div>
                               )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no metric alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                            </FormGroup>
+                          </AccordionDetails>
+                        </Accordion>
+                      </ListItem>
 
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Trace Alerts
-                    </Typography>
-                  </AccordionSummary>
+                      <ListItem>
+                        <Accordion
+                          style={{
+                            width: "430px",
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? "gray"
+                                : colors.primary[400],
+                          }}
+                        >
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h5" color={"#fff"}>
+                              Trace Alerts
+                            </Typography>
+                          </AccordionSummary>
 
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.trace.length > 0 ? (
-                        <>
-                          {alertResponse.trace.map((data, index) => (
-                            <div key={`trace-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"red"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.trace.length - 1 && (
-                                <Divider />
+                          <AccordionDetails>
+                            <FormGroup>
+                              {alertResponse.trace.length > 0 ? (
+                                <>
+                                  {alertResponse.trace.map((data, index) => (
+                                    <div key={`trace-${index}`}>
+                                      <Typography
+                                        variant="h6"
+                                        sx={{
+                                          p: 2,
+                                          lineHeight: "1",
+                                          backgroundColor: "white",
+                                          // color:"red"
+                                          color: data.alertData.includes(
+                                            "CRITICAL"
+                                          )
+                                            ? "red"
+                                            : data.alertData.includes("WARNING")
+                                            ? "yellow"
+                                            : "black",
+                                        }}
+                                      >
+                                        {data.alertData}
+                                      </Typography>
+                                      {index !==
+                                        alertResponse.trace.length - 1 && (
+                                        <Divider />
+                                      )}
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <div style={{ color: "#000" }}>
+                                  There is no trace alert
+                                </div>
                               )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no trace alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                            </FormGroup>
+                          </AccordionDetails>
+                        </Accordion>
+                      </ListItem>
 
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Log Alerts
-                    </Typography>
-                  </AccordionSummary>
+                      <ListItem>
+                        <Accordion
+                          style={{
+                            width: "430px",
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? "gray"
+                                : colors.primary[400],
+                          }}
+                        >
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h5" color={"#fff"}>
+                              Log Alerts
+                            </Typography>
+                          </AccordionSummary>
 
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.log.length > 0 ? (
-                        <>
-                          {alertResponse.log.map((data, index) => (
-                            <div key={`log-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"black"
-                                  color:data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.log.length - 1 && (
-                                <Divider />
+                          <AccordionDetails>
+                            <FormGroup>
+                              {alertResponse.log.length > 0 ? (
+                                <>
+                                  {alertResponse.log.map((data, index) => (
+                                    <div key={`log-${index}`}>
+                                      <Typography
+                                        variant="h6"
+                                        sx={{
+                                          p: 2,
+                                          lineHeight: "1",
+                                          backgroundColor: "white",
+                                          // color:"black"
+                                          color: data.alertData.includes(
+                                            "CRITICAL"
+                                          )
+                                            ? "red"
+                                            : data.alertData.includes("WARNING")
+                                            ? "yellow"
+                                            : "black",
+                                        }}
+                                      >
+                                        {data.alertData}
+                                      </Typography>
+                                      {index !==
+                                        alertResponse.log.length - 1 && (
+                                        <Divider />
+                                      )}
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <div style={{ color: "#000" }}>
+                                  There is no log alert
+                                </div>
                               )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no log alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                            </FormGroup>
+                          </AccordionDetails>
+                        </Accordion>
+                      </ListItem>
 
-              {/* <div
+                      {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "space-around",
@@ -423,16 +428,21 @@ function Topbar() {
                   ))}
                 </>
               )} */}
-            </Popover>
-            )}
-            </>
-
-              <div style={{ marginLeft: "5px",marginTop:"5px" }}>
-                <span style={{color:"white"}}>Portal</span>
+                    </Popover>
+                  )}
+              </>
+              <div style={{ marginLeft: "5px", marginTop: "5px" }}>
+                <span style={{ color: "white" }}>Portal</span>
                 <IconButton aria-label="Account" onClick={handleHomepage}>
-                <HomeIcon style={{ fontSize: "20px", color: "#FFF",marginBottom:"5px" }} />
-              </IconButton>
-            </div>
+                  <HomeIcon
+                    style={{
+                      fontSize: "20px",
+                      color: "#FFF",
+                      marginBottom: "5px",
+                    }}
+                  />
+                </IconButton>
+              </div>
             </Box>
           </Toolbar>
         </AppBar>
@@ -522,213 +532,221 @@ function Topbar() {
             <IconButton style={{ marginLeft: "5px" }}>
               <Person style={{ fontSize: "20px", color: "#FFF" }} />
             </IconButton>
-            <span style={{ color: colors.tabColor[500], marginRight: "5px",paddingTop:"5px" }}>
-              User: {user}
-            </span>
-            
-            <>
-            {(location.pathname !== "/mainpage/sustainability" && 
-              location.pathname !== "/mainpage/sustainability/node" &&
-              location.pathname !== "/mainpage/infraPod" &&
-              location.pathname !== "/mainpage/infraPod/podMemory" &&
-              location.pathname !== "/mainpage/infraNode" &&
-              location.pathname !== "/mainpage/infraNode/nodeMemory") && (
-            <IconButton onClick={handleIconClick}>
-              <Badge badgeContent={notificationCount} color="error">
-                <NotificationImportantIcon
-                  style={{ fontSize: "20px", color: "#FFF" }}
-                />
-              </Badge>
-            </IconButton>
-            )}
-
-            {(location.pathname !== "/mainpage/sustainability" &&
-              location.pathname !== "/mainpage/sustainability/node" &&
-              location.pathname !== "/mainpage/infraPod" &&
-              location.pathname !== "/mainpage/infraPod/podMemory" &&
-              location.pathname !== "/mainpage/infraNode" &&
-              location.pathname !== "/mainpage/infraNode/nodeMemory") && (
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleCloseModal}
-              style={{ top: "28px", right: "0%", left: "-60px" }}
-              PaperProps={{
-                style: {
-                  borderRadius: "10px",
-                },
+            <span
+              style={{
+                color: colors.tabColor[500],
+                marginRight: "5px",
+                paddingTop: "5px",
               }}
             >
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Metric Alerts
-                    </Typography>
-                  </AccordionSummary>
+              User: {user}
+            </span>
 
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.metric.length > 0 ? (
-                        <>
-                          {alertResponse.metric.map((data, index) => (
-                            <div key={`metric-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"black"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.metric.length - 1 && (
-                                <Divider />
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no metric alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+            <>
+              {location.pathname !== "/mainpage/sustainability" &&
+                location.pathname !== "/mainpage/sustainability/node" &&
+                location.pathname !== "/mainpage/infraPod" &&
+                location.pathname !== "/mainpage/infraPod/podMemory" &&
+                location.pathname !== "/mainpage/infraNode" &&
+                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                  <IconButton onClick={handleIconClick}>
+                    <Badge badgeContent={notificationCount} color="error">
+                      <NotificationImportantIcon
+                        style={{ fontSize: "20px", color: "#FFF" }}
+                      />
+                    </Badge>
+                  </IconButton>
+                )}
 
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Trace Alerts
-                    </Typography>
-                  </AccordionSummary>
+              {location.pathname !== "/mainpage/sustainability" &&
+                location.pathname !== "/mainpage/sustainability/node" &&
+                location.pathname !== "/mainpage/infraPod" &&
+                location.pathname !== "/mainpage/infraPod/podMemory" &&
+                location.pathname !== "/mainpage/infraNode" &&
+                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                  <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleCloseModal}
+                    style={{ top: "28px", right: "0%", left: "-60px" }}
+                    PaperProps={{
+                      style: {
+                        borderRadius: "10px",
+                      },
+                    }}
+                  >
+                    <ListItem>
+                      <Accordion
+                        style={{
+                          width: "430px",
+                          backgroundColor:
+                            theme.palette.mode === "dark"
+                              ? "gray"
+                              : colors.primary[400],
+                        }}
+                      >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant="h5" color={"#fff"}>
+                            Metric Alerts
+                          </Typography>
+                        </AccordionSummary>
 
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.trace.length > 0 ? (
-                        <>
-                          {alertResponse.trace.map((data, index) => (
-                            <div key={`trace-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"red"
-                                  color: data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.trace.length - 1 && (
-                                <Divider />
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no trace alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                        <AccordionDetails>
+                          <FormGroup>
+                            {alertResponse.metric.length > 0 ? (
+                              <>
+                                {alertResponse.metric.map((data, index) => (
+                                  <div key={`metric-${index}`}>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{
+                                        p: 2,
+                                        lineHeight: "1",
+                                        backgroundColor: "white",
+                                        // color:"black"
+                                        color: data.alertData.includes(
+                                          "CRITICAL"
+                                        )
+                                          ? "red"
+                                          : data.alertData.includes("WARNING")
+                                          ? "yellow"
+                                          : "black",
+                                      }}
+                                    >
+                                      {data.alertData}
+                                    </Typography>
+                                    {index !==
+                                      alertResponse.metric.length - 1 && (
+                                      <Divider />
+                                    )}
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              <div style={{ color: "#000" }}>
+                                There is no metric alert
+                              </div>
+                            )}
+                          </FormGroup>
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
 
-              <ListItem>
-                <Accordion
-                  style={{
-                    width: "430px",
-                    backgroundColor:
-                      theme.palette.mode === "dark"
-                        ? "gray"
-                        : colors.primary[400],
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h5" color={"#fff"}>
-                      Log Alerts
-                    </Typography>
-                  </AccordionSummary>
+                    <ListItem>
+                      <Accordion
+                        style={{
+                          width: "430px",
+                          backgroundColor:
+                            theme.palette.mode === "dark"
+                              ? "gray"
+                              : colors.primary[400],
+                        }}
+                      >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant="h5" color={"#fff"}>
+                            Trace Alerts
+                          </Typography>
+                        </AccordionSummary>
 
-                  <AccordionDetails>
-                    <FormGroup>
-                      {alertResponse.log.length > 0 ? (
-                        <>
-                          {alertResponse.log.map((data, index) => (
-                            <div key={`log-${index}`}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  p: 2,
-                                  lineHeight: "1",
-                                  backgroundColor: "white",
-                                  // color:"black"
-                                  color:data.alertData.includes(
-                                    "CRITICAL"
-                                  )
-                                    ? "red"
-                                    :data.alertData.includes(
-                                      "WARNING"
-                                    )? "yellow":"black",
-                                }}
-                              >
-                                {data.alertData}
-                              </Typography>
-                              {index !== alertResponse.log.length - 1 && (
-                                <Divider />
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <div style={{ color: "#000" }}>
-                          There is no log alert
-                        </div>
-                      )}
-                    </FormGroup>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                        <AccordionDetails>
+                          <FormGroup>
+                            {alertResponse.trace.length > 0 ? (
+                              <>
+                                {alertResponse.trace.map((data, index) => (
+                                  <div key={`trace-${index}`}>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{
+                                        p: 2,
+                                        lineHeight: "1",
+                                        backgroundColor: "white",
+                                        // color:"red"
+                                        color: data.alertData.includes(
+                                          "CRITICAL"
+                                        )
+                                          ? "red"
+                                          : data.alertData.includes("WARNING")
+                                          ? "yellow"
+                                          : "black",
+                                      }}
+                                    >
+                                      {data.alertData}
+                                    </Typography>
+                                    {index !==
+                                      alertResponse.trace.length - 1 && (
+                                      <Divider />
+                                    )}
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              <div style={{ color: "#000" }}>
+                                There is no trace alert
+                              </div>
+                            )}
+                          </FormGroup>
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
 
-              {/* <div
+                    <ListItem>
+                      <Accordion
+                        style={{
+                          width: "430px",
+                          backgroundColor:
+                            theme.palette.mode === "dark"
+                              ? "gray"
+                              : colors.primary[400],
+                        }}
+                      >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant="h5" color={"#fff"}>
+                            Log Alerts
+                          </Typography>
+                        </AccordionSummary>
+
+                        <AccordionDetails>
+                          <FormGroup>
+                            {alertResponse.log.length > 0 ? (
+                              <>
+                                {alertResponse.log.map((data, index) => (
+                                  <div key={`log-${index}`}>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{
+                                        p: 2,
+                                        lineHeight: "1",
+                                        backgroundColor: "white",
+                                        // color:"black"
+                                        color: data.alertData.includes(
+                                          "CRITICAL"
+                                        )
+                                          ? "red"
+                                          : data.alertData.includes("WARNING")
+                                          ? "yellow"
+                                          : "black",
+                                      }}
+                                    >
+                                      {data.alertData}
+                                    </Typography>
+                                    {index !== alertResponse.log.length - 1 && (
+                                      <Divider />
+                                    )}
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              <div style={{ color: "#000" }}>
+                                There is no log alert
+                              </div>
+                            )}
+                          </FormGroup>
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
+
+                    {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "space-around",
@@ -765,8 +783,8 @@ function Topbar() {
                   ))}
                 </>
               )} */}
-            </Popover>
-            )}
+                  </Popover>
+                )}
             </>
 
             {/* <Popover
@@ -832,10 +850,16 @@ function Topbar() {
                 )}
               </>
             </Popover> */}
-            <div style={{ marginLeft: "5px",marginTop:"5px" }}>
-                <span style={{color:"white"}}>Portal</span>
-                <IconButton aria-label="Account" onClick={handleHomepage}>
-                <HomeIcon style={{ fontSize: "20px", color: "#FFF",marginBottom:"5px" }} />
+            <div style={{ marginLeft: "5px", marginTop: "5px" }}>
+              <span style={{ color: "white" }}>Portal</span>
+              <IconButton aria-label="Account" onClick={handleHomepage}>
+                <WindowIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "#FFF",
+                    marginBottom: "5px",
+                  }}
+                />
               </IconButton>
             </div>
           </Toolbar>
