@@ -20,7 +20,7 @@ import { GlobalContext } from "../../global/globalContext/GlobalContext";
 const PodCpuMetric = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
-  const [powerMetrics, setPowerMetrics] = useState("");
+  const [powerMetrics, setPowerMetrics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [podDisplayName, setPodDisplayName] = useState([]);
   const [selectedPodName, setSelectedPodName] = useState("");
@@ -28,14 +28,12 @@ const PodCpuMetric = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   const {
-    setInfraActiveTab,
     setInfraPodActiveTab,
     lookBackVal,
     selectedStartDate,
     selectedEndDate,
     needHistoricalData,
     podCurrentPage,
-    setPodCurrentPage,
   } = useContext(GlobalContext);
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -47,14 +45,21 @@ const PodCpuMetric = () => {
   const processMetricData = (podMetrics, podName) => {
     //   console.log("Processing Metric Data",podName+ JSON.stringify(podMetrics));
     // const filteredData = podMetrics.filter((pod) => pod.podName === podName);
+
     const filteredData = podMetrics.filter(
       (podMet) =>
-        `${podMet.namespaceName}/${podMet.pods[0]?.podName}` === podName
+        `${podMet.namespaceName}/${podMet.pods[0]?.podName}` === podName,
+      selectedPodName === "" ? setSelectedPodName(podName) : null
     );
+
+    // const filteredData = podMetrics.filter(
+    //   (podMet) =>
+    //     `${podMet.namespaceName}/${podMet.pods[0]?.podName}` === podName
+    // );
     // console.log("filterdata+++",filteredData)
     const processedData = filteredData.flatMap((podData) => {
       // console.log("flatMap",podData.pods[0].podName)
-      setSelectedPodName(podData.pods[0].podName);
+
       if (podData.pods[0].metrics) {
         // console.log("If condtion ", podData.pods[0].metrics);
         return podData.pods[0].metrics.map((metric) => {
@@ -156,10 +161,10 @@ const PodCpuMetric = () => {
     // }
     // setLoading(false);
     // getPodMetrics();
-  }, [setErrorMessage, setEmptyMessage, setPodCurrentPage, fetchPodMetrics]);
+  }, [setErrorMessage, setEmptyMessage, podCurrentPage, fetchPodMetrics]);
 
   const handlePodClick = (clickedPodName) => {
-    // setSelectedPodName(clickedPodName);
+    setSelectedPodName(clickedPodName);
     // console.log("Clicked pod name:", clickedPodName);
     // const clickedPodData = PodMetricData.find(pod => pod.pods && `${pod.namespaceName}/${pod.pods[0]?.podName}` === clickedPodName);
     // console.log("Clicked pod data:", clickedPodData);
@@ -170,6 +175,10 @@ const PodCpuMetric = () => {
     //     console.error("Clicked pod data not found:", clickedPodName);
     // }
   };
+
+  const hasContainerPowerMetrics = powerMetrics.some(
+    (item) => item.length !== 0
+  );
 
   return (
     <div>
@@ -229,7 +238,23 @@ const PodCpuMetric = () => {
                 <CardContent>
                   <Box style={{ display: "flex", flexDirection: "row" }}>
                     <div style={{ width: "65%" }}>
-                      <PodMetricDashboard podData={PodMetrics[0]} />
+                      {hasContainerPowerMetrics ? (
+                        <PodMetricDashboard podData={PodMetrics[0]} />
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "calc(75vh - 24px)",
+                            width: "100%",
+                          }}
+                        >
+                          <Typography variant="h5" fontWeight={"600"}>
+                            Container Power Metrics - No data
+                          </Typography>
+                        </div>
+                      )}
                     </div>
                     <div
                       style={{
