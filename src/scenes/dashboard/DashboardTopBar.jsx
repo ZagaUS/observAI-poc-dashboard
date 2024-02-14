@@ -1030,8 +1030,8 @@ const DashboardTopBar = () => {
               textColor="inherit"
               indicatorColor="primary"
             >
-              <Tab label="NodeCpuMetric" sx={{ color: "#FFF" }} />
-              <Tab label="NodeMemoryMetric" sx={{ color: "#FFF" }} />
+              <Tab label="Cpu Metric" sx={{ color: "#FFF" }} />
+              <Tab label="Memory Metric" sx={{ color: "#FFF" }} />
             </Tabs>
           ) : null}
 
@@ -1051,8 +1051,8 @@ const DashboardTopBar = () => {
               textColor="inherit"
               indicatorColor="primary"
             >
-              <Tab label="PodCpuMetric" sx={{ color: "#FFF" }} />
-              <Tab label="PodMemoryMetric" sx={{ color: "#FFF" }} />
+              <Tab label="Cpu Metric" sx={{ color: "#FFF" }} />
+              <Tab label="Memory Metric" sx={{ color: "#FFF" }} />
             </Tabs>
           ) : null}
 

@@ -108,8 +108,8 @@ export const PodMemoryMetric = () => {
   const PodMetrics = [
     {
       data: containerPowerUsage,
-      title: `Pod Memory Usage - ${selectedPodName}`,
-      yaxis: "Memory Usage",
+      title: `${selectedPodName}`,
+      yaxis: "MEMORY USAGE",
       totalCount: totalPages,
       // type:"pod"
     },

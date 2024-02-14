@@ -35,10 +35,6 @@ function createData(serviceName, rules) {
 
 function Row({ row }) {
   const [open, setOpen] = useState(false);
-  // const [editable, setEditable] = useState(false);
-  // const [editedRules, setEditedRules] = useState(row.rules);
-  const [selectedRuleType, setSelectedRuleType] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("")
   const [selectedRule, setSelectedRule] = useState(null);
 
   const theme = useTheme();
@@ -53,13 +49,9 @@ function Row({ row }) {
     setOpen(true);
   };
 
-  // const handleRuleTypeClick = (ruleType) => {
-  //   setSelectedRuleType(ruleType === selectedRuleType ? null : ruleType);
-  // };
-
   return (
     <>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }} onClick={() => setOpen(!open)}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -70,7 +62,7 @@ function Row({ row }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          <Typography variant="h6">{row.serviceName}</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "600px" }}>{row.serviceName}</Typography>
         </TableCell>
 
         {/* <TableCell component="th" scope="row">
@@ -105,7 +97,7 @@ function Row({ row }) {
                           <StyledTableCell>{rule.expiryDateTime}</StyledTableCell>
                           <StyledTableCell>
                             <Button variant="contained" color="primary" onClick={() => handleOpenPopup(rule)}>
-                              Open
+                              View
                             </Button>
                           </StyledTableCell>
                         </TableRow>
@@ -178,7 +170,7 @@ const rows = [
 
 const RulesDetails = () => {
   const navigate = useNavigate();
-  const { serviceListData, setServiceListData } = useContext(GlobalContext)
+  // const { serviceListData, setServiceListData } = useContext(GlobalContext)
   const [rows, setRows] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -201,7 +193,7 @@ const RulesDetails = () => {
         );
         setRows(rowsData);
         setLoading(false);
-        setServiceListData(data)
+        // setServiceListData(data)
         console.log("Rules Lists:", data);
       } catch (error) {
         console.error("Error fetching rules:", error);
@@ -258,7 +250,7 @@ const RulesDetails = () => {
             </Button>
           </div>
 
-          <TableContainer component={Paper} sx={{marginTop:"10px"}}>
+          <TableContainer component={Paper} sx={{ maxHeight: "500px", overflowY: "auto", marginTop:"10px" }}>
             <Table aria-label="collapsible table">
               <TableHead>
                 <TableRow>
