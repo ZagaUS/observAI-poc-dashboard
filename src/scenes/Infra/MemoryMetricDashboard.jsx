@@ -75,7 +75,7 @@ const MemoryMetricDashboard = ({ podData }) => {
     yaxis: {
       min: 0,
       title: {
-        text: filteredData.length > 0 ? filteredData[0].yaxis : "", // Access yaxis property of the first element
+        text: filteredData.length > 0 ? podData.yaxis : "", // Access yaxis property of the first element
         style: {
           color: theme.palette.mode === "dark" ? "#FFF" : "#000",
           fontFamily: "Red Hat Display, sans-serif",
@@ -193,7 +193,7 @@ const MemoryMetricDashboard = ({ podData }) => {
       <ReactApexChart
         options={options}
         series={[
-          { name: "PODCPUMETRIC", data: filteredData, color: "#C40233" },
+          { name: "MEMORY USAGE", data: filteredData, color: "#C40233" },
         ]}
         type="area"
         height={chartHeight}
