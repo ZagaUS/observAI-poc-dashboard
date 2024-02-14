@@ -51,7 +51,13 @@ function Row({ row }) {
 
   return (
     <>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }} onClick={() => setOpen(!open)}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" }, 
+                  color: theme.palette.mode === "dark" ? "white" : "black",
+                  backgroundColor: theme.palette.mode === "dark" ? "#2C3539" : "#e0e0e0",
+                  "&:hover": {
+                  // backgroundColor: theme.palette.mode === "dark" ? "#d0d1d5" : "#ffffff",
+                  backgroundColor: "#d0d1d5",
+                }, }} onClick={() => setOpen(!open)} >
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -251,7 +257,7 @@ const RulesDetails = () => {
           </div>
 
           <TableContainer component={Paper} sx={{ maxHeight: "500px", overflowY: "auto", marginTop:"10px" }}>
-            <Table aria-label="collapsible table">
+            <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ color: "white", backgroundColor: "#00888C" }} />
