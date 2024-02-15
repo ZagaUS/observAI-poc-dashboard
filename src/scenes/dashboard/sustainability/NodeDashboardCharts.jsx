@@ -8,7 +8,8 @@ import { tokens } from '../../../theme';
 import { getKeplerMetricData, getKeplerMetricDataPaginated } from '../../../api/KeplerApiService';
 
 const NodeDashboardCharts = () => {
-
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
     const [errorMessage, setErrorMessage] = useState("");
     const [emptyMessage, setEmptyMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -186,7 +187,7 @@ const NodeDashboardCharts = () => {
                              }}>
 
                                 <CardContent>
-                                    <Box style={{ display: "flex", flexDirection: "row", 
+                                    <Box style={{ display: "flex", flexDirection: "row", color: theme.palette.mode === "dark" ? "#FFF" : "#000", 
                                    
                                      
                                 }} >
@@ -223,7 +224,7 @@ const NodeDashboardCharts = () => {
                                     }}>
                                             <Table size="small" aria-label="a dense table" sx={{
                                                 "& .MuiTableRow-root:hover": {
-                                                    backgroundColor: 'lightgrey',
+                                                    backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
                                                 }
                                             }} >
                                                 <TableBody>
