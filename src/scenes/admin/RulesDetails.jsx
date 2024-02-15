@@ -15,11 +15,13 @@ import {
   Button,
   Grid,
   styled,
+  useTheme
+  
+  
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { getAllRules, updateServiceList } from "../../api/LoginApiService";
-import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../global/Loading/Loading";
@@ -102,7 +104,14 @@ function Row({ row }) {
                           <StyledTableCell>{rule.startDateTime}</StyledTableCell>
                           <StyledTableCell>{rule.expiryDateTime}</StyledTableCell>
                           <StyledTableCell>
-                            <Button variant="contained" color="primary" onClick={() => handleOpenPopup(rule)}>
+                            <Button variant="contained" color="primary"   sx={{
+              
+                backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+             
+                '&:hover': {
+                  backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                },
+              }} onClick={() => handleOpenPopup(rule)}>
                               View
                             </Button>
                           </StyledTableCell>
@@ -182,6 +191,9 @@ const RulesDetails = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("")
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const payload = {
     username: userInfo.username,
@@ -247,10 +259,13 @@ const RulesDetails = () => {
                 marginTop: "15px",
                 height: "35px",
                 fontWeight: "bold",
-                backgroundColor: "lightgray",
-                marginRight: "20px",
-                "&:hover": { backgroundColor: "lightgray" },
+                backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                marginRight: '20px',
+                '&:hover': {
+                  backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                },
               }}
+              
             >
               Add Rule
             </Button>

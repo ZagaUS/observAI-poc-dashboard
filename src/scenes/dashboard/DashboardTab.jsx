@@ -59,7 +59,7 @@ const DashboardTab = ({ onDashboardOptionSelect }) => {
           <MenuItem onClick={() => handleDashboardOptionSelect("logSummary")}>
             Log Summary
           </MenuItem>
-          <MenuItem onClick={() => handleDashboardOptionSelect("dbSummary")}>
+          <MenuItem onClick={() => handleDashboardOUnptionSelect("dbSummary")}>
             Db Summary
           </MenuItem>
           <MenuItem onClick={() => handleDashboardOptionSelect("kafkaSummary")}>
