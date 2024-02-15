@@ -10,7 +10,7 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format, parseISO, toISOString } from 'date-fns';
 
-const RuleDetailsPopup = ({ rule, serviceName }) => {
+const RuleDetailsPopup = ({ rule, serviceName, onClose }) => {
     const [open, setOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedRules, setEditedRules] = useState({});
@@ -26,9 +26,9 @@ const RuleDetailsPopup = ({ rule, serviceName }) => {
 
     const handleClose = () => {
         setOpen(false);
-        // if (onClose) {
-        //   onClose();
-        // }
+        if (onClose) {
+          onClose();
+        }
     };
 
     const handleEditClick = () => {

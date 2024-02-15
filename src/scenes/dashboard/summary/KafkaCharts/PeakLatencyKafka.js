@@ -277,7 +277,7 @@ const PeakLatencyKafka = () => {
           Apply
         </Button>
       </div>
-      <p style={{ marginLeft: "30px", }} >Peak Latency</p>
+      <p style={{ marginLeft: "30px", color: theme.palette.mode === "dark" ? "#FFF" : "#000", }} >Peak Latency</p>
       </div>
 
       {/* <div

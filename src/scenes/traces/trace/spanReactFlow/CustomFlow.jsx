@@ -7,7 +7,7 @@ import { FaDatabase } from "react-icons/fa";
 import { SiApachekafka } from "react-icons/si";
 import { PiBracketsRoundBold } from "react-icons/pi";
 import PropTypes from "prop-types";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
 import Check from "@mui/icons-material/Check";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -17,8 +17,11 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import { LuDatabase } from "react-icons/lu";
+import { tokens } from "../../../../theme";
 
 const CustomFlow = ({ spandata }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const [spanName, setspanname] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -173,7 +176,7 @@ const CustomFlow = ({ spandata }) => {
                 marginTop: "-10px",
               },
               "& .MuiStepConnector-line": {
-                borderColor: "black",
+                borderColor: theme.palette.mode === "dark" ? "#fff" : "#000",
                 borderWidth: "2px",
                 width: "10px"
               },
@@ -255,7 +258,7 @@ const CustomFlow = ({ spandata }) => {
               )} */}
 
                     <span style={{width:"70px"}}>
-                      <strong style={{ color: "#000" }}>
+                      <strong style={{ color: theme.palette.mode === "dark" ? "#FFF" : "#000", }}>
                         (
                         {calculateDurationInMs(
                           span.spans.startTimeUnixNano,

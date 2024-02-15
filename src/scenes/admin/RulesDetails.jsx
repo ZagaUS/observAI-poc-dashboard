@@ -189,7 +189,6 @@ const RulesDetails = () => {
   const [rows, setRows] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("")
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -250,25 +249,30 @@ const RulesDetails = () => {
         </div>
       ) : (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddRules}
-              sx={{
-                marginTop: "15px",
-                height: "35px",
-                fontWeight: "bold",
-                backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                marginRight: '20px',
-                '&:hover': {
-                  backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
-                },
-              }}
-              
-            >
-              Add Rule
-            </Button>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ paddingTop: "25px", paddingLeft: "10px" }}>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                Alert rule for management for instrumented application
+              </Typography>
+            </div>
+            <div>
+              {" "}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddRules}
+                sx={{
+                  marginTop: "15px",
+                  height: "35px",
+                  fontWeight: "bold",
+                  backgroundColor: "lightgray",
+                  marginRight: "20px",
+                  "&:hover": { backgroundColor: "lightgray" },
+                }}
+              >
+                Add Rule
+              </Button>
+            </div>
           </div>
 
           <TableContainer component={Paper} sx={{ maxHeight: "500px", overflowY: "auto", marginTop:"10px" }}>

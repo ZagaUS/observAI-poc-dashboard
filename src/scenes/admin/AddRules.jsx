@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { addRulesForService } from "../../api/LoginApiService";
 import "./AddRules.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const AddRules = () => {
   const [userInfo, setUserInfo] = useState(
@@ -225,21 +226,21 @@ const AddRules = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column"}}>
-      <div>
+      {/* <div>
         <IconButton onClick={handleBack}>
           <ArrowBackIcon variant="outlined" />
-          {/* <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
+          <Typography style={{ textDecoration: "underline", marginLeft: "4px" }}>
             Back
-          </Typography> */}
+          </Typography>
         </IconButton>
-      </div>
+      </div> */}
       
       <div>
       <Container
         component="main"
         maxWidth="xs"
         sx={{
-          marginBottom: "5px",
+          marginTop: "30px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -866,9 +867,13 @@ const AddRules = () => {
               {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
               <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: "10px" }}>
-                <Stack sx={{ marginRight: "10px" }}>
+                <IconButton onClick={handleBack}>
+                  <CancelIcon />
+                </IconButton>
+
+                {/* <Stack sx={{ marginRight: "10px" }}>
                   <Chip label="Cancel" variant="outlined" onDelete={handleDelete} />
-                </Stack>
+                </Stack> */}
 
                 <Button
                   type="submit"

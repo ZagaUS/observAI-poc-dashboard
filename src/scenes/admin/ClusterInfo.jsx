@@ -196,6 +196,7 @@ const ClusterInfo = () => {
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
+              height: "100vh",
             }}
           >
             <Typography variant="h5" fontWeight={"600"}>
@@ -207,237 +208,257 @@ const ClusterInfo = () => {
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: "space-between",
               }}
             >
-              <div
-                style={{
-                  alignItems: "center",
-                  marginTop: "5px",
-                  marginRight: "10px",
-                }}
-              >
-                <label
-                  style={{
-                    fontSize: "10px",
-                  }}
-                >
-                  FilterBy
-                </label>
-                <div>
-                  <FormControl>
-                    <Select
-                      style={{
-                        width: "170px",
-                        backgroundColor: "#FFF",
-                        color: theme.palette.mode === 'light' ? 'white' : 'black',
-                        height: "40px",
-                        marginBottom: "10px",
-                      }}
-                      labelId="application-type-label"
-                      id="application-type"
-                      value={selectedApplicationType}
-                      onChange={handleApplicationTypeChange}
-                    >
-                      <MenuItem value="all" >APPLICATION</MenuItem>
-                      <MenuItem value="openshift">
-                        OpenShift Applications
-                      </MenuItem>
-                      <MenuItem value="normal">Normal Applications</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
+              <div style={{ paddingTop: "25px", paddingLeft: "10px" }}>
+                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                  Instrument an application deployed in Openshift to collect
+                  Open Telemetry data for Observabilty
+                </Typography>
               </div>
-
-              <div
-                style={{
-                  alignItems: "center",
-                  marginTop: "5px",
-                  marginRight: "10px",
-                }}
-              >
-                <label
+              <div style={{ display: "flex" }}>
+                {" "}
+                <div
                   style={{
-                    fontSize: "10px",
+                    alignItems: "center",
+                    marginTop: "5px",
+                    marginRight: "10px",
                   }}
                 >
-                  FilterBy
-                </label>
-                <div>
-                  <FormControl>
-                    <Select
-                      style={{
-                        width: "170px",
-                        backgroundColor: "#FFF",
-                        color: theme.palette.mode === 'light' ? 'white' : 'black',
+                  <label
+                    style={{
+                      fontSize: "10px",
+                    }}
+                  >
+                    FilterBy
+                  </label>
+                  <div>
+                    <FormControl>
+                      <Select
+                        style={{
+                          width: "170px",
+                          backgroundColor: "#FFF",
+                          color: theme.palette.mode === 'light' ? 'white' : 'black',
                         height: "40px",
-                        marginBottom: "10px",
-                      }}
-                      labelId="namespace-label"
-                      id="namespace"
-                      value={selectedNamespace}
-                      onChange={handleNamespaceChange}
-                    >
-                      <MenuItem value="all">NAMESPACE</MenuItem>
-                      {selectedApplicationType === "openshift" &&
-                        openShiftNamespaces.map((namespace, index) => (
-                          <MenuItem key={index} value={namespace}>
-                            {namespace}
-                          </MenuItem>
-                        ))}
-                      {selectedApplicationType === "normal" &&
-                        normalNamespaces.map((namespace, index) => (
-                          <MenuItem key={index} value={namespace}>
-                            {namespace}
-                          </MenuItem>
-                        ))}
-                      {selectedApplicationType === "all" &&
-                        namespaceOptions.map((namespace, index) => (
-                          <MenuItem key={index} value={namespace}>
-                            {namespace}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
+                          marginBottom: "10px",
+                        }}
+                        labelId="application-type-label"
+                        id="application-type"
+                        value={selectedApplicationType}
+                        onChange={handleApplicationTypeChange}
+                      >
+                        <MenuItem value="all" >APPLICATIONS</MenuItem>
+                        <MenuItem value="openshift">OpenShift</MenuItem>
+                        <MenuItem value="normal">Applications</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
-              </div>
-
-              <div
-                style={{
-                  alignItems: "center",
-                  marginTop: "5px",
-                  marginRight: "10px",
-                }}
-              >
-                <label
+                <div
                   style={{
-                    fontSize: "10px",
+                    alignItems: "center",
+                    marginTop: "5px",
+                    marginRight: "10px",
                   }}
                 >
-                  FilterBy
-                </label>
-                <div>
-                  <FormControl>
-                    <Select
-                      style={{
-                        width: "170px",
-                        backgroundColor: "#FFF",
-                        color: theme.palette.mode === 'light' ? 'white' : 'black',
+                  <label
+                    style={{
+                      fontSize: "10px",
+                    }}
+                  >
+                    FilterBy
+                  </label>
+                  <div>
+                    <FormControl>
+                      <Select
+                        style={{
+                          width: "170px",
+                          backgroundColor: "#FFF",
+                          color: theme.palette.mode === 'light' ? 'white' : 'black',
                         height: "40px",
-                        marginBottom: "10px",
-                      }}
-                      labelId="instrumented-status-label"
-                      id="instrumented-status"
-                      
+                          marginBottom: "10px",
+                        }}
+                        labelId="namespace-label"
+                        id="namespace"
+                        value={selectedNamespace}
+                        onChange={handleNamespaceChange}
+                      >
+                        <MenuItem value="all">NAMESPACE</MenuItem>
+                        {selectedApplicationType === "openshift" &&
+                          openShiftNamespaces.map((namespace, index) => (
+                            <MenuItem key={index} value={namespace}>
+                              {namespace}
+                            </MenuItem>
+                          ))}
+                        {selectedApplicationType === "normal" &&
+                          normalNamespaces.map((namespace, index) => (
+                            <MenuItem key={index} value={namespace}>
+                              {namespace}
+                            </MenuItem>
+                          ))}
+                        {selectedApplicationType === "all" &&
+                          namespaceOptions.map((namespace, index) => (
+                            <MenuItem key={index} value={namespace}>
+                              {namespace}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    alignItems: "center",
+                    marginTop: "5px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <label
+                    style={{
+                      fontSize: "10px",
+                    }}
+                  >
+                    FilterBy
+                  </label>
+                  <div>
+                    <FormControl>
+                      <Select
+                        style={{
+                          width: "170px",
+                          backgroundColor: "#FFF",
+                          color: theme.palette.mode === 'light' ? 'white' : 'black',
+                        height: "40px",
+                          marginBottom: "10px",
+                        }}
+                        labelId="instrumented-status-label"
+                        id="instrumented-status"
+                        
                       value={selectedInstrumentedStatus}
-                      onChange={handleInstrumentedStatusChange}
-                    >
-                      <MenuItem value="all">STATUS</MenuItem>
-                      <MenuItem value="instrumented">Instrumented</MenuItem>
-                      <MenuItem value="non-instrumented">
-                        Non-Instrumented
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                        onChange={handleInstrumentedStatusChange}
+                      >
+                        <MenuItem value="all">STATUS</MenuItem>
+                        <MenuItem value="instrumented">Instrumented</MenuItem>
+                        <MenuItem value="non-instrumented">
+                          Non-Instrumented
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div>
-              <TableContainer
-                component={Paper}
-                sx={{ maxHeight: "500px", overflowY: "auto" }}
-              >
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        sx={{ color: "white", backgroundColor: "#00888C" }}
-                      >
-                        Deployment Name
-                      </TableCell>
-                      <TableCell
-                        sx={{ color: "white", backgroundColor: "#00888C" }}
-                      >
-                        Name Space
-                      </TableCell>
-                      <TableCell
-                        sx={{ color: "white", backgroundColor: "#00888C" }}
-                      >
-                        Created At
-                      </TableCell>
-                      <TableCell
-                        sx={{ color: "white", backgroundColor: "#00888C" }}
-                      >
-                        Service Name
-                      </TableCell>
-                      <TableCell
-                        sx={{ color: "white", backgroundColor: "#00888C" }}
-                      >
-                        Instrument Status
-                      </TableCell>
-
-                      {selectedApplicationType !== "openshift" && (
+            {filteredData.length > 0 ? (
+              <div>
+                <TableContainer
+                  component={Paper}
+                  sx={{ maxHeight: "490px", overflowY: "auto" }}
+                >
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
                         <TableCell
                           sx={{ color: "white", backgroundColor: "#00888C" }}
                         >
-                          Action
+                          Deployment Name
                         </TableCell>
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredData.length > 0 &&
-                      filteredData.map((item, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{item.deploymentName}</TableCell>
-                          <TableCell>{item.namespaceName}</TableCell>
-                          <TableCell>{item.createdTime}</TableCell>
-                          <TableCell>{item.serviceName || "Nil"}</TableCell>
-                          <TableCell>
-                            {item.instrumented === "true"
-                              ? "Instrumented"
-                              : "Un-Instrumented"}
+                        <TableCell
+                          sx={{ color: "white", backgroundColor: "#00888C" }}
+                        >
+                          Name Space
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "white", backgroundColor: "#00888C" }}
+                        >
+                          Created At
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "white", backgroundColor: "#00888C" }}
+                        >
+                          Service Name
+                        </TableCell>
+                        <TableCell
+                          sx={{ color: "white", backgroundColor: "#00888C" }}
+                        >
+                          Instrument Status
+                        </TableCell>
+
+                        {selectedApplicationType !== "openshift" && (
+                          <TableCell
+                            sx={{ color: "white", backgroundColor: "#00888C" }}
+                          >
+                            Action
                           </TableCell>
-                          {selectedApplicationType !== "openshift" && (
+                        )}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredData.length > 0 &&
+                        filteredData.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{item.deploymentName}</TableCell>
+                            <TableCell>{item.namespaceName}</TableCell>
+                            <TableCell>{item.createdTime}</TableCell>
+                            <TableCell>{item.serviceName || "Nil"}</TableCell>
                             <TableCell>
-                              <>
-                                {item.instrumented === "true" ? (
-                                  <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() =>
-                                      handleUnInstrument(
-                                        item.deploymentName,
-                                        item.namespaceName
-                                      )
-                                    }
-                                  >
-                                    Uninstrument
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() =>
-                                      handleInstrument(
-                                        item.deploymentName,
-                                        item.namespaceName
-                                      )
-                                    }
-                                  >
-                                    Instrument
-                                  </Button>
-                                )}
-                              </>
+                              {item.instrumented === "true"
+                                ? "Instrumented"
+                                : "Un-Instrumented"}
                             </TableCell>
-                          )}
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+                            {selectedApplicationType !== "openshift" && (
+                              <TableCell>
+                                <>
+                                  {item.instrumented === "true" ? (
+                                    <Button
+                                      variant="contained"
+                                      color="secondary"
+                                      onClick={() =>
+                                        handleUnInstrument(
+                                          item.deploymentName,
+                                          item.namespaceName
+                                        )
+                                      }
+                                    >
+                                      Uninstrument
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={() =>
+                                        handleInstrument(
+                                          item.deploymentName,
+                                          item.namespaceName
+                                        )
+                                      }
+                                    >
+                                      Instrument
+                                    </Button>
+                                  )}
+                                </>
+                              </TableCell>
+                            )}
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Typography variant="h5" fontWeight={"600"}>
+                  Sorry, no data found for this filter option!!!
+                </Typography>
+              </div>
+            )}
           </div>
         )}
       </LoadingOverlay>
