@@ -1,66 +1,65 @@
-import axios from 'axios';
+import axios from "axios";
 
 const loginURL = process.env.REACT_APP_APIURL_AUTH;
-const CLIENT_SECRET = process.env.REACT_APP_APIURL_CLIENT_SECRET
+const CLIENT_SECRET = process.env.REACT_APP_APIURL_CLIENT_SECRET;
 const SSO_BASE_URL = process.env.REACT_APP_APIURL_SSO;
 const CLIENT_ID = "React-auth";
 const GRANT_TYPE = "password";
-const openshiftLoginURL = process.env.REACT_APP_APIURL_OPENSHIFT
+const openshiftLoginURL = process.env.REACT_APP_APIURL_OPENSHIFT;
 
 export const keycloakLoginAuth = async (userAuth) => {
-    const data = new URLSearchParams();
-    data.append('client_id', CLIENT_ID);
-    data.append('grant_type', GRANT_TYPE);
-    data.append('client_secret', CLIENT_SECRET);
-    data.append('username', userAuth.username);
-    data.append('password', userAuth.password);
+  const data = new URLSearchParams();
+  data.append("client_id", CLIENT_ID);
+  data.append("grant_type", GRANT_TYPE);
+  data.append("client_secret", CLIENT_SECRET);
+  data.append("username", userAuth.username);
+  data.append("password", userAuth.password);
 
-    try {
-        const keycloakInstance = await axios.post(`${SSO_BASE_URL}/token`, data, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                // 'Access-Control-Allow-Origin': '*',
-                // 'Access-Control-Allow-Credentials': true,
-                // 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-                // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
-
-            },
-        });
-        return { data: keycloakInstance.data, error: null }; // Return the response or perform further actions as needed
-    } catch (error) {
-        console.error('Token request error:', error);
-        return { data: null, error: error }; // Throw the error or handle it appropriately
-    }
+  try {
+    const keycloakInstance = await axios.post(`${SSO_BASE_URL}/token`, data, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        // 'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Credentials': true,
+        // 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+      },
+    });
+    return { data: keycloakInstance.data, error: null }; // Return the response or perform further actions as needed
+  } catch (error) {
+    console.error("Token request error:", error);
+    return { data: null, error: error }; // Throw the error or handle it appropriately
+  }
 };
 
 export const keycloakLogoutAuth = async () => {
-    const data = new URLSearchParams();
-    data.append('client_id', CLIENT_ID);
-    data.append('refresh_token', localStorage.getItem("refreshToken"));
-    data.append('client_secret', CLIENT_SECRET);
+  const data = new URLSearchParams();
+  data.append("client_id", CLIENT_ID);
+  data.append("refresh_token", localStorage.getItem("refreshToken"));
+  data.append("client_secret", CLIENT_SECRET);
 
-    try {
-        const keycloakInstance = await axios.post(`${SSO_BASE_URL}/logout`, data, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });
-        return { data: keycloakInstance.data, error: null }; // Return the response or perform further actions as needed
-    } catch (error) {
-        console.error('Token request error:', error);
-        return { data: null, error: error }; // Throw the error or handle it appropriately
-    }
+  try {
+    const keycloakInstance = await axios.post(`${SSO_BASE_URL}/logout`, data, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+    return { data: keycloakInstance.data, error: null }; // Return the response or perform further actions as needed
+  } catch (error) {
+    console.error("Token request error:", error);
+    return { data: null, error: error }; // Throw the error or handle it appropriately
+  }
 };
 
 export const loginUser = async (data) => {
-    try {
-        console.log("api call loginUser data", data);
-        const response = await axios.post(`${loginURL}/login`, data);
-        return response;
-    } catch (error) {
-        console.error("Error in login User:", error);
-        return error;
-    }
+  try {
+    console.log("api call loginUser data", data);
+    const response = await axios.post(`${loginURL}/login`, data);
+    return response;
+  } catch (error) {
+    console.error("Error in login User:", error);
+    return error;
+  }
 };
 
 export const getServiceList = async (userInfo) => {
@@ -75,39 +74,44 @@ export const getServiceList = async (userInfo) => {
 };
 
 export const addRulesForService = async (addRules) => {
-    try {
-        console.log("api call addRulesForService data", addRules);
-        const response = await axios.post(`${loginURL}/addServiceListNew`, addRules);
-        return response.data;
-    }
-    catch (error) {
-        console.error("Error in addRulesForService:", error);
-        throw error;
-    }
-}
+  try {
+    console.log("api call addRulesForService data", addRules);
+    const response = await axios.post(
+      `${loginURL}/addServiceListNew`,
+      addRules
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in addRulesForService:", error);
+    throw error;
+  }
+};
 
 export const getAllRules = async (rule) => {
-    try {
-        console.log("Rule Details", rule)
-        const response = await axios.post(`${loginURL}/getServiceList`, rule)
-        return response.data
-    } catch (error) {
-        console.error("Error in displaying rules:", error)
-        throw error
-    }
-}
+  try {
+    console.log("Rule Details", rule);
+    const response = await axios.post(`${loginURL}/getServiceList`, rule);
+    return response.data;
+  } catch (error) {
+    console.error("Error in displaying rules:", error);
+    throw error;
+  }
+};
 
 export const updateServiceList = async (updateService) => {
-    try {
-        console.log("Updated Service Data", updateService)
-        const response = await axios.put(`${loginURL}/updateServiceList`, updateService)
-        return response.data
-    } catch (error) {
-        console.error("Error in Updating Rules Data", error)
-        console.error("Error Response:", error.response); 
-        throw error
-    }
-}
+  try {
+    console.log("Updated Service Data", updateService);
+    const response = await axios.put(
+      `${loginURL}/updateServiceList`,
+      updateService
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in Updating Rules Data", error);
+    console.error("Error Response:", error.response);
+    throw error;
+  }
+};
 
 export const addClusterDetails = async (Cluster) => {
   try {
@@ -115,19 +119,21 @@ export const addClusterDetails = async (Cluster) => {
     // const data=JSON.stringify(Cluster);
     const response = await axios.post(`${loginURL}/register`, Cluster);
 
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("Error in add Cluster User:", error);
     throw error;
   }
 };
 
-
 export const updateClusterDetails = async (UpdatedClusterData) => {
   try {
     console.log("updatedcluster api data", JSON.stringify(UpdatedClusterData));
     // const data=JSON.stringify(Cluster);
-    const response = await axios.put(`${loginURL}/clusterDataUpdate`, UpdatedClusterData);
+    const response = await axios.put(
+      `${loginURL}/clusterDataUpdate`,
+      UpdatedClusterData
+    );
 
     return response.data;
   } catch (error) {
@@ -136,12 +142,13 @@ export const updateClusterDetails = async (UpdatedClusterData) => {
   }
 };
 
-
-export const deleteClusterDetails = async (clusterId,clusterUsername) => {
+export const deleteClusterDetails = async (clusterId, clusterUsername) => {
   try {
-    console.log("deleted api data",clusterId, clusterUsername);
-  
-    const response = await axios.delete(`${loginURL}/${clusterUsername}/delete-environments/${clusterId}?clusterId=${clusterId}&clusterUsername=${clusterUsername}`);
+    console.log("deleted api data", clusterId, clusterUsername);
+
+    const response = await axios.delete(
+      `${loginURL}/${clusterUsername}/delete-environments/${clusterId}?clusterId=${clusterId}&clusterUsername=${clusterUsername}`
+    );
 
     return response.data;
   } catch (error) {
@@ -149,8 +156,6 @@ export const deleteClusterDetails = async (clusterId,clusterUsername) => {
     throw error;
   }
 };
-
-
 
 export const getClusterDetails = async () => {
   try {
@@ -172,7 +177,7 @@ export const getClusterDetails = async () => {
 //     const response = await axios.get(`${openshiftLoginURL}/login?clusterUrl=${clusterUrl}&password=${password}&username=${username}`);
 
 //     console.log("response", response);
-   
+
 //     return response.data;
 //   } catch (error) {
 //     console.error("Error in get openshiftClusterLogin User:", error);
@@ -180,14 +185,16 @@ export const getClusterDetails = async () => {
 //   }
 // };
 
-export const openshiftClusterLogin = async (clusterUrl,password,username) => {
+export const openshiftClusterLogin = async (clusterUrl, password, username) => {
   try {
-    console.log("clusterUserName",username);
-    console.log("clusterPassword",password);
-    const response = await axios.get(`${openshiftLoginURL}/login?clusterUrl=${clusterUrl}&password=${password}&username=${username}`);
+    console.log("clusterUserName", username);
+    console.log("clusterPassword", password);
+    const response = await axios.get(
+      `${openshiftLoginURL}/login?clusterUrl=${clusterUrl}&password=${password}&username=${username}`
+    );
 
     console.log("response", response);
-   
+
     return response.data;
   } catch (error) {
     console.error("Error in get openshiftClusterLogin User:", error);

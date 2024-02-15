@@ -157,6 +157,9 @@ const DashboardTopBar = () => {
   };
 
   useEffect(() => {
+    // console.log("dashboard usefeecet called--->");
+    // setInfraActiveTab(0);
+    // setInfraNodeActiveTab(0);
     const currentDate = new Date();
     if (endDate !== null || previousStartDate) {
       console.log("HISTORY FROM USEEFFECT");
@@ -227,35 +230,30 @@ const DashboardTopBar = () => {
 
   const handleInfraTabChange = (event, newValue) => {
     if (newValue === 0) {
-      navigate("/mainpage/infraPod");
-    } else if (newValue === 1) {
       navigate("/mainpage/infraNode");
+    } else if (newValue === 1) {
+      navigate("/mainpage/infraPod");
     }
     setInfraActiveTab(newValue);
   };
 
-  const handlePodTabChange = (event,newValue) =>{
-    if(newValue === 0){
+  const handlePodTabChange = (event, newValue) => {
+    if (newValue === 0) {
       navigate("/mainpage/infraPod");
-    }else if (newValue === 1){
+    } else if (newValue === 1) {
       navigate("/mainpage/infraPod/podMemory");
     }
     setInfraPodActiveTab(newValue);
-  }
+  };
 
-
-
-  const handleNodeTabChange  = (event,newValue) =>{
-    if(newValue === 0){
+  const handleNodeTabChange = (event, newValue) => {
+    if (newValue === 0) {
       navigate("/mainpage/infraNode");
-    }else if (newValue === 1){
+    } else if (newValue === 1) {
       navigate("/mainpage/infraNode/nodeMemory");
     }
     setInfraNodeActiveTab(newValue);
-  }
-
-
-
+  };
 
   const handleDashboardOptionSelect = (option) => {
     console.log("Selected option:", option);
@@ -311,8 +309,6 @@ const DashboardTopBar = () => {
     }
     setNavActiveTab(newValue);
   };
-
-
 
   const handleFilterClick = () => {
     // setFilterDialogOpen(true);
@@ -569,10 +565,13 @@ const DashboardTopBar = () => {
                     </Tabs>
                   ) : (
                     <div>
-                      {window.location.pathname === "/mainpage/infraPod" ||
-                      window.location.pathname === "/mainpage/infraPod/podMemory"||
-                      window.location.pathname === "/mainpage/infraNode"||
-                      window.location.pathname === "/mainpage/infraNode/nodeMemory" ? (
+                      {
+                      window.location.pathname === "/mainpage/infraPod" ||
+                      window.location.pathname ===
+                        "/mainpage/infraPod/podMemory" ||
+                      window.location.pathname === "/mainpage/infraNode" ||
+                      window.location.pathname ===
+                        "/mainpage/infraNode/nodeMemory" ? (
                         <Tabs
                           value={InfraActiveTab}
                           onChange={handleInfraTabChange}
@@ -584,8 +583,14 @@ const DashboardTopBar = () => {
                           textColor="inherit"
                           indicatorColor="primary"
                         >
-                          <Tab label="Infra Pod Details" sx={{ color: "#FFF" }} />
-                          <Tab label="Infra Node Details" sx={{ color: "#FFF" }} />
+                          <Tab
+                            label="Infra Node Details"
+                            sx={{ color: "#FFF" }}
+                          />
+                          <Tab
+                            label="Infra Pod Details"
+                            sx={{ color: "#FFF" }}
+                          />
                         </Tabs>
                       ) : null}
                     </div>
@@ -1009,49 +1014,47 @@ const DashboardTopBar = () => {
             </Tabs>
           ) : null}
 
+          {isSmallScreen ? null : window.location.pathname ===
+              "/mainpage/infraNode" ||
+            window.location.pathname === "/mainpage/infraNode/nodeMemory" ? (
+            <Tabs
+              value={InfraNodeActiveTab}
+              onChange={handleNodeTabChange}
+              TabIndicatorProps={{
+                sx: {
+                  marginTop: "-60px",
+                  borderRadius: 3,
+                  backgroundColor: colors.tabIndicator[500],
+                },
+              }}
+              textColor="inherit"
+              indicatorColor="primary"
+            >
+              <Tab label="Cpu Metrics" sx={{ color: "#FFF" }} />
+              <Tab label="Memory Metrics" sx={{ color: "#FFF" }} />
+            </Tabs>
+          ) : null}
 
-            {isSmallScreen ? null : window.location.pathname ===
-                "/mainpage/infraPod" ||
-              window.location.pathname === "/mainpage/infraPod/podMemory" ? (
-              <Tabs
-                value={InfraPodActiveTab}
-                onChange={handlePodTabChange}
-                TabIndicatorProps={{
-                  sx: {
-                    marginTop: "-60px",
-                    borderRadius: 3,
-                    backgroundColor: colors.tabIndicator[500],
-                  },
-                }}
-                textColor="inherit"
-                indicatorColor="primary"
-              >
-                <Tab label="PodCpuMetric" sx={{ color: "#FFF" }} />
-                <Tab label="PodMemoryMetric" sx={{ color: "#FFF" }} />
-              </Tabs>
-            ) : null}
-
-{isSmallScreen ? null : window.location.pathname ===
-                "/mainpage/infraNode" ||
-              window.location.pathname === "/mainpage/infraNode/nodeMemory" ? (
-              <Tabs
-                value={InfraNodeActiveTab}
-                onChange={handleNodeTabChange}
-                TabIndicatorProps={{
-                  sx: {
-                    marginTop: "-60px",
-                    borderRadius: 3,
-                    backgroundColor: colors.tabIndicator[500],
-                  },
-                }}
-                textColor="inherit"
-                indicatorColor="primary"
-              >
-                <Tab label="NodeCpuMetric" sx={{ color: "#FFF" }} />
-                <Tab label="NodeMemoryMetric" sx={{ color: "#FFF" }} />
-              </Tabs>
-            ) : null}
-        
+          {isSmallScreen ? null : window.location.pathname ===
+              "/mainpage/infraPod" ||
+            window.location.pathname === "/mainpage/infraPod/podMemory" ? (
+            <Tabs
+              value={InfraPodActiveTab}
+              onChange={handlePodTabChange}
+              TabIndicatorProps={{
+                sx: {
+                  marginTop: "-60px",
+                  borderRadius: 3,
+                  backgroundColor: colors.tabIndicator[500],
+                },
+              }}
+              textColor="inherit"
+              indicatorColor="primary"
+            >
+              <Tab label="Cpu Metrics" sx={{ color: "#FFF" }} />
+              <Tab label="Memory Metrics" sx={{ color: "#FFF" }} />
+            </Tabs>
+          ) : null}
 
           {window.location.pathname === "/mainpage/apm" ? (
             // <Drawer anchor="right" open={openDrawer} onClose={toggleDrawer}>

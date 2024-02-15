@@ -12,10 +12,6 @@ import {
   Select,
   MenuItem,
   Button,
-  Tabs,
-  Tab,
-  AppBar,
-  Toolbar,
   Typography,
 } from "@mui/material";
 import {
@@ -24,23 +20,25 @@ import {
   getClusterListAllProjects,
 } from "../../api/ClusterApiService";
 import Loading from "../../global/Loading/Loading";
-import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import LoadingOverlay from "react-loading-overlay";
-import FadeLoader from 'react-spinners/FadeLoader'
 
 const ClusterInfo = () => {
-  const [data2, setData] = useState([]);
+  const [data, setData] = useState([]);
   const [namespaceOptions, setNamespaceOptions] = useState([]);
+  const [selectedApplicationType, setSelectedApplicationType] = useState("all");
+  const [selectedInstrumentedStatus, setSelectedInstrumentedStatus] =
+    useState("all");
+
   const [selectedNamespace, setSelectedNamespace] = useState("all");
-  const [selectedInstrumented, setSelectedInstrumented] = useState("all");
+  // const [selectedInstrumented, setSelectedInstrumented] = useState("all");
   const [loading, setLoading] = useState(false);
   const [InstrumentLoading, setInstrumentLoadig] = useState(false);
   const [changeInstrument, setChangeInstrument] = useState(false);
-  const [tabValue, setTabValue] = useState(0);
+  // const [tabValue, setTabValue] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
-  const [message,setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     ServiceListsApiCall();
@@ -69,27 +67,53 @@ const ClusterInfo = () => {
       console.error("Error fetching data:", error);
       setLoading(false);
       setInstrumentLoadig(false);
-
     }
     console.log("ServiceListsApiCall Ended");
   }, [changeInstrument]);
 
-  const filteredData =
-    data2.length > 0 &&
-    data2.filter(
-      (item) =>
-        (selectedNamespace === "all" ||
-          item.namespaceName === selectedNamespace) &&
-        (selectedInstrumented === "all" ||
-          item.instrumented === selectedInstrumented)
+  const filteredData = data.filter((item) => {
+    let namespaceFilterCondition = true;
+    if (selectedApplicationType === "openshift") {
+      namespaceFilterCondition = item.namespaceName.includes("openshift");
+    } else if (selectedApplicationType === "normal") {
+      namespaceFilterCondition = !item.namespaceName.includes("openshift");
+    }
+
+    const selectedNamespaceCondition =
+      selectedNamespace === "all" || item.namespaceName === selectedNamespace;
+
+    let instrumentedStatusFilterCondition = true;
+    if (selectedInstrumentedStatus === "instrumented") {
+      instrumentedStatusFilterCondition = item.instrumented === "true";
+    } else if (selectedInstrumentedStatus === "non-instrumented") {
+      instrumentedStatusFilterCondition = item.instrumented !== "true";
+    }
+
+    return (
+      namespaceFilterCondition &&
+      selectedNamespaceCondition &&
+      instrumentedStatusFilterCondition
     );
+  });
+
+  const openShiftNamespaces = namespaceOptions.filter((namespace) =>
+    namespace.includes("openshift")
+  );
+  const normalNamespaces = namespaceOptions.filter(
+    (namespace) => !namespace.includes("openshift")
+  );
+
+  const handleInstrumentedStatusChange = (event) => {
+    setSelectedInstrumentedStatus(event.target.value);
+  };
+
+  const handleApplicationTypeChange = (event) => {
+    setSelectedApplicationType(event.target.value);
+    setSelectedNamespace("all"); // Reset namespace selection
+  };
 
   const handleNamespaceChange = (event) => {
     setSelectedNamespace(event.target.value);
-  };
-
-  const handleInstrumentedChange = (event) => {
-    setSelectedInstrumented(event.target.value);
   };
 
   const handleInstrument = async (deploymentName, namespace) => {
@@ -101,7 +125,9 @@ const ClusterInfo = () => {
     if (instrumentresponse.status === 200) {
       ServiceListsApiCall();
       setChangeInstrument(!changeInstrument);
-      setMessage("Instrumentation in Progress: Please wait for a few minutes ...");
+      setMessage(
+        "Instrumentation in Progress: Please wait for a few minutes ..."
+      );
       setInstrumentLoadig(true);
       // alert("Instrumentation in Progress: Please wait for a few minutes !!!");
     } else {
@@ -119,7 +145,9 @@ const ClusterInfo = () => {
     if (instrumentresponse.status === 200) {
       ServiceListsApiCall();
       setChangeInstrument(!changeInstrument);
-      setMessage("Uninstrumentation in Progress: Please wait for a few minutes ...");
+      setMessage(
+        "Uninstrumentation in Progress: Please wait for a few minutes ..."
+      );
       setInstrumentLoadig(true);
       // alert("Uninstrumentation in Progress: Please wait for a few minutes !!!");
     } else {
@@ -132,16 +160,17 @@ const ClusterInfo = () => {
   return (
     <div>
       <LoadingOverlay
-      active={InstrumentLoading}
-      // spinner={<FadeLoader style={{marginLeft:"20px"}} color="white" />}
-      spinner
-      styles={{
-        overlay: (base) => ({
-          ...base,
-          background: 'black'
-        })
-      }}
-      text={message}>
+        active={InstrumentLoading}
+        // spinner={<FadeLoader style={{marginLeft:"20px"}} color="white" />}
+        spinner
+        styles={{
+          overlay: (base) => ({
+            ...base,
+            background: "black",
+          }),
+        }}
+        text={message}
+      >
         {loading ? (
           <Loading />
         ) : emptyMessage ? (
@@ -152,7 +181,6 @@ const ClusterInfo = () => {
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
-              // height: "73vh",
             }}
           >
             <Typography variant="h5" fontWeight={"600"}>
@@ -166,7 +194,6 @@ const ClusterInfo = () => {
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
-              // height: "80vh",
             }}
           >
             <Typography variant="h5" fontWeight={"600"}>
@@ -181,63 +208,133 @@ const ClusterInfo = () => {
                 justifyContent: "flex-end",
               }}
             >
-              <FormControl>
+              <div
+                style={{
+                  alignItems: "center",
+                  marginTop: "5px",
+                  marginRight: "10px",
+                }}
+              >
                 <label
                   style={{
-                    fontSize: "12px",
-                    color: "#FFF",
+                    fontSize: "10px",
                   }}
                 >
-                  NameSpace
+                  FilterBy
                 </label>
-                <Select
-                  style={{
-                    width: "170px",
-                    backgroundColor: "#FFF",
-                    height: "40px",
-                    marginBottom: "10px",
-                  }}
-                  labelId="namespace-select-label"
-                  id="namespace-select"
-                  value={selectedNamespace}
-                  onChange={handleNamespaceChange}
-                >
-                  <MenuItem value="all">All</MenuItem>
+                <div>
+                  <FormControl>
+                    <Select
+                      style={{
+                        width: "170px",
+                        backgroundColor: "#FFF",
+                        height: "40px",
+                        marginBottom: "10px",
+                      }}
+                      labelId="application-type-label"
+                      id="application-type"
+                      value={selectedApplicationType}
+                      onChange={handleApplicationTypeChange}
+                    >
+                      <MenuItem value="all">APPLICATION</MenuItem>
+                      <MenuItem value="openshift">
+                        OpenShift Applications
+                      </MenuItem>
+                      <MenuItem value="normal">Normal Applications</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
 
-                  {namespaceOptions.map((namespace, index) => (
-                    <MenuItem key={index} value={namespace}>
-                      {namespace}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ marginLeft: "10px" }}>
+              <div
+                style={{
+                  alignItems: "center",
+                  marginTop: "5px",
+                  marginRight: "10px",
+                }}
+              >
                 <label
                   style={{
-                    fontSize: "12px",
-                    color: "#FFF",
+                    fontSize: "10px",
                   }}
                 >
-                  Instrumented
+                  FilterBy
                 </label>
-                <Select
+                <div>
+                  <FormControl>
+                    <Select
+                      style={{
+                        width: "170px",
+                        backgroundColor: "#FFF",
+                        height: "40px",
+                        marginBottom: "10px",
+                      }}
+                      labelId="namespace-label"
+                      id="namespace"
+                      value={selectedNamespace}
+                      onChange={handleNamespaceChange}
+                    >
+                      <MenuItem value="all">NAMESPACE</MenuItem>
+                      {selectedApplicationType === "openshift" &&
+                        openShiftNamespaces.map((namespace, index) => (
+                          <MenuItem key={index} value={namespace}>
+                            {namespace}
+                          </MenuItem>
+                        ))}
+                      {selectedApplicationType === "normal" &&
+                        normalNamespaces.map((namespace, index) => (
+                          <MenuItem key={index} value={namespace}>
+                            {namespace}
+                          </MenuItem>
+                        ))}
+                      {selectedApplicationType === "all" &&
+                        namespaceOptions.map((namespace, index) => (
+                          <MenuItem key={index} value={namespace}>
+                            {namespace}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  alignItems: "center",
+                  marginTop: "5px",
+                  marginRight: "10px",
+                }}
+              >
+                <label
                   style={{
-                    width: "170px",
-                    backgroundColor: "#FFF",
-                    height: "40px",
-                    marginBottom: "10px",
-                    marginRight: "15px",
+                    fontSize: "10px",
                   }}
-                  labelId="instrumented-select-label"
-                  id="instrumented-select"
-                  value={selectedInstrumented}
-                  onChange={handleInstrumentedChange}
                 >
-                  <MenuItem value="all">All</MenuItem>
-                  <MenuItem value="true">Instrumented</MenuItem>
-                  <MenuItem value="false">Non-Instrumented</MenuItem>
-                </Select>
-              </FormControl>
+                  FilterBy
+                </label>
+                <div>
+                  <FormControl>
+                    <Select
+                      style={{
+                        width: "170px",
+                        backgroundColor: "#FFF",
+                        height: "40px",
+                        marginBottom: "10px",
+                      }}
+                      labelId="instrumented-status-label"
+                      id="instrumented-status"
+                      value={selectedInstrumentedStatus}
+                      onChange={handleInstrumentedStatusChange}
+                    >
+                      <MenuItem value="all">STATUS</MenuItem>
+                      <MenuItem value="instrumented">Instrumented</MenuItem>
+                      <MenuItem value="non-instrumented">
+                        Non-Instrumented
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -271,8 +368,16 @@ const ClusterInfo = () => {
                       <TableCell
                         sx={{ color: "white", backgroundColor: "#00888C" }}
                       >
-                        Instrumented
+                        Instrument Status
                       </TableCell>
+
+                      {selectedApplicationType !== "openshift" && (
+                        <TableCell
+                          sx={{ color: "white", backgroundColor: "#00888C" }}
+                        >
+                          Action
+                        </TableCell>
+                      )}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -284,38 +389,43 @@ const ClusterInfo = () => {
                           <TableCell>{item.createdTime}</TableCell>
                           <TableCell>{item.serviceName || "Nil"}</TableCell>
                           <TableCell>
-                            {item.instrumented === "true" ? (
-                              <Button
-                                sx={{
-                                  backgroundColor: "red",
-                                  "&:hover": { backgroundColor: "red" },
-                                }}
-                                onClick={() =>
-                                  handleUnInstrument(
-                                    item.deploymentName,
-                                    item.namespaceName
-                                  )
-                                }
-                              >
-                                UnInstrument
-                              </Button>
-                            ) : (
-                              <Button
-                                sx={{
-                                  backgroundColor: "green",
-                                  "&:hover": { backgroundColor: "green" },
-                                }}
-                                onClick={() =>
-                                  handleInstrument(
-                                    item.deploymentName,
-                                    item.namespaceName
-                                  )
-                                }
-                              >
-                                Instrument
-                              </Button>
-                            )}
+                            {item.instrumented === "true"
+                              ? "Instrumented"
+                              : "Un-Instrumented"}
                           </TableCell>
+                          {selectedApplicationType !== "openshift" && (
+                            <TableCell>
+                              <>
+                                {item.instrumented === "true" ? (
+                                  <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() =>
+                                      handleUnInstrument(
+                                        item.deploymentName,
+                                        item.namespaceName
+                                      )
+                                    }
+                                  >
+                                    Uninstrument
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() =>
+                                      handleInstrument(
+                                        item.deploymentName,
+                                        item.namespaceName
+                                      )
+                                    }
+                                  >
+                                    Instrument
+                                  </Button>
+                                )}
+                              </>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))}
                   </TableBody>
