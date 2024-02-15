@@ -122,7 +122,7 @@ function Row({ row }) {
       </TableRow>
 
       {selectedRule && (
-        <RuleDetailsPopup rule={selectedRule} serviceName={row.serviceName} />
+        <RuleDetailsPopup rule={selectedRule} serviceName={row.serviceName} onClose={handleOpenPopup} />
       )}
     </>
   );
