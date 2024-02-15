@@ -239,7 +239,8 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
                         height: "40px",
                           marginBottom: "10px",
                         }}
@@ -275,7 +276,8 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
                         height: "40px",
                           marginBottom: "10px",
                         }}
@@ -327,7 +329,8 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
                         height: "40px",
                           marginBottom: "10px",
                         }}

@@ -189,6 +189,7 @@ const RulesDetails = () => {
   const [rows, setRows] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
