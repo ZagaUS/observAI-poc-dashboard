@@ -9,6 +9,7 @@ import {
   TableRow,
   Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import Loading from "../../global/Loading/Loading";
@@ -16,6 +17,7 @@ import PodMetricDashboard from "./PodMetricDashboard";
 // import { PodMetricData } from '../Infra/PodStaticData';
 import { getPodMetricDataPaginated } from "../../api/InfraApiService";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
+import { tokens } from "../../theme";
 
 const PodCpuMetric = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,6 +37,9 @@ const PodCpuMetric = () => {
     needHistoricalData,
     podCurrentPage,
   } = useContext(GlobalContext);
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
@@ -268,8 +273,8 @@ const PodCpuMetric = () => {
                         aria-label="a dense table"
                         sx={{
                           "& .MuiTableRow-root:hover": {
-                            backgroundColor: "lightgrey",
-                          },
+                            backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
+                            },
                         }}
                       >
                         <TableBody>

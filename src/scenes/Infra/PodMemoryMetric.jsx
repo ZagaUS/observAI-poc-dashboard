@@ -11,11 +11,13 @@ import {
   TableRow,
   Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 // import { PodMetricData } from '../Infra/PodStaticData';
 import Loading from "../../global/Loading/Loading";
 import MemoryMetricDashboard from "./MemoryMetricDashboard";
 import { getPodMetricDataPaginated } from "../../api/InfraApiService";
+import { tokens } from "../../theme";
 
 export const PodMemoryMetric = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,7 +37,8 @@ export const PodMemoryMetric = () => {
     podCurrentPage,
     setPodCurrentPage,
   } = useContext(GlobalContext);
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
     "(max-width: 1000px) and (orientation: landscape)"
@@ -279,7 +282,7 @@ export const PodMemoryMetric = () => {
                           aria-label="a dense table"
                           sx={{
                             "& .MuiTableRow-root:hover": {
-                              backgroundColor: "lightgrey",
+                              backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
                             },
                           }}
                         >

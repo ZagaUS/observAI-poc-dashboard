@@ -21,7 +21,8 @@ const PodDashboardCharts = () => {
         keplerCurrentPage,
         setKeplerCurrentPage
     } = useContext(GlobalContext);
-
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
     const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
     const isLandscape = useMediaQuery(
         "(max-width: 1000px) and (orientation: landscape)"
@@ -179,7 +180,7 @@ const PodDashboardCharts = () => {
                                 })
                             }}>
                                 <CardContent>
-                                    <Box style={{ display: "flex", flexDirection: "row", }} >
+                                    <Box style={{ display: "flex", flexDirection: "row", color: theme.palette.mode === "dark" ? "#FFF" : "#000", }} >
                                         {hasContainerPowerMetrics ? (
                                             <>
                                                 
@@ -212,7 +213,7 @@ const PodDashboardCharts = () => {
                                         <div style={{ width: '35%', maxHeight: '500px', overflowY: 'auto' }}>
                                             <Table size="small" aria-label="a dense table" sx={{
                                                 "& .MuiTableRow-root:hover": {
-                                                    backgroundColor: 'lightgrey',
+                                                    backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
                                                 }
                                             }} >
                                                 <TableBody>
