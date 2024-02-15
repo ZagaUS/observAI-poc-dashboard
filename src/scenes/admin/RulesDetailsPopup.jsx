@@ -10,10 +10,10 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format, parseISO, toISOString } from 'date-fns';
 
-const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
+const RuleDetailsPopup = ({ rule, serviceName }) => {
     const [open, setOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [editedRules, setEditedRules] = useState({...rule});
+    const [editedRules, setEditedRules] = useState({});
     const [loading, setLoading] = useState(true);
     const severityChanges = ['ERROR', 'SEVERE', 'WARN', 'INFO']
     const constraints = ['greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual']
@@ -22,27 +22,14 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
+    console.log("IS OPEN---", open)
+
     const handleClose = () => {
         setOpen(false);
-        setIsEditing(false);
         // if (onClose) {
         //   onClose();
         // }
     };
-
-  //   const handleClose = () => {
-  //     try {
-  //       setLoading(true);
-  //       setOpen(false);
-  //       setIsEditing(false);
-  //       if (onClose) {
-  //         onClose();
-  //       }
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setLoading(false);
-  //     }      
-  // };
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -82,7 +69,12 @@ const RuleDetailsPopup = ({ rule, onClose, serviceName }) => {
 
     useEffect(() => {
       setOpen(true);
-      setIsEditing(false);
+      setEditedRules(rule);
+      console.log("USEEFFECT CALLED")
+      return () => {
+        setIsEditing(false);
+      };
+      
   }, [rule]);
 
   return (

@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import ReactApexChart from "react-apexcharts";
+import { tokens } from "../../theme";
 
 const PodMetricDashboard = ({ podData }) => {
   const [filteredData, setFilteredData] = useState([]);
   const { isCollapsed, podCurrentPage, setPodCurrentPage } =
     useContext(GlobalContext);
   const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
@@ -162,11 +164,11 @@ const PodMetricDashboard = ({ podData }) => {
           Next
         </Button>
         {podData.title ? (
-          <p style={{ marginTop: "0px" }} className="chart-title">
+          <p style={{ marginTop: "0px", color: theme.palette.mode === "dark" ? "#FFF" : "#000" }} className="chart-title">
             {podData.title}
           </p>
         ) : (
-          <p style={{ marginTop: "0px" }} className="chart-title">
+          <p style={{ marginTop: "0px", color: theme.palette.mode === "dark" ? "#FFF" : "#000" }} className="chart-title">
             {podData.title}
           </p>
         )}

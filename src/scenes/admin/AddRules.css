@@ -18,6 +18,6 @@
   outline: none;
   border-color: #007bff; /* Example focus color */
 /* } */
-*/ .custom-input:hover {
+.custom-input:hover {
   border-color: black; /* Change border color on hover */
 }
