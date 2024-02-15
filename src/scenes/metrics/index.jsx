@@ -222,8 +222,7 @@ const Metrics = () => {
               alignItems: "center",
               width: "100%",
               height: "80vh",
-              color: "black"
-            }}
+             }}
           >
             <Typography variant="h5" fontWeight={"600"}>
               {emptyMessage}
