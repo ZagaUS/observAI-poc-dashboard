@@ -23,7 +23,9 @@ import {
 } from "../../api/LoginApiService";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
+import { useTheme } from '@mui/material/styles';
 
+// import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
   const navigate = useNavigate();
   const [ClusterData, setClusterData] = useState([]);
@@ -33,6 +35,7 @@ const AdminTopBar = () => {
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
   const [deleted,SetDeleted] = useState(false);
+  const theme = useTheme(); // Define the theme object using useTheme hook
 
 
   const handleDeleteRow = async(clusterId,clusterUsername) => {
@@ -150,10 +153,11 @@ const AdminTopBar = () => {
           color="primary"
           onClick={handleAddCluster}
           sx={{
-            fontWeight: "bold",
-            backgroundColor: "lightgray",
-            marginRight: "20px",
-            "&:hover": { backgroundColor: "lightgray" },
+            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+            marginRight: '20px',
+            '&:hover': {
+              backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+            },
           }}
         >
           Add Cluster
@@ -232,9 +236,11 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                          marginRight: '20px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          },
                         }}
                         onClick={() =>
                           handleEditRow(
@@ -252,10 +258,11 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          marginLeft: "10px",
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                          marginRight: '20px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          },
                         }}
                         onClick={handleSaveRow}
                       >
@@ -265,10 +272,11 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          marginLeft: "10px",
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                          marginRight: '20px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          },
                         }}
                         onClick={() =>
                           handleDeleteRow(row.clusterId, row.clusterUsername)
@@ -283,9 +291,11 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                          marginRight: '20px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          },
                         }}
                         onClick={
                           () =>
@@ -299,12 +309,13 @@ const AdminTopBar = () => {
                         View
                       </Button>
                       <Button
-                        sx={{
-                          marginLeft: "10px",
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
-                        }}
+                       sx={{
+                        backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                        marginRight: '20px',
+                        '&:hover': {
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                        },
+                      }}
                         variant="contained"
                         color="primary"
                         onClick={() =>
@@ -323,10 +334,11 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          marginLeft: "10px",
-                          backgroundColor: "lightgrey",
-                          marginRight: "20px",
-                          "&:hover": { backgroundColor: "lightgrey" },
+                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
+                          marginRight: '20px',
+                          '&:hover': {
+                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          },
                         }}
                         onClick={() =>
                           handleDeleteRow(row.clusterId, row.clusterUsername)

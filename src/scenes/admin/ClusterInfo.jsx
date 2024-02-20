@@ -22,6 +22,7 @@ import {
 import Loading from "../../global/Loading/Loading";
 import { useCallback } from "react";
 import LoadingOverlay from "react-loading-overlay";
+import { useTheme } from '@mui/material/styles';
 
 const ClusterInfo = () => {
   const [data, setData] = useState([]);
@@ -39,6 +40,7 @@ const ClusterInfo = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
   const [message, setMessage] = useState("");
+  const theme = useTheme(); // Define the theme object using useTheme hook
 
   useEffect(() => {
     ServiceListsApiCall();
@@ -237,7 +239,9 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          height: "40px",
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
+                        height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="application-type-label"
@@ -245,7 +249,7 @@ const ClusterInfo = () => {
                         value={selectedApplicationType}
                         onChange={handleApplicationTypeChange}
                       >
-                        <MenuItem value="all">APPLICATIONS</MenuItem>
+                        <MenuItem value="all" >APPLICATIONS</MenuItem>
                         <MenuItem value="openshift">OpenShift</MenuItem>
                         <MenuItem value="normal">Applications</MenuItem>
                       </Select>
@@ -272,7 +276,9 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          height: "40px",
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
+                        height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="namespace-label"
@@ -323,12 +329,15 @@ const ClusterInfo = () => {
                         style={{
                           width: "170px",
                           backgroundColor: "#FFF",
-                          height: "40px",
+                          // color: theme.palette.mode === 'light' ? 'white' : 'black',
+                          color: 'black',
+                        height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="instrumented-status-label"
                         id="instrumented-status"
-                        value={selectedInstrumentedStatus}
+                        
+                      value={selectedInstrumentedStatus}
                         onChange={handleInstrumentedStatusChange}
                       >
                         <MenuItem value="all">STATUS</MenuItem>
