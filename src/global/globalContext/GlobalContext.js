@@ -71,14 +71,16 @@ const GlobalContextProvider = ({ children }) => {
 
   const [logSelectedService, setLogSelectedService] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
-  const [InfraActiveTab,setInfraActiveTab] = useState(0);
-  const [InfraPodActiveTab,setInfraPodActiveTab] = useState(0);
-  const [InfraNodeActiveTab,setInfraNodeActiveTab] = useState(0);
+  const [InfraActiveTab, setInfraActiveTab] = useState(0);
+  const [InfraInfoActiveTab, setInfraInfoActiveTab] = useState(0);
+  const [InfraPodActiveTab, setInfraPodActiveTab] = useState(0);
+  const [InfraNodeActiveTab, setInfraNodeActiveTab] = useState(0);
   const [keplerActiveTab, setKeplerActiveTab] = useState(0);
   const [apmActiveTab, setApmActiveTab] = useState(0);
   const [keplerCurrentPage, setKeplerCurrentPage] = useState(1);
   const [podCurrentPage, setPodCurrentPage] = useState(1);
   const [nodeCurrentPage, setNodeCurrentPage] = useState(1);
+  const [logCurrentPage, setLogCurrentPage] = useState(1);
   const [notificationCount, setNotificationCount] = useState(0);
   const [alertResponse, setAlertResponse] = useState({
     metric: [],
@@ -213,6 +215,8 @@ const GlobalContextProvider = ({ children }) => {
         setApmActiveTab,
         InfraActiveTab,
         setInfraActiveTab,
+        InfraInfoActiveTab,
+        setInfraInfoActiveTab,
         InfraPodActiveTab,
         setInfraPodActiveTab,
         InfraNodeActiveTab,
@@ -223,6 +227,8 @@ const GlobalContextProvider = ({ children }) => {
         setPodCurrentPage,
         nodeCurrentPage,
         setNodeCurrentPage,
+        logCurrentPage,
+        setLogCurrentPage,
         notificationCount,
         setNotificationCount,
         alertResponse,

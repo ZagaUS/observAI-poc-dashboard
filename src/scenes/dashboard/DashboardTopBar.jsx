@@ -43,23 +43,8 @@ const DashboardTopBar = () => {
   const navigate = useNavigate();
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [enabled, setEnabled] = useState(false);
-
-  // const {
-  //   lookBackVal,
-  //   setLookBackVal,
-  //   setNeedFilterCall,
-  //   setTraceGlobalError,
-  //   setTraceGlobalEmpty,
-  //   setTraceData,
-  //   setSelectedTrace,
-  //   setRecentTrace,
-  //   activeTab,
-  //   setActiveTab,
-  //   setGlobalLogData,
-  //   setNeedLogFilterCall,
-  //   setRecentLogData,
-  // } = useContext(GlobalContext);
   const [refresh, setRefresh] = useState(false);
+
   const {
     lookBackVal,
     setLookBackVal,
@@ -111,6 +96,8 @@ const DashboardTopBar = () => {
     setInfraPodActiveTab,
     InfraNodeActiveTab,
     setInfraNodeActiveTab,
+    InfraInfoActiveTab,
+    setInfraInfoActiveTab,
   } = useContext(GlobalContext);
 
   const [logFilterDialogOpen, setLogFilterDialogOpen] = useState(false);
@@ -230,11 +217,26 @@ const DashboardTopBar = () => {
 
   const handleInfraTabChange = (event, newValue) => {
     if (newValue === 0) {
-      navigate("/mainpage/infraNode");
+      navigate("/mainpage/infraInfo");
     } else if (newValue === 1) {
+      navigate("/mainpage/infraNode");
+    } else if (newValue === 2) {
       navigate("/mainpage/infraPod");
     }
     setInfraActiveTab(newValue);
+  };
+
+  const handleInformationTabChange = (event, newValue) => {
+    if (newValue === 0) {
+      navigate("/mainpage/infraInfo");
+    } else if (newValue === 1) {
+      navigate("/mainpage/infraInfo/cpuUtilization");
+    } else if (newValue === 2) {
+      navigate("/mainpage/infraInfo/alerts");
+    } else if (newValue === 3) {
+      navigate("/mainpage/infraInfo/events");
+    }
+    setInfraInfoActiveTab(newValue);
   };
 
   const handlePodTabChange = (event, newValue) => {
@@ -565,13 +567,19 @@ const DashboardTopBar = () => {
                     </Tabs>
                   ) : (
                     <div>
-                      {
-                      window.location.pathname === "/mainpage/infraPod" ||
+                      {window.location.pathname === "/mainpage/infraPod" ||
                       window.location.pathname ===
                         "/mainpage/infraPod/podMemory" ||
                       window.location.pathname === "/mainpage/infraNode" ||
                       window.location.pathname ===
-                        "/mainpage/infraNode/nodeMemory" ? (
+                        "/mainpage/infraNode/nodeMemory" ||
+                      window.location.pathname === "/mainpage/infraInfo" ||
+                      window.location.pathname ===
+                        "/mainpage/infraInfo/cpuUtilization" ||
+                      window.location.pathname ===
+                        "/mainpage/infraInfo/alerts" ||
+                      window.location.pathname ===
+                        "/mainpage/infraInfo/events" ? (
                         <Tabs
                           value={InfraActiveTab}
                           onChange={handleInfraTabChange}
@@ -583,6 +591,7 @@ const DashboardTopBar = () => {
                           textColor="inherit"
                           indicatorColor="primary"
                         >
+                          <Tab label="Informations" sx={{ color: "#FFF" }} />
                           <Tab
                             label="Infra Node Details"
                             sx={{ color: "#FFF" }}
@@ -1053,6 +1062,31 @@ const DashboardTopBar = () => {
             >
               <Tab label="Cpu Metrics" sx={{ color: "#FFF" }} />
               <Tab label="Memory Metrics" sx={{ color: "#FFF" }} />
+            </Tabs>
+          ) : null}
+
+          {isSmallScreen ? null : window.location.pathname ===
+              "/mainpage/infraInfo" ||
+            window.location.pathname === "/mainpage/infraInfo/cpuUtilization" ||
+            window.location.pathname === "/mainpage/infraInfo/alerts" ||
+            window.location.pathname === "/mainpage/infraInfo/events" ? (
+            <Tabs
+              value={InfraInfoActiveTab}
+              onChange={handleInformationTabChange}
+              TabIndicatorProps={{
+                sx: {
+                  marginTop: "-60px",
+                  borderRadius: 3,
+                  backgroundColor: colors.tabIndicator[500],
+                },
+              }}
+              textColor="inherit"
+              indicatorColor="primary"
+            >
+              <Tab label="Status" sx={{ color: "#FFF" }} />
+              <Tab label="CPU     Utilizations" sx={{ color: "#FFF" }} />
+              <Tab label="Alerts" sx={{ color: "#FFF" }} />
+              <Tab label="Events" sx={{ color: "#FFF" }} />
             </Tabs>
           ) : null}
 

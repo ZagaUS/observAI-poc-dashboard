@@ -46,7 +46,7 @@ import Loading from "../../global/Loading/Loading";
 import { searchLogs } from "../../api/LogApiService";
 import PaginationItem from "@mui/material/PaginationItem";
 import CloseIcon from "@mui/icons-material/Close";
-import { debounce,cancel } from 'lodash';
+import { debounce, cancel } from "lodash";
 
 import "./Loglists.css";
 import th from "date-fns/locale/th";
@@ -95,7 +95,7 @@ const sortOrderOptions = [
 
 const Loglists = () => {
   const [selectedOption, setSelectedOption] = useState("error");
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [totalPageCount, setTotalPageCount] = useState(0);
   const [selectedLogData, setSelectedLogData] = useState([]);
   const [logData, setLogData] = useState([]);
@@ -110,6 +110,8 @@ const Loglists = () => {
     globalLogData,
     logFilterApiBody,
     needLogFilterCall,
+    setNeedLogFilterCall,
+
     logSummaryService,
     logRender,
     setTraceRender,
@@ -128,8 +130,13 @@ const Loglists = () => {
     setNeedFilterCall,
     setTraceDisplayService,
     setClearTraceFilter,
-    setApmActiveTab
+    setApmActiveTab,
+    logCurrentPage,
+    setLogCurrentPage,
   } = useContext(GlobalContext);
+
+  console.log("current page", logCurrentPage);
+
   const navigate = useNavigate();
 
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
@@ -248,61 +255,6 @@ const Loglists = () => {
 
   function createData(severity, time, traceid, serviceName, message, index) {
     traceid = traceid === "" ? "No Trace ID" : traceid;
-
-    // const actionButton = (
-    //   <div>
-    //     <Box sx={{ display: "flex", flexDirection: "row" }}>
-    //       <Tooltip>
-    //         <span>
-    //           <Button
-    //             sx={{
-    //               m: "8px",
-    //               backgroundColor: colors.primary[400],
-    //               color: colors.textColor[500],
-    //               "&:hover": {
-    //                 backgroundColor: "#ffffff",
-    //                 color: "black",
-    //               },
-    //             }}
-    //             variant="contained"
-    //             disabled={traceid === "No Trace ID"}
-    //             onClick={() =>
-    //               traceid !== "" ? handleLogToTrace(traceid) : handleNoTrace()
-    //             }
-    //           >
-    //             Trace
-    //           </Button>
-    //         </span>
-    //       </Tooltip>
-
-    //       <Tooltip>
-    //         <Button
-    //           sx={{
-    //             m: "8px",
-    //             backgroundColor: colors.primary[400],
-    //             color: colors.textColor[500],
-    //             "&:hover": {
-    //               backgroundColor: "#ffffff",
-    //               color: "black",
-    //             },
-    //           }}
-    //           variant="contained"
-    //           onClick={() =>
-    //             handleViewButtonClick(
-    //               severity,
-    //               time,
-    //               traceid,
-    //               serviceName,
-    //               message
-    //             )
-    //           }
-    //         >
-    //           View
-    //         </Button>
-    //       </Tooltip>
-    //     </Box>
-    //   </div>
-    // );
 
     const actionButton = (
       <div>
@@ -441,8 +393,9 @@ const Loglists = () => {
         }
       } catch (error) {
         console.log("error " + error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [
       selectedStartDate,
@@ -455,16 +408,17 @@ const Loglists = () => {
   );
 
   const logFilterApiCall = useCallback(async () => {
-    // setLoading(true);
+    setLoading(true);
     console.log("Filter Body " + logFilterApiBody);
     try {
+      setLogData([]);
       console.log("Filter callback ");
       const { data, totalCount } = await LogFilterOptionWithDate(
         selectedStartDate,
         selectedEndDate,
         lookBackVal.value,
         selectedOption,
-        currentPage,
+        logCurrentPage,
         pageLimit,
         logFilterApiBody
       );
@@ -490,24 +444,27 @@ const Loglists = () => {
     setLogData,
     setTotalPageCount,
     pageLimit,
-    currentPage,
+    logCurrentPage,
     logFilterApiBody,
     needHistoricalData,
   ]);
 
   // const [searchQuery, setSearchQuery] = useState("");
-  const { searchQuery, setSearchQuery } = useContext(GlobalContext);
+  const {
+    searchQuery,
+    setSearchQuery,
+    setLogSelectedService,
+    setSelectedSeverity,
+    setSelectedLogService,
+  } = useContext(GlobalContext);
   const [searchResults, setSearchResults] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
 
   const handlePageChange = async (event, selectedPage) => {
-    setCurrentPage(Number(selectedPage));
+    setLogCurrentPage(Number(selectedPage));
   };
 
-
-
-
-  const handleSearch= async () => {
+  const handleSearch = async () => {
     setLoading(true);
     try {
       const { data, totalCount } = await searchLogsWithDate(
@@ -515,7 +472,7 @@ const Loglists = () => {
         selectedStartDate,
         selectedEndDate,
         lookBackVal.value,
-        currentPage,
+        logCurrentPage,
         pageLimit
       );
       // Process and set the search results
@@ -523,6 +480,7 @@ const Loglists = () => {
       if (data.length > 0) {
         const updatedData = createTimeInWords(data);
         const finalOutput = mapLogData(updatedData);
+        setNoMatchMessage("");
         setSearchResults(finalOutput);
         // setLogData(finalOutput)
         setTotalPageCount(Math.ceil(totalCount / pageLimit));
@@ -538,26 +496,31 @@ const Loglists = () => {
     } finally {
       setLoading(false);
     }
-  }
-
-
+  };
 
   const handleSearchChange = (event) => {
     const searchQuery = event.target.value;
     console.log("searchQuery", searchQuery);
-    setLogRender(true);
     setSearchQuery(searchQuery);
     const inputValueLength = searchQuery.length;
     console.log(inputValueLength);
     if (inputValueLength === 0) {
       setSearchResults([]);
+      setLogCurrentPage(1);
+      handleGetAllLogData(logCurrentPage);
     }
   };
 
   const handleSearchKeyDown = (event) => {
     if (event.key === "Enter") {
+      // handleSearchChange(event);
+      setLogRender(true);
+      setNeedLogFilterCall(false);
+      setLogSelectedService([]);
+      setSelectedSeverity([]);
+      setSelectedLogService([]);
+      setLogCurrentPage(1);
       handleSearch();
-    } else {
     }
   };
 
@@ -578,7 +541,8 @@ const Loglists = () => {
     setMetricRender(false);
     // setTraceDisplayService([]);
     setNavActiveTab(1);
-    console.log("Filtered Data useEffect" + filteredOptions);
+    setApmActiveTab(2);
+    // console.log("Filtered Data useEffect" + filteredOptions);
     if (needLogFilterCall) {
       setFilteredOptions(createFilterData());
       console.log("From Filter");
@@ -595,22 +559,22 @@ const Loglists = () => {
       const finalOutput = mapLogData(updatedData);
       setLogData(finalOutput);
       // logFilterApiCall();
-    } else if (searchQuery   !== "" && logRender) {
+    } else if (searchQuery !== "" && logRender) {
       setClearLogFilter(false);
       console.log("SEARCH WORD ---------------" + searchQuery);
       // setSearchResults([]);
       setIsCardVisible(false);
       // setIsCollapsed(false);
-      // handleSearch()
+      handleSearch();
     } else {
       setClearLogFilter(false);
       console.log("From get ALL");
       setIsCardVisible(false);
-      console.log("SEARCH --------------- " + searchQuery);
+      // console.log("SEARCH --------------- " + searchQuery);
       setSearchQuery("");
       setSearchResults([]);
       // setIsCollapsed(false);
-      handleGetAllLogData(currentPage);
+      handleGetAllLogData(logCurrentPage);
     }
 
     return () => {
@@ -625,22 +589,21 @@ const Loglists = () => {
     setTraceRender,
     handleGetAllLogData,
     logRender,
-    // searchQuery,
-    currentPage,
+    logCurrentPage,
     setMetricRender,
     setTraceSummaryService,
     setNavActiveTab,
     // needHistoricalData,
   ]);
 
-  // const handleSortOrderChange = (selectedValue) => {
-  //   console.log("SORT " + selectedValue.value);
-  //   setSelectedOption(selectedValue.value);
-  // };
-
   const handleSortOrderChange = (event) => {
+    setNeedLogFilterCall(false);
+    setLogSelectedService([]);
+    setSelectedSeverity([]);
     setSelectedOption(event.target.value);
-    setCurrentPage(1);
+    setLogCurrentPage(1);
+    setSearchQuery("");
+    setSearchResults([]);
   };
 
   const tableBodyData = [
@@ -687,20 +650,6 @@ const Loglists = () => {
       "No order found with id 123"
     ),
   ];
-
-  // useEffect(() => {
-  //   if (globalLogData.length !== 0 && !searchQuery) {
-  //     const finalOutput = mapLogData(globalLogData);
-  //     setLogData(finalOutput);
-  //   } else if (needLogFilterCall) {
-  //     logFilterApiCall(currentPage, logFilterApiBody);
-  //   } else if (searchQuery) {
-  //     setSearchResults([]); // Clear previous search results
-  //     handleSearch();
-  //   } else {
-  //     handleGetAllLogData(currentPage);
-  //   }
-  // }, [currentPage, handleGetAllLogData, globalLogData, logFilterApiBody, logFilterApiCall, needLogFilterCall, searchQuery]);
 
   function highlightSearchQuery(message) {
     if (typeof searchQuery !== "string") {
@@ -784,21 +733,12 @@ const Loglists = () => {
                 >
                   SortBy
                 </label>
-                {/* <Dropdown
-                    options={sortOrderOptions}
-                    placeholder="Sort Order"
-                    arrowClosed={<span className="arrow-closed" />}
-                    arrowOpen={<span className="arrow-open" />}
-                    value={selectedOption}
-                    onChange={handleSortOrderChange}
-                    // style={{ marginTop: "5px"}}
-                  /> */}
                 <Select
                   value={selectedOption}
-                  onChange={handleSortOrderChange}
+                  onChange={
+                    searchResults.length > 0 ? null : handleSortOrderChange
+                  }
                   size="small"
-                  // displayEmpty
-                  // inputProps={{ "aria-label": "Select Sort Order" }}
                   style={{
                     width: "150px",
                     marginLeft: needLogFilterCall ? "50px" : "0px",
@@ -849,13 +789,16 @@ const Loglists = () => {
             sx={{
               padding: "20px",
               marginTop: "10px",
-              height: isLandscape && isSize1280 ? "calc(90vh - 72px)" : "calc(73vh - 72px)",
+              height:
+                isLandscape && isSize1280
+                  ? "calc(90vh - 72px)"
+                  : "calc(73vh - 72px)",
               // height: isSize1280 ? "calc(90vh - 72px)" : "calc(73vh - 72px)",
-              [theme.breakpoints.down('sm')]: {
-                height: "calc(100vh - 85px)"
+              [theme.breakpoints.down("sm")]: {
+                height: "calc(100vh - 85px)",
               },
-              [theme.breakpoints.down('lg')]: {
-                height: "calc(100vh - 85px)"
+              [theme.breakpoints.down("lg")]: {
+                height: "calc(100vh - 85px)",
               },
               // ...(isiphone && {
               //   height: "calc(100vh - 72px)",
@@ -872,21 +815,21 @@ const Loglists = () => {
               // ...isWidth400 && {
               //   height: "calc(110vh - 85px)"
               // },
-              [theme.breakpoints.only('iphoneXR')]: {
-                height: "calc(102vh - 85px)"
+              [theme.breakpoints.only("iphoneXR")]: {
+                height: "calc(102vh - 85px)",
               },
-              [theme.breakpoints.only('surfDuo')]: {
-                height: "calc(110vh - 85px)"
+              [theme.breakpoints.only("surfDuo")]: {
+                height: "calc(110vh - 85px)",
               },
-              [theme.breakpoints.only('isipadpro')]: {
-                height: "calc(67vh - 85px)"
+              [theme.breakpoints.only("isipadpro")]: {
+                height: "calc(67vh - 85px)",
               },
-              [theme.breakpoints.only('issurfacepro')]: {
-                height: "calc(68vh - 85px)"
+              [theme.breakpoints.only("issurfacepro")]: {
+                height: "calc(68vh - 85px)",
               },
-              [theme.breakpoints.only('ipadAir')]: {
-                height: "calc(77vh - 85px)"
-              }
+              [theme.breakpoints.only("ipadAir")]: {
+                height: "calc(77vh - 85px)",
+              },
             }}
           >
             <div>
@@ -1187,7 +1130,7 @@ const Loglists = () => {
                   >
                     <Pagination
                       count={totalPageCount}
-                      page={currentPage}
+                      page={logCurrentPage}
                       onChange={handlePageChange}
                       variant="outlined"
                       shape="rounded"
@@ -1198,7 +1141,8 @@ const Loglists = () => {
                           {...item}
                           style={{
                             backgroundColor:
-                              item.type === "page" && item.page !== currentPage
+                              item.type === "page" &&
+                              item.page !== logCurrentPage
                                 ? null
                                 : //jey : colors.blueAccent[400],
                                   colors.primary[400],
@@ -1207,7 +1151,7 @@ const Loglists = () => {
                               //   ? "#FFF"
                               //   : null,
                               item.type === "page"
-                                ? item.page === currentPage
+                                ? item.page === logCurrentPage
                                   ? "#FFF" // Set the color for the current page number
                                   : colors.primary[100] // Set the color for other page numbers
                                 : "#FFF",

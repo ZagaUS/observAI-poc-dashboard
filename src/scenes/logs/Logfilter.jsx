@@ -35,8 +35,8 @@ const Logfilter = () => {
     setLogSelectedService,
     selectedSeverity,
     setSelectedSeverity,
-    openDrawer,
-    setOpenDrawer,
+    setSearchQuery,
+    setLogCurrentPage,
   } = useContext(GlobalContext);
   const [services, setServices] = useState(
     JSON.parse(localStorage.getItem("serviceListData"))
@@ -96,6 +96,8 @@ const Logfilter = () => {
 
   const handleApplyButtonClick = () => {
     // setOpenDrawer(!openDrawer)
+    setLogCurrentPage(1);
+    setSearchQuery("");
     const payload = {
       service: logSelectedService,
       severityText: selectedSeverity,

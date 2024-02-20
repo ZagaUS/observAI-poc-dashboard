@@ -16,8 +16,6 @@ import KafkaSummaryChart from "./scenes/dashboard/summary/KafkaSummaryChart";
 import PodDashboardCharts from "./scenes/dashboard/sustainability/PodDashboardCharts";
 import NodeDashboardCharts from "./scenes/dashboard/sustainability/NodeDashboardCharts";
 import HostDashboardCharts from "./scenes/dashboard/sustainability/HostDashboardCharts";
-// import { useEffect } from "react";
-// import { isTokenExpired } from "./global/AuthMechanism";
 import LandingPage from "./global/LandingPage";
 import PrivateRouter from "./global/PrivateRouter";
 import AdminMainPage from "./scenes/admin/AdminMainPage";
@@ -31,6 +29,10 @@ import PodCpuMetric from "./scenes/Infra/PodCpuMetric";
 import { PodMemoryMetric } from "./scenes/Infra/PodMemoryMetric";
 import NodeCpuMetric from "./scenes/Infra/NodeCpuMetric";
 import NodeMemoryMetric from "./scenes/Infra/NodeMemoryMetric";
+import Status from "./scenes/Infra/InfraInformations/Status";
+import Alerts from "./scenes/Infra/InfraInformations/Alerts";
+import Events from "./scenes/Infra/InfraInformations/Events";
+import CpuUtilization from "./scenes/Infra/InfraInformations/CpuUtilization";
 // import { useTokenExpirationCheck } from "./global/TokenExpiry";
 
 function App() {
@@ -114,23 +116,31 @@ function App() {
   const InfrastructurePodDetailsSection = () => {
     return (
       <Routes>
-        <Route index element={<PodCpuMetric/>} />
+        <Route index element={<PodCpuMetric />} />
         <Route path="podMemory" element={<PodMemoryMetric />} />
-      
       </Routes>
     );
   };
 
-
   const InfrastructureNodeDetailsSection = () => {
     return (
       <Routes>
-         <Route index element={<NodeCpuMetric />} />
+        <Route index element={<NodeCpuMetric />} />
         <Route path="nodeMemory" element={<NodeMemoryMetric />} />
       </Routes>
     );
   };
 
+  const InfrastructureInformations = () => {
+    return (
+      <Routes>
+        <Route index element={<Status />} />
+        <Route path="cpuUtilization" element={<CpuUtilization />} />
+        <Route path="alerts" element={<Alerts />} />
+        <Route path="events" element={<Events />} />
+      </Routes>
+    );
+  };
 
   const AdminSection = () => {
     return (
@@ -158,11 +168,23 @@ function App() {
           <DashboardTopBar />
           <Routes>
             <Route path="dashboard/*" element={<DashboardSection />} />
-            <Route path="sustainability/*" element={<SustainabilitySection />}/>
+            <Route
+              path="sustainability/*"
+              element={<SustainabilitySection />}
+            />
             <Route path="apm/*" element={<ApmSection />} />
-            <Route path="infraNode/*" element={<InfrastructureNodeDetailsSection />} />
-            <Route path="infraPod/*" element={<InfrastructurePodDetailsSection />} />
-           
+            <Route
+              path="infraInfo/*"
+              element={<InfrastructureInformations />}
+            />
+            <Route
+              path="infraNode/*"
+              element={<InfrastructureNodeDetailsSection />}
+            />
+            <Route
+              path="infraPod/*"
+              element={<InfrastructurePodDetailsSection />}
+            />
           </Routes>
         </main>
       </div>
