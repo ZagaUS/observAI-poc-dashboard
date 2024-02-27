@@ -25,26 +25,48 @@ import { useContext } from "react";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { getMetricDataApi } from "../../api/MetricApiService";
 import { tokens } from "../../theme";
+import { loginUser, openshiftClusterLogin } from "../../api/LoginApiService";
 
 const ClusterFilter = () => {
-  const {
-    selectedService,
-    setSelectedService,
-    setMetricRender,
-    openDrawer,
-    setOpenDrawer,
-  } = useContext(GlobalContext);
-  //   const [services, setServices] = useState(
-  //     JSON.parse(localStorage.getItem("serviceListData"))
-  //   );
+  const { selectedCluster, setSelectedCluster, setNeedStatusCall } =
+    useContext(GlobalContext);
 
-  const services = [
-    "Cluster 1",
-    "Cluster 2",
-    "Cluster 3",
-    "Cluster 4",
-    "Cluster 5",
-  ];
+  const [clusters, setClusters] = useState(
+    JSON.parse(localStorage.getItem("clusterListData"))
+  );
+
+  // useEffect(() => {
+  //   console.log("useeffet called");
+
+  //   const fetchData = async () => {
+  //     try {
+  //       const ClusterUrl = Environments[0].hostUrl;
+  //       const ClusterPassword = Environments[0].clusterPassword;
+  //       const ClusterUsername = Environments[0].clusterUsername;
+
+  //       const response = await openshiftClusterLogin(
+  //         ClusterUrl,
+  //         ClusterPassword,
+  //         ClusterUsername
+  //       );
+
+  //       // console.log("clusterData filter Page", response);
+
+  //       if (response === "Login successful!") {
+  //         setNeedStatusCall(true);
+  //       } else if (response === "Incorrect username or password.") {
+  //         alert("Incorrect username or password.");
+  //       } else {
+  //         alert("Network Error !!.Please try again later.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [selectedCluster]);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -54,24 +76,26 @@ const ClusterFilter = () => {
   );
   const largem = useMediaQuery((theme) => theme.breakpoints.down("lg"));
 
-  const clearSelectedOptions = () => {
-    setSelectedService([]);
-  };
-
-  console.log(openDrawer, "openDrawer");
-
-  const handleServiceToggle = (service) => () => {
+  const handleServiceToggle = (clusterURL) => () => {
+    // console.log("index", clusterURL);
     // setOpenDrawer(!openDrawer)
-    if (selectedService.includes(service)) {
-      setSelectedService(selectedService.filter((item) => item !== service));
-    } else {
-      setSelectedService([service]);
-    }
-    setMetricRender(false);
-    // onClose();
-  };
+    // if (selectedService.includes(service)) {
+    //   setSelectedService(selectedService.filter((item) => item !== service));
+    // } else {
+    //   setSelectedService([service]);
+    // }
+    // setMetricRender(false);
 
-  const handleApplyButtonClick = () => {};
+    // console.log("services", service);
+    // setClusterID(clusterID);
+    // console.log(clusterID, "clusterID in services toggle");
+    if (selectedCluster.includes(clusterURL)) {
+      setSelectedCluster(selectedCluster.filter((item) => item !== clusterURL));
+    } else {
+      setSelectedCluster([clusterURL]);
+    }
+    setNeedStatusCall(false);
+  };
 
   return (
     <div
@@ -121,19 +145,15 @@ const ClusterFilter = () => {
           <Typography variant="h5" fontWeight="500" color={"#fff"}>
             Filter Options
           </Typography>
-          {/* <Button
-              variant="outlined"
-              color="inherit"
-              onClick={clearSelectedOptions}
-            >
-              Clear
-            </Button> */}
         </ListItem>
         <Divider />
 
         <ListItem>
           <Accordion
-            style={{ width: "500px", backgroundColor: colors.primary[400] }}
+            style={{
+              width: "500px",
+              backgroundColor: colors.primary[400],
+            }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h5" color={"#fff"}>
@@ -144,12 +164,28 @@ const ClusterFilter = () => {
             <AccordionDetails>
               <FormControl component="fieldset">
                 <RadioGroup
-                  value={selectedService}
+                  // defaultValue={ClusterList[0]}
+                  value={selectedCluster}
                   sx={{
                     color: theme.palette.mode === "light" ? "#000" : "#FFF",
                   }}
                 >
-                  {services.map((service) => (
+                  {clusters.map((clusters) => (
+                    <FormControlLabel
+                      key={clusters}
+                      value={clusters}
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
+                      }
+                      label={clusters.slice(12, 26)}
+                      sx={{
+                        color: "white",
+                      }}
+                      onChange={handleServiceToggle(clusters)}
+                    />
+                  ))}
+
+                  {/* {services.map((service) => (
                     <FormControlLabel
                       key={service}
                       value={service}
@@ -162,7 +198,7 @@ const ClusterFilter = () => {
                       }}
                       onChange={handleServiceToggle(service)}
                     />
-                  ))}
+                  ))} */}
                 </RadioGroup>
               </FormControl>
             </AccordionDetails>

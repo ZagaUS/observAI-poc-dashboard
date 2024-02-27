@@ -23,6 +23,7 @@ const GlobalContextProvider = ({ children }) => {
   const [traceGlobalEmpty, setTraceGlobalEmpty] = useState(null);
   const [traceGlobalError, setTraceGlobalError] = useState(null);
   const [traceLoading, setTraceLoading] = useState(false);
+  const [statusPageLoading, setStatusPageLoading] = useState(true);
   const [recentTrace, setRecentTrace] = useState([]);
   const [traceToLogError, setTraceToLogError] = useState("");
   const [globalLogData, setGlobalLogData] = useState([]);
@@ -40,6 +41,8 @@ const GlobalContextProvider = ({ children }) => {
   const [traceRender, setTraceRender] = useState(false);
   const [logRender, setLogRender] = useState(false);
   const [metricRender, setMetricRender] = useState(false);
+  const [needStatusCall, setNeedStatusCall] = useState(false);
+
   const [selectedTraceService, setSelectedTraceService] = useState([]);
   const [traceSummaryService, setTraceSummaryService] = useState([]);
   const [logSummaryService, setLogSummaryService] = useState([]);
@@ -47,13 +50,21 @@ const GlobalContextProvider = ({ children }) => {
   const [clearLogFilter, setClearLogFilter] = useState(false);
   const [clearMetricFilter, setclearMetricFilter] = useState(false);
   const services = JSON.parse(localStorage.getItem("serviceListData"));
+
   const [selectedService, setSelectedService] = useState(
     services && services.length > 0 ? [services[0]] : []
   );
+
+  const Clusters = JSON.parse(localStorage.getItem("clusterListData"));
+  const [selectedCluster, setSelectedCluster] = useState(
+    Clusters && Clusters.length > 0 ? [Clusters[0]] : []
+  );
+
   const formattedDate = format(new Date(), "yyyy-MM-dd");
   const [selectedStartDate, setSelectedStartDate] = useState(formattedDate);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedDate);
   const [needHistoricalData, setNeedHistoricalData] = useState(false);
+
   const [selectedLogService, setSelectedLogService] = useState([]);
   const [traceDisplayService, setTraceDisplayService] = useState([]);
   const [showError, setShowError] = useState(false);
@@ -180,6 +191,8 @@ const GlobalContextProvider = ({ children }) => {
         setSelectedEndDate,
         needHistoricalData,
         setNeedHistoricalData,
+        needStatusCall,
+        setNeedStatusCall,
         selectedLogService,
         setSelectedLogService,
         traceDisplayService,
@@ -240,6 +253,8 @@ const GlobalContextProvider = ({ children }) => {
         setUserDetails,
         serviceListData,
         setServiceListData,
+        selectedCluster,
+        setSelectedCluster,
         username,
         setUsername,
         password,

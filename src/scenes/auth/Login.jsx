@@ -13,7 +13,11 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import { LoginInfo } from "../../global/MockData/LoginMock";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
-import { getServiceList, keycloakLoginAuth, loginUser } from "../../api/LoginApiService";
+import {
+  getServiceList,
+  keycloakLoginAuth,
+  loginUser,
+} from "../../api/LoginApiService";
 import Loading from "../../global/Loading/Loading";
 import observai from "../../assets/observai.png";
 import { green } from "@mui/material/colors";
@@ -26,15 +30,25 @@ const Login = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const { setServiceList, setSelected, setNotificationCount, alertResponse, notificationCount, setAlertResponse,
-    userDetails, setUserDetails } = useContext(GlobalContext);
+  const {
+    setServiceList,
+    setSelected,
+    setNotificationCount,
+    alertResponse,
+    notificationCount,
+    setAlertResponse,
+    userDetails,
+    setUserDetails,
+  } = useContext(GlobalContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [environments, setEnvironments] = useState([]);
   const [role, setRole] = useState("none");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [serviceListData, setServiceListData] = useState([]);
+  const [clusterListData, setClusterListData] = useState([]);
 
   const servicePayload = (serviceData) => {
     serviceData.forEach((item) => {
@@ -42,6 +56,14 @@ const Login = () => {
     });
     localStorage.setItem("serviceListData", JSON.stringify(serviceListData));
     console.log("ServiceName " + serviceListData);
+  };
+
+  const environmetsPayload = (clusterData) => {
+    clusterData.forEach((item) => {
+      clusterListData.push(item.hostUrl);
+    });
+    localStorage.setItem("clusterListData", JSON.stringify(clusterListData));
+    console.log("clusterName " + clusterListData);
   };
 
   // const processWsData = (wsData) => {
@@ -106,7 +128,7 @@ const Login = () => {
     // Create an object to represent the alert
     const alert = {
       alertType,
-      alertData: alertMessage // Assuming the alert message is in wsData.alertMessage
+      alertData: alertMessage, // Assuming the alert message is in wsData.alertMessage
     };
 
     // Push the alert to the respective array based on alertType
@@ -116,18 +138,46 @@ const Login = () => {
     console.log("Alerts:", alertResponse);
   };
 
+  const fetchData = async (payload) => {
+    try {
+      const response = await loginUser(payload);
+      console.log("res", response.data.environments);
+
+      if (response.length !== 0) {
+        localStorage.setItem(
+          "environmetsData",
+          JSON.stringify(response.data.environments)
+        );
+        environmetsPayload(response.data.environments);
+      }
+
+      // Do something with the fetched data
+      // console.log(
+      //   "localStorageCluster List",
+      //   localStorage.getItem("clusterListData")
+      // );
+      // localStorage.setItem("clusterListData", JSON.stringify(response.data.environments));
+      // setClusterData(response.data.environments);
+
+      // openshiftClusterLogin
+      // openshiftClusterLogin(ClusterData.hostUrl,ClusterData.clusterPassword,ClusterData.clusterUsername)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const fetchAlerts = async () => {
     try {
       const socket = await getRealtimeAlertData();
 
       socket.onopen = () => {
         console.log("Websocket connection opened");
-      }
+      };
 
       socket.onmessage = (event) => {
         if (event.data !== "[]") {
           console.log("Realtime data " + event.data);
-          setNotificationCount(prevCount => prevCount + 1);
+          setNotificationCount((prevCount) => prevCount + 1);
           processWsData(JSON.parse(event.data));
           // alertResponse.push(JSON.parse(event.data));
         }
@@ -172,7 +222,7 @@ const Login = () => {
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
         // setUserDetails(userInfo);
         navigate("/");
-        console.log("userInfo",userInfo.roles);
+        console.log("userInfo", userInfo);
         // setKeyClockRoles(userInfo.roles)
         // console.log("keycloackroles",keycloackroles);
         // Extract roles from the userInfo
@@ -200,7 +250,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log("error " + error);
-      console.error("error------------", error)
+      console.error("error------------", error);
       setErrorMessage("An error occurred");
       await logout();
     }
@@ -226,11 +276,11 @@ const Login = () => {
         username: username,
         password: password,
       };
-console.log("username",username);
-console.log("password",password);
+      console.log("username", username);
+      console.log("password", password);
       // Call SSO token provider URL directly
       const userAuth = await keycloakLoginAuth(payload);
-      console.log("userAuth",userAuth);
+      console.log("userAuth", userAuth);
 
       if (userAuth.error) {
         // Handle specific error scenarios
@@ -255,14 +305,25 @@ console.log("password",password);
         localStorage.setItem("accessToken", userAuth.data.access_token);
         localStorage.setItem("refreshToken", userAuth.data.refresh_token);
         const decoded = jwtDecode(userAuth.data.access_token);
-        localStorage.setItem("roles", JSON.stringify(decoded.realm_access.roles));
+        localStorage.setItem(
+          "roles",
+          JSON.stringify(decoded.realm_access.roles)
+        );
         const servicePayload = {
           username: username,
           password: password,
-          roles: decoded.realm_access.roles
+          roles: decoded.realm_access.roles,
         };
         // Call service list
         await getServiceListCall(servicePayload);
+
+        const Clusterpayload = {
+          username: username,
+          password: password,
+        };
+
+        //call database login api
+        await fetchData(Clusterpayload);
 
         setLoading(false);
         localStorage.setItem("routeName", "Dashboard");
