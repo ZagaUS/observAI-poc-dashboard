@@ -165,9 +165,10 @@ const SideNavbar = () => {
                 window.location.pathname === "/mainpage/infraNode" ||
                 window.location.pathname === "/mainpage/infraInfo" ||
                 window.location.pathname ===
-                  "/mainpage/infraInfo/cpuUtilization" ||
+                  "/mainpage/infraInfo/clusterUtilization" ||
                 window.location.pathname === "/mainpage/infraInfo/alerts" ||
-                window.location.pathname === "/mainpage/infraInfo/events" ? (
+                window.location.pathname === "/mainpage/infraInfo/events" ||
+                window.location.pathname === "/mainpage/infraInfo/events/allEvents" ? (
                 <>
                   <ClusterFilter />
                 </>

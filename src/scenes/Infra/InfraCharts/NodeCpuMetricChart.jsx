@@ -1,8 +1,8 @@
 import { Box, Button, useMediaQuery, useTheme } from '@mui/material';
 import React, { useContext } from 'react'
 import ReactApexChart from 'react-apexcharts';
-import { tokens } from '../../theme';
-import { GlobalContext } from '../../global/globalContext/GlobalContext';
+import { tokens } from '../../../theme';
+import { GlobalContext } from '../../../global/globalContext/GlobalContext';
 
 const NodeCpuMetricChart = ({ nodeMetrics }) => {
     const theme = useTheme();

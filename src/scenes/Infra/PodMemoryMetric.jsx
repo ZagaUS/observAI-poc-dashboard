@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 // import { PodMetricData } from '../Infra/PodStaticData';
 import Loading from "../../global/Loading/Loading";
-import MemoryMetricDashboard from "./MemoryMetricDashboard";
+import MemoryMetricDashboard from "./InfraCharts/MemoryMetricDashboard";
 import { getPodMetricDataPaginated } from "../../api/InfraApiService";
 import { tokens } from "../../theme";
 

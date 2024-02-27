@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { GlobalContext } from '../../global/globalContext/GlobalContext';
-import NodeCpuMetricChart from './NodeCpuMetricChart';
+import NodeCpuMetricChart from './InfraCharts/NodeCpuMetricChart';
 import { nodeCpuMetricMock, nodeMetrics} from '../../global/MockData/NodeCpuMetricMockData';
 import { getNodeMetricData } from '../../api/InfraApiService';
 import { Box, Card, CardContent, Grid, Table, TableBody, TableCell, TableRow, Typography, useMediaQuery } from '@mui/material';

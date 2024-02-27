@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import Loading from "../../global/Loading/Loading";
-import PodMetricDashboard from "./PodMetricDashboard";
+import PodMetricDashboard from "./InfraCharts/PodMetricDashboard";
 // import { PodMetricData } from '../Infra/PodStaticData';
 import { getPodMetricDataPaginated } from "../../api/InfraApiService";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";

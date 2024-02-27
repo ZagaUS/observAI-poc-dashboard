@@ -32,7 +32,8 @@ import NodeMemoryMetric from "./scenes/Infra/NodeMemoryMetric";
 import Status from "./scenes/Infra/InfraInformations/Status";
 import Alerts from "./scenes/Infra/InfraInformations/Alerts";
 import Events from "./scenes/Infra/InfraInformations/Events";
-import CpuUtilization from "./scenes/Infra/InfraInformations/CpuUtilization";
+import ClusterUtilization from "./scenes/Infra/InfraInformations/ClusterUtilization";
+import AllEvents from "./scenes/Infra/InfraInformations/AllEvents";
 // import { useTokenExpirationCheck } from "./global/TokenExpiry";
 
 function App() {
@@ -131,13 +132,22 @@ function App() {
     );
   };
 
+  const DisplayEvent = () => {
+    return (
+      <Routes>
+        <Route index element={<Events />} />
+        <Route path="allEvents" element={<AllEvents />} />
+      </Routes>
+    )
+  }
+
   const InfrastructureInformations = () => {
     return (
       <Routes>
         <Route index element={<Status />} />
-        <Route path="cpuUtilization" element={<CpuUtilization />} />
+        <Route path="clusterUtilization" element={<ClusterUtilization />} />
         <Route path="alerts" element={<Alerts />} />
-        <Route path="events" element={<Events />} />
+        <Route path="events/*" element={<DisplayEvent />} />
       </Routes>
     );
   };

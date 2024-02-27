@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../../global/globalContext/GlobalContext";
+import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import ReactApexChart from "react-apexcharts";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 const MemoryMetricDashboard = ({ podData }) => {
   // console.log("podData------------", podData);
