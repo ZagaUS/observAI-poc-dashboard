@@ -107,8 +107,8 @@ const GlobalContextProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [serviceListData, setServiceListData] = useState([]);
 
-  const [nodeName, setNodeName] = useState('zagaocp-us-sno');
-  const [clusterName, setClusterName] = useState('zagaobservability-tztcb');
+  const [nodeName, setNodeName] = useState("zagaocp-us-sno");
+  const [clusterName, setClusterName] = useState("zagaobservability-tztcb");
 
   return (
     <GlobalContext.Provider
@@ -263,7 +263,10 @@ const GlobalContextProvider = ({ children }) => {
         setUsername,
         password,
         setPassword,
-        nodeName, setNodeName, clusterName, setClusterName
+        nodeName,
+        setNodeName,
+        clusterName,
+        setClusterName,
       }}
     >
       {children}

@@ -40,31 +40,32 @@ const ClusterFilter = () => {
   const [clusters, setClusters] = useState(
     JSON.parse(localStorage.getItem("clusterListData"))
   );
+  const [emptyMessage, setEmptyMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [Nodes, setNodes] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
-  console.log("selectedCluster", selectedCluster);
-  console.log("ClustersCollection", clusters);
+  // console.log("selectedCluster", selectedCluster);
+  // console.log("ClustersCollection", clusters);
 
   const fetchNodes = useCallback(async () => {
+    setEmptyMessage("");
     setLoading(true);
     try {
       const userDetails = JSON.parse(localStorage.getItem("userInfo"));
 
-      if (selectedCluster.length > 0) {
-        const NodeResponse = await ListOfNodeDetails(
-          selectedCluster,
-          userDetails.username
-        );
-        if (NodeResponse.data === "You are unauthorized to do this action. ") {
-          setNodes([]);
-          // setNodes(NodeResponse.data);
-          console.log(NodeResponse.data, "Nodesdata");
-        } else {
-          setNodes(NodeResponse.data);
-        }
+      const NodeResponse = await ListOfNodeDetails(
+        selectedCluster,
+        userDetails.username
+      );
+      if (NodeResponse.data == "You are unauthorized to do this action.") {
+        setNodes([]);
+        setEmptyMessage("Please check your openshift login credentials!!!");
+        console.log(NodeResponse.data, "Nodesdata");
+      } else {
+        setNodes(NodeResponse.data);
       }
     } catch (error) {
       console.log("error", error);
@@ -74,8 +75,8 @@ const ClusterFilter = () => {
   }, [selectedCluster]);
 
   useEffect(() => {
-    console.log("cluster Filter UseEffect Called------->");
-    console.log("selectedClusre", selectedCluster);
+    console.log("UseEffect FilterPage------->");
+    console.log("Selected Cluster" + selectedCluster);
     fetchNodes();
   }, [fetchNodes]);
 
@@ -205,46 +206,6 @@ const ClusterFilter = () => {
           )}
         </ListItem>
         <Divider />
-        {/* ----------------------------------------------------------------------------------------------------------------------------------------- */}
-        {/* <Accordion
-          style={{ backgroundColor: colors.primary[400], boxShadow: "none" }}
-        >
-          <AccordionDetails>
-            <List>
-              {ClusterInformations.map((cluster) => (
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  {" "}
-                  <Radio value={cluster.ClusterName} />
-                  <Accordion
-                    key={cluster.ClusterName}
-                    sx={{ margin: "10px" }}
-                    // disabled={cluster.Nodes.length === 1}
-                  >
-                    <AccordionSummary
-                      expandIcon={
-                        cluster.Nodes.length === 1 ? null : <ExpandMoreIcon />
-                      }
-                    >
-                      <Typography>{cluster.ClusterName}</Typography>
-                    </AccordionSummary>
-
-                    {cluster.Nodes.length > 1 && (
-                      <AccordionDetails>
-                        <List dense>
-                          {cluster.Nodes.map((node) => (
-                            <ListItem key={node}>
-                              <ListItemText primary={node} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionDetails>
-                    )}
-                  </Accordion>
-                </div>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion> */}
 
         <ListItem>
           <Accordion
@@ -304,16 +265,26 @@ const ClusterFilter = () => {
               LOADING.....
             </Typography>
           </div>
+        ) : emptyMessage ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "20vh",
+            }}
+          >
+            <Typography variant="h5" fontWeight={"600"} mt={2}>
+              {emptyMessage}
+            </Typography>
+          </div>
         ) : (
           <ListItem>
             <Accordion
               style={{ width: "500px", backgroundColor: colors.primary[400] }}
-              // disabled={true}
             >
-              {/* <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-               
-              </AccordionSummary> */}
-
               {Nodes.length > 0 ? (
                 <AccordionDetails>
                   <Typography variant="h5" color={"#fff"}>
@@ -348,87 +319,15 @@ const ClusterFilter = () => {
               ) : (
                 <div>
                   <Typography variant="h5" fontWeight={"600"} mt={2}>
-                    There is no node data
+                    Unable to fetch node details at this time.
                   </Typography>
                 </div>
               )}
             </Accordion>
           </ListItem>
+          // <></>
         )}
 
-        {/* <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Clusters</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <List>
-              {clusters.map((cluster) => (
-                <FormControl component="fieldset">
-                  {" "}
-                  <RadioGroup
-                    value={selectedCluster}
-                    sx={{
-                      color: theme.palette.mode === "light" ? "#000" : "#FFF",
-                    }}
-                  >
-                    {clusters.map((clusters) => (
-                      <FormControlLabel
-                        key={clusters}
-                        value={clusters}
-                        control={
-                          <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
-                        }
-                        label={clusters}
-                        sx={{
-                          color: "white",
-                        }}
-                        onChange={handleServiceToggle(clusters)}
-                      />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion> */}
-        {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
-
-        {/*         
-        <ListItem>
-          <Accordion
-            style={{
-              width: "500px",
-              backgroundColor: colors.primary[400],
-            }}
-          >
-            <AccordionDetails>
-              <FormControl component="fieldset">
-                {" "}
-                <RadioGroup
-                  value={selectedCluster}
-                  sx={{
-                    color: theme.palette.mode === "light" ? "#000" : "#FFF",
-                  }}
-                >
-                  {clusters.map((clusters) => (
-                    <FormControlLabel
-                      key={clusters}
-                      value={clusters}
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
-                      }
-                      label={clusters}
-                      sx={{
-                        color: "white",
-                      }}
-                      onChange={handleServiceToggle(clusters)}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            </AccordionDetails>
-          </Accordion>
-        </ListItem> */}
         <Divider />
       </List>
     </div>
