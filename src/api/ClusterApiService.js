@@ -48,7 +48,7 @@ export const viewClusterInfoApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewClusterInfo`);
 
-    console.log("viewClusterInfoApiCall response", response.data);
+    // console.log("viewClusterInfoApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -61,7 +61,7 @@ export const viewClusterIPApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewClusterIP`);
 
-    console.log("viewClusterIPApiCall response", response.data);
+    // console.log("viewClusterIPApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -76,7 +76,7 @@ export const viewClusterInventoryApiCall = async () => {
       `${openshiftLoginURL}/viewClusterInventory`
     );
 
-    console.log("viewClusterInventoryApiCall response", response.data);
+    // console.log("viewClusterInventoryApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -89,7 +89,7 @@ export const viewClusterNetworkApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewClusterNetwork`);
 
-    console.log("viewClusterNetworkApiCall response", response.data);
+    // console.log("viewClusterNetworkApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -102,7 +102,7 @@ export const viewClusterNodesApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewClusterNodes`);
 
-    console.log("viewClusterNodesApiCall response", response.data);
+    // console.log("viewClusterNodesApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -115,7 +115,7 @@ export const viewClusterStatusApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewClusterStatus`);
 
-    console.log("viewClusterStatusApiCall response", response.data);
+    // console.log("viewClusterStatusApiCall response", response.data);
 
     return response;
   } catch (error) {
@@ -128,11 +128,63 @@ export const viewClusterNodeIPApiCall = async () => {
   try {
     const response = await axios.get(`${openshiftLoginURL}/viewNodeIP`);
 
-    console.log("viewNodeIPApiCall response", response.data);
+    // console.log("viewNodeIPApiCall response", response.data);
 
     return response;
   } catch (error) {
     console.error("Error in viewNodeIPApiCall:", error);
+    throw error;
+  }
+};
+// http://localhost:8081/openshift/getClusterInformation?clusterName=ZagaObservability&username=admin
+export const viewClusterDetails = async (clusterName, username) => {
+  try {
+    const response = await axios.get(
+      `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`
+    );
+
+    // console.log("viewClusterDetails response", response);
+
+    return response;
+  } catch (error) {
+    console.error("Error in viewClusterDetails:", error);
+    throw error;
+  }
+};
+
+// http://localhost:8081/openshift/listAllNodes?clusterName=Zagaopenshift&username=admin
+
+export const ListOfNodeDetails = async (clusterName, username) => {
+  try {
+    const response = await axios.get(
+      `${openshiftLoginURL}/listAllNodes?clusterName=${clusterName}&username=${username}`
+    );
+
+    // console.log("ListOfNodeDetails response", response);
+
+    return response;
+  } catch (error) {
+    console.error("Error in ListOfNodeDetails:", error);
+    throw error;
+  }
+};
+
+// http://localhost:8081/openshift/getClusterNodeInformation?clusterName=zagaos&nodeName=zagaocp-master1&username=admin
+export const viewClusterNodeInformation = async (
+  clusterName,
+  nodeName,
+  username
+) => {
+  try {
+    const response = await axios.get(
+      `${openshiftLoginURL}/getClusterNodeInformation?clusterName=${clusterName}&nodeName=${nodeName}&username=${username}`
+    );
+
+    console.log("viewClusterNodeInformation response", response);
+
+    return response;
+  } catch (error) {
+    console.error("Error in viewClusterNodeInformation:", error);
     throw error;
   }
 };

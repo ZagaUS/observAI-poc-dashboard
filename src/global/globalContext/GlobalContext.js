@@ -60,6 +60,8 @@ const GlobalContextProvider = ({ children }) => {
     Clusters && Clusters.length > 0 ? [Clusters[0]] : []
   );
 
+  const [selectedNode, setSelectedNode] = useState([]);
+
   const formattedDate = format(new Date(), "yyyy-MM-dd");
   const [selectedStartDate, setSelectedStartDate] = useState(formattedDate);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedDate);
@@ -255,6 +257,8 @@ const GlobalContextProvider = ({ children }) => {
         setServiceListData,
         selectedCluster,
         setSelectedCluster,
+        selectedNode,
+        setSelectedNode,
         username,
         setUsername,
         password,

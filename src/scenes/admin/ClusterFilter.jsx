@@ -5,6 +5,7 @@ import {
   AccordionSummary,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   Drawer,
   FormControl,
@@ -13,6 +14,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemText,
   Radio,
   RadioGroup,
   Typography,
@@ -26,14 +28,63 @@ import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { getMetricDataApi } from "../../api/MetricApiService";
 import { tokens } from "../../theme";
 import { loginUser, openshiftClusterLogin } from "../../api/LoginApiService";
+import { ClusterDetailsMock } from "../../global/MockData/ClusterDetailsMock";
+import { MenuItem } from "react-pro-sidebar";
+import { ListOfNodeDetails } from "../../api/ClusterApiService";
+import Loading from "../../global/Loading/Loading";
 
 const ClusterFilter = () => {
-  const { selectedCluster, setSelectedCluster, setNeedStatusCall } =
+  const { selectedCluster, setSelectedCluster, selectedNode, setSelectedNode } =
     useContext(GlobalContext);
 
   const [clusters, setClusters] = useState(
     JSON.parse(localStorage.getItem("clusterListData"))
   );
+
+  const [Nodes, setNodes] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+
+  console.log("selectedCluster", selectedCluster);
+  console.log("ClustersCollection", clusters);
+
+  const fetchNodes = useCallback(async () => {
+    setLoading(true);
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+
+      if (selectedCluster.length > 0) {
+        const NodeResponse = await ListOfNodeDetails(
+          selectedCluster,
+          userDetails.username
+        );
+        if (NodeResponse.data === "You are unauthorized to do this action. ") {
+          setNodes([]);
+          // setNodes(NodeResponse.data);
+          console.log(NodeResponse.data, "Nodesdata");
+        } else {
+          setNodes(NodeResponse.data);
+        }
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCluster]);
+
+  useEffect(() => {
+    console.log("cluster Filter UseEffect Called------->");
+    console.log("selectedClusre", selectedCluster);
+    fetchNodes();
+  }, [fetchNodes]);
+
+  // const [clusters, setClusters] = useState(
+  //   JSON.parse(localStorage.getItem("ListOfClusterDetails"))
+  // );
+
+  // const ClusterInformations = ClusterDetailsMock;
+  // console.log("ClusterInformations", ClusterInformations);
 
   // useEffect(() => {
   //   console.log("useeffet called");
@@ -76,25 +127,19 @@ const ClusterFilter = () => {
   );
   const largem = useMediaQuery((theme) => theme.breakpoints.down("lg"));
 
-  const handleServiceToggle = (clusterURL) => () => {
-    // console.log("index", clusterURL);
-    // setOpenDrawer(!openDrawer)
-    // if (selectedService.includes(service)) {
-    //   setSelectedService(selectedService.filter((item) => item !== service));
-    // } else {
-    //   setSelectedService([service]);
-    // }
-    // setMetricRender(false);
+  const handleNodeToggle = (node) => () => {
+    setSelectedNode([node]);
+  };
 
-    // console.log("services", service);
-    // setClusterID(clusterID);
-    // console.log(clusterID, "clusterID in services toggle");
-    if (selectedCluster.includes(clusterURL)) {
-      setSelectedCluster(selectedCluster.filter((item) => item !== clusterURL));
+  const handleServiceToggle = (clusterName) => () => {
+    setSelectedNode([]);
+    if (selectedCluster.includes(clusterName)) {
+      setSelectedCluster(
+        selectedCluster.filter((item) => item !== clusterName)
+      );
     } else {
-      setSelectedCluster([clusterURL]);
+      setSelectedCluster([clusterName]);
     }
-    setNeedStatusCall(false);
   };
 
   return (
@@ -142,29 +187,78 @@ const ClusterFilter = () => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="500" color={"#fff"}>
-            Filter Options
-          </Typography>
+          {window.location.pathname === "/mainpage/infraPod" ||
+          window.location.pathname === "/mainpage/infraPod/podMemory" ||
+          window.location.pathname === "/mainpage/infraNode" ||
+          window.location.pathname === "/mainpage/infraNode/nodeMemory" ||
+          window.location.pathname === "/mainpage/infraInfo" ||
+          window.location.pathname === "/mainpage/infraInfo/cpuUtilization" ||
+          window.location.pathname === "/mainpage/infraInfo/alerts" ||
+          window.location.pathname === "/mainpage/infraInfo/events" ? (
+            <Typography variant="h5" fontWeight="500" color={"#fff"}>
+              List of Clusters & Nodes
+            </Typography>
+          ) : (
+            <Typography variant="h5" fontWeight="500" color={"#fff"}>
+              Filter Options
+            </Typography>
+          )}
         </ListItem>
         <Divider />
+        {/* ----------------------------------------------------------------------------------------------------------------------------------------- */}
+        {/* <Accordion
+          style={{ backgroundColor: colors.primary[400], boxShadow: "none" }}
+        >
+          <AccordionDetails>
+            <List>
+              {ClusterInformations.map((cluster) => (
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {" "}
+                  <Radio value={cluster.ClusterName} />
+                  <Accordion
+                    key={cluster.ClusterName}
+                    sx={{ margin: "10px" }}
+                    // disabled={cluster.Nodes.length === 1}
+                  >
+                    <AccordionSummary
+                      expandIcon={
+                        cluster.Nodes.length === 1 ? null : <ExpandMoreIcon />
+                      }
+                    >
+                      <Typography>{cluster.ClusterName}</Typography>
+                    </AccordionSummary>
+
+                    {cluster.Nodes.length > 1 && (
+                      <AccordionDetails>
+                        <List dense>
+                          {cluster.Nodes.map((node) => (
+                            <ListItem key={node}>
+                              <ListItemText primary={node} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </AccordionDetails>
+                    )}
+                  </Accordion>
+                </div>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion> */}
 
         <ListItem>
           <Accordion
-            style={{
-              width: "500px",
-              backgroundColor: colors.primary[400],
-            }}
+            style={{ width: "500px", backgroundColor: colors.primary[400] }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h5" color={"#fff"}>
-                List Of Clusters
+                Clusters
               </Typography>
             </AccordionSummary>
 
             <AccordionDetails>
               <FormControl component="fieldset">
                 <RadioGroup
-                  // defaultValue={ClusterList[0]}
                   value={selectedCluster}
                   sx={{
                     color: theme.palette.mode === "light" ? "#000" : "#FFF",
@@ -177,33 +271,164 @@ const ClusterFilter = () => {
                       control={
                         <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
                       }
-                      label={clusters.slice(12, 26)}
+                      label={clusters}
                       sx={{
                         color: "white",
                       }}
                       onChange={handleServiceToggle(clusters)}
                     />
                   ))}
-
-                  {/* {services.map((service) => (
-                    <FormControlLabel
-                      key={service}
-                      value={service}
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
-                      }
-                      label={service}
-                      sx={{
-                        color: "white",
-                      }}
-                      onChange={handleServiceToggle(service)}
-                    />
-                  ))} */}
                 </RadioGroup>
               </FormControl>
             </AccordionDetails>
           </Accordion>
         </ListItem>
+
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "20vh",
+            }}
+          >
+            <CircularProgress
+              style={{ color: colors.blueAccent[400] }}
+              size={40}
+              thickness={4}
+            />
+            <Typography variant="h5" fontWeight={"600"} mt={2}>
+              LOADING.....
+            </Typography>
+          </div>
+        ) : (
+          <ListItem>
+            <Accordion
+              style={{ width: "500px", backgroundColor: colors.primary[400] }}
+              // disabled={true}
+            >
+              {/* <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+               
+              </AccordionSummary> */}
+
+              {Nodes.length > 0 ? (
+                <AccordionDetails>
+                  <Typography variant="h5" color={"#fff"}>
+                    Nodes
+                  </Typography>
+                  <FormControl component="fieldset">
+                    <RadioGroup
+                      value={selectedNode}
+                      sx={{
+                        color: theme.palette.mode === "light" ? "#000" : "#FFF",
+                      }}
+                    >
+                      {Nodes.map((nodes) => (
+                        <FormControlLabel
+                          key={nodes}
+                          value={nodes}
+                          control={
+                            <Radio
+                              sx={{ "&.Mui-checked": { color: "white" } }}
+                            />
+                          }
+                          label={nodes}
+                          sx={{
+                            color: "white",
+                          }}
+                          onChange={handleNodeToggle(nodes)}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </AccordionDetails>
+              ) : (
+                <div>
+                  <Typography variant="h5" fontWeight={"600"} mt={2}>
+                    There is no node data
+                  </Typography>
+                </div>
+              )}
+            </Accordion>
+          </ListItem>
+        )}
+
+        {/* <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Clusters</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List>
+              {clusters.map((cluster) => (
+                <FormControl component="fieldset">
+                  {" "}
+                  <RadioGroup
+                    value={selectedCluster}
+                    sx={{
+                      color: theme.palette.mode === "light" ? "#000" : "#FFF",
+                    }}
+                  >
+                    {clusters.map((clusters) => (
+                      <FormControlLabel
+                        key={clusters}
+                        value={clusters}
+                        control={
+                          <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
+                        }
+                        label={clusters}
+                        sx={{
+                          color: "white",
+                        }}
+                        onChange={handleServiceToggle(clusters)}
+                      />
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion> */}
+        {/* -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+
+        {/*         
+        <ListItem>
+          <Accordion
+            style={{
+              width: "500px",
+              backgroundColor: colors.primary[400],
+            }}
+          >
+            <AccordionDetails>
+              <FormControl component="fieldset">
+                {" "}
+                <RadioGroup
+                  value={selectedCluster}
+                  sx={{
+                    color: theme.palette.mode === "light" ? "#000" : "#FFF",
+                  }}
+                >
+                  {clusters.map((clusters) => (
+                    <FormControlLabel
+                      key={clusters}
+                      value={clusters}
+                      control={
+                        <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
+                      }
+                      label={clusters}
+                      sx={{
+                        color: "white",
+                      }}
+                      onChange={handleServiceToggle(clusters)}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </AccordionDetails>
+          </Accordion>
+        </ListItem> */}
         <Divider />
       </List>
     </div>

@@ -14,6 +14,7 @@ import { tokens } from "../../theme";
 import { LoginInfo } from "../../global/MockData/LoginMock";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import {
+  getAllClustersAPI,
   getServiceList,
   keycloakLoginAuth,
   loginUser,
@@ -35,6 +36,8 @@ const Login = () => {
     setSelected,
     setNotificationCount,
     alertResponse,
+    setSelectedNode,
+    setSelectedCluster,
     notificationCount,
     setAlertResponse,
     userDetails,
@@ -60,9 +63,10 @@ const Login = () => {
 
   const environmetsPayload = (clusterData) => {
     clusterData.forEach((item) => {
-      clusterListData.push(item.hostUrl);
+      clusterListData.push(item.clusterName);
     });
     localStorage.setItem("clusterListData", JSON.stringify(clusterListData));
+    // const Clusters = JSON.parse(localStorage.getItem("clusterListData"));
     console.log("clusterName " + clusterListData);
   };
 
@@ -138,33 +142,48 @@ const Login = () => {
     console.log("Alerts:", alertResponse);
   };
 
-  const fetchData = async (payload) => {
+  const fetchClusterData = async (username) => {
     try {
-      const response = await loginUser(payload);
-      console.log("res", response.data.environments);
+      const response = await getAllClustersAPI(username);
+      console.log("res", response);
 
       if (response.length !== 0) {
-        localStorage.setItem(
-          "environmetsData",
-          JSON.stringify(response.data.environments)
-        );
-        environmetsPayload(response.data.environments);
+        // setSelectedCluster([]);
+        // setSelectedNode("");
+        environmetsPayload(response);
       }
-
-      // Do something with the fetched data
-      // console.log(
-      //   "localStorageCluster List",
-      //   localStorage.getItem("clusterListData")
-      // );
-      // localStorage.setItem("clusterListData", JSON.stringify(response.data.environments));
-      // setClusterData(response.data.environments);
-
-      // openshiftClusterLogin
-      // openshiftClusterLogin(ClusterData.hostUrl,ClusterData.clusterPassword,ClusterData.clusterUsername)
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+  // const fetchData = async (payload) => {
+  //   try {
+  //     const response = await loginUser(payload);
+  //     console.log("res", response.data.environments);
+
+  //     if (response.length !== 0) {
+  //       localStorage.setItem(
+  //         "environmetsData",
+  //         JSON.stringify(response.data.environments)
+  //       );
+  //       environmetsPayload(response.data.environments);
+  //     }
+
+  // Do something with the fetched data
+  // console.log(
+  //   "localStorageCluster List",
+  //   localStorage.getItem("clusterListData")
+  // );
+  // localStorage.setItem("clusterListData", JSON.stringify(response.data.environments));
+  // setClusterData(response.data.environments);
+
+  // openshiftClusterLogin
+  // openshiftClusterLogin(ClusterData.hostUrl,ClusterData.clusterPassword,ClusterData.clusterUsername)
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const fetchAlerts = async () => {
     try {
@@ -247,6 +266,7 @@ const Login = () => {
         // console.log("serviceData " + serviceListData);
       } else {
         setErrorMessage("No Service assigned for this user");
+        setLoading(false);
       }
     } catch (error) {
       console.log("error " + error);
@@ -261,6 +281,8 @@ const Login = () => {
   // }, [userDetails]);
 
   const handleLogin = async () => {
+    setErrorMessage("");
+    // localStorage.clear("clusterListData");
     try {
       setLoading(true);
 
@@ -317,13 +339,19 @@ const Login = () => {
         // Call service list
         await getServiceListCall(servicePayload);
 
-        const Clusterpayload = {
-          username: username,
-          password: password,
-        };
+        // const Clusterpayload = {
+        //   username: username,
+        //   password: password,
+        // };
 
         //call database login api
-        await fetchData(Clusterpayload);
+        await fetchClusterData(username);
+        // const ClusterApiResponse = await getAllClustersAPI(username);
+        // if (ClusterApiResponse.length !== 0) {
+        //   environmetsPayload(ClusterApiResponse);
+        // }
+
+        // console.log("ClusterApiResponse", ClusterApiResponse);
 
         setLoading(false);
         localStorage.setItem("routeName", "Dashboard");
