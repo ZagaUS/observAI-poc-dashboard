@@ -79,7 +79,7 @@ const ClusterUtilization = () => {
         selectedEndDate,
         lookBackVal.value,
         // nodeName, clusterName,
-        selectedNode, selectedCluster,
+        selectedNodestring, selectedCluster,
         userName
       );
       if (clusterUtilData.length !== 0) {
