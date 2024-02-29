@@ -1,11 +1,14 @@
 import { Box, Card, Typography } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
+  ListOfNodeDetails,
+  viewClusterDetails,
   viewClusterIPApiCall,
   viewClusterInfoApiCall,
   viewClusterInventoryApiCall,
   viewClusterNetworkApiCall,
   viewClusterNodeIPApiCall,
+  viewClusterNodeInformation,
   viewClusterNodesApiCall,
   viewClusterStatusApiCall,
 } from "../../../api/ClusterApiService";
@@ -26,13 +29,8 @@ import { tokens } from "../../../theme";
 import { useTheme } from "@emotion/react";
 
 const Status = () => {
-  const {
-    needStatusCall,
-    setNeedStatusCall,
-    selectedCluster,
-    services,
-    selectedService,
-  } = useContext(GlobalContext);
+  const { selectedCluster, selectedNode, setSelectedNode } =
+    useContext(GlobalContext);
 
   const [loading, setLoading] = useState(false);
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -45,101 +43,86 @@ const Status = () => {
   const [IpTableData, setIpTableData] = useState([]);
   const [NetworkData, setNetworkData] = useState([]);
 
+  const [ClusterData, setClusterData] = useState([]);
+  const [NodeData, setNodeData] = useState([]);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const getSelectedClusterData = useCallback(async (selectedCluster) => {
-    setLoading(true);
+  const getSelectedClusterData = useCallback(
+    async (selectedCluster) => {
+      setLoading(true);
 
-    try {
-      const Environments = JSON.parse(localStorage.getItem("environmetsData"));
+      try {
+        const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+        // console.log("userDetailsinSatuspge", userDetails.username);
+        const response = await viewClusterDetails(
+          selectedCluster,
+          userDetails.username
+        );
 
-      const SelectedEnvironment = Environments.filter((items) => {
-        return items.hostUrl == selectedCluster;
-      });
+        if (response.data[0] === "You are not logged in.") {
+          setClusterData([]);
+          // setSelectedNode("");
+        } else {
+          // setSelectedNode("");
+          setClusterData(JSON.parse(JSON.stringify(response.data)));
 
-      const ClusterUrl = SelectedEnvironment[0].hostUrl;
-      const ClusterPassword = SelectedEnvironment[0].clusterPassword;
-      const ClusterUsername = SelectedEnvironment[0].clusterUsername;
-
-      const response = await openshiftClusterLogin(
-        ClusterUrl,
-        ClusterPassword,
-        ClusterUsername
-      );
-      if (response === "Login successful!") {
-        const ClusterInfoResponse = await viewClusterInfoApiCall();
-        const ClusterIPResponse = await viewClusterIPApiCall();
-        const ClusterInventoryResponse = await viewClusterInventoryApiCall();
-        const ClusterNetworkResponse = await viewClusterNetworkApiCall();
-        const ClusterNodesResponse = await viewClusterNodesApiCall();
-        const ClusterStatusResponse = await viewClusterStatusApiCall();
-        const ClusterNodeIPResponse = await viewClusterNodeIPApiCall();
-
-        console.log("ClusterInfoResponse", ClusterInfoResponse.data);
-        console.log("ClusterIPResponse", ClusterIPResponse.data);
-        console.log("ClusterInventoryResponse", ClusterInventoryResponse.data);
-        console.log("ClusterNetworkResponse", ClusterNetworkResponse.data);
-        console.log("ClusterNodesResponse", ClusterNodesResponse.data);
-        console.log("ClusterStatusResponse", ClusterStatusResponse.data);
-        console.log("ClusterNodeIPResponse", ClusterNodeIPResponse.data);
-
-        setClusterInfo(ClusterInfoResponse.data);
-        setNetworkData(ClusterNetworkResponse.data);
-        setClusterInventory(ClusterInventoryResponse.data);
-        setClusterStatus(ClusterStatusResponse.data);
-        setNodeList(ClusterNodesResponse.data);
-        setIpTableData(ClusterIPResponse.data);
-        setNodeIPD(ClusterNodeIPResponse.data);
-      } else if (response === "Incorrect username or password.") {
-        alert("Incorrect username or password.");
-      } else {
-        alert("Network Error !!.Please try again later.");
+          console.log(response.data, "data");
+        }
+      } catch (error) {
+        console.log("ClusterStatusPage Error " + error);
+      } finally {
+        setLoading(false);
       }
-    } catch {}
-    setLoading(false);
+    },
+    [selectedCluster]
+  );
 
-    //   const fetchData = async () => {
-    //     try {
+  const getSelectedNodeData = useCallback(
+    async (selectedNode) => {
+      setClusterData([]);
+      setLoading(true);
 
-    //     } catch (error) {
-    //       console.error("Error fetching data:", error);
-    //     }
-    //   };
+      try {
+        const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+        const response = await viewClusterNodeInformation(
+          selectedCluster,
+          selectedNode,
+          userDetails.username
+        );
 
-    //   fetchData();
-
-    // try {
-    //   const response = await viewClusterInfoApiCall();
-    //   if (response.length !== 0) {
-    //     setData(JSON.parse(JSON.stringify(response.data)));
-    //     console.log(response.data, "data");
-
-    //     // handleMetricData(metricData);
-    //     // setErrorMessage("");
-    //     // setEmptyMessage("");
-    //   } else {
-    //     // console.log("No metric data");
-    //     // handleMetricData(metricData);
-    //     // setEmptyMessage("No Metric Data to show!");
-    //   }
-    // } catch (error) {
-    //   console.log("metric data Error " + error);
-    //   // setErrorMessage("An error occurred!");
-    // } finally {
-    //   setNeedStatusCall(true);
-    //   setLoading(false);
-    // }
-  }, []);
+        if (response.data[0] === "You are not logged in.") {
+          setClusterData([]);
+        } else {
+          setClusterData(JSON.parse(JSON.stringify(response.data)));
+          console.log(response.data, "data");
+        }
+      } catch (error) {
+        console.log("getSelectedNodeData Error " + error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [selectedNode]
+  );
 
   useEffect(() => {
     console.log("useEffect STATUS");
-    // console.log("Selected Service " + selectedService);
-    console.log("Selected selectedCluster " + selectedCluster);
-    // if (!needStatusCall) {
-    getSelectedClusterData(selectedCluster);
+    console.log("Selected Node " + selectedNode);
+    console.log("Selected Cluster" + selectedCluster);
+    // if (selectedNode !== "") {
+    //   getSelectedNodeData(selectedNode);
+    // } else {
+
+    if (selectedNode.length > 0) {
+      getSelectedNodeData(selectedNode);
+    } else {
+      getSelectedClusterData(selectedCluster);
+    }
+
     // }
-  }, [selectedCluster]);
+  }, [selectedCluster, getSelectedNodeData]);
 
   return (
     <div>
@@ -147,10 +130,11 @@ const Status = () => {
         <Loading />
       ) : (
         <div style={{ display: "flex" }}>
-          {clusterInfo.length > 0 &&
-          NetworkData.length > 0 &&
-          IpTableData.length > 0 &&
-          NodeIP.length > 0 ? (
+          {ClusterData.length > 0 ? (
+            // clusterInfo.length > 0 &&
+            // NetworkData.length > 0 &&
+            // IpTableData.length > 0 &&
+            // NodeIP.length > 0 ?
             // NodeLists.length > 0
             <Card
               elevation={5}
@@ -183,7 +167,7 @@ const Status = () => {
                     Channel:
                     <br></br>{" "}
                     <Typography variant="h5">
-                      {clusterInfo[0].channel}
+                      {ClusterData[0].clusterInfo[0].channel}
                     </Typography>
                   </Typography>
                   <Typography
@@ -192,7 +176,7 @@ const Status = () => {
                   >
                     Cluster ID: <br></br>{" "}
                     <Typography variant="h5">
-                      {clusterInfo[0].clusterID}
+                      {ClusterData[0].clusterInfo[0].clusterID}
                     </Typography>
                   </Typography>
                   <Typography
@@ -202,54 +186,91 @@ const Status = () => {
                     Version:
                     <br></br>{" "}
                     <Typography variant="h5">
-                      {clusterInfo[0].version}
+                      {ClusterData[0].clusterInfo[0].version}
                     </Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Host Name:
-                    <br></br>{" "}
-                    <Typography variant="h5">{NodeIP[0].Hostname}</Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Internal IP:
-                    <br></br>{" "}
-                    <Typography variant="h5">{NodeIP[0].InternalIP}</Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Node Type:
-                    <br></br>{" "}
-                    <Typography variant="h5">{NodeIP[0].nodeType}</Typography>
                   </Typography>
 
-                  {/* <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    ControlPanalNodes:
-                    <br></br>{" "}
-                    <Typography variant="h5">
-                      {NodeLists[0].controlPlaneNodes}
-                    </Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    WorkerNodes:
-                    <br></br>{" "}
-                    <Typography variant="h5">
-                      {NodeLists[0].workerNodes}
-                    </Typography>
-                  </Typography> */}
+                  {ClusterData[0].clusterIP[0].Hostname && (
+                    <>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        Host Name:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterIP[0].Hostname}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        IngressIP:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterIP[0].InternalIP}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        Worker Nodes:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterIP[0].nodeType}
+                        </Typography>
+                      </Typography>
+                    </>
+                  )}
+
+                  {ClusterData[0].clusterNodes && (
+                    <>
+                      {" "}
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        API IP:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterIP[0].apiIP ||
+                            ClusterData[0].clusterIP[0].apiServerInternalIP}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        IngressIP:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterIP[0].ingressIP}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        Worker Nodes:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterNodes[0].workerNodes}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", marginTop: "10px" }}
+                      >
+                        Control Plane Nodes:
+                        <br></br>{" "}
+                        <Typography variant="h5">
+                          {ClusterData[0].clusterNodes[0].controlPlaneNodes}
+                        </Typography>
+                      </Typography>
+                    </>
+                  )}
                 </>
               </div>
               <div style={{ marginTop: "40px" }}>
@@ -259,7 +280,9 @@ const Status = () => {
                 >
                   CIDIR:
                   <br></br>{" "}
-                  <Typography variant="h5">{NetworkData[0].cidr}</Typography>
+                  <Typography variant="h5">
+                    {ClusterData[0].clusterNetwork[0].cidr}
+                  </Typography>
                 </Typography>
 
                 <Typography
@@ -269,7 +292,7 @@ const Status = () => {
                   Host Prefix:
                   <br></br>{" "}
                   <Typography variant="h5">
-                    {NetworkData[0].hostPrefix}
+                    {ClusterData[0].clusterNetwork[0].hostPrefix}
                   </Typography>
                 </Typography>
 
@@ -280,7 +303,7 @@ const Status = () => {
                   Network Type:
                   <br></br>{" "}
                   <Typography variant="h5">
-                    {NetworkData[0].networkType}
+                    {ClusterData[0].clusterNetwork[0].networkType}
                   </Typography>
                 </Typography>
 
@@ -291,7 +314,7 @@ const Status = () => {
                   Service Network:
                   <br></br>{" "}
                   <Typography variant="h5">
-                    {NetworkData[0].serviceNetwork}
+                    {ClusterData[0].clusterNetwork[0].serviceNetwork}
                   </Typography>
                 </Typography>
               </div>
@@ -319,86 +342,93 @@ const Status = () => {
                 maxheight: "38vh",
               }}
             >
-              <Card elevation={5} sx={{ padding: "10px", maxheight: "38vh" }}>
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: "bold", paddingBottom: "10px" }}
-                >
-                  Cluster Status Data
-                </Typography>
-                <TableContainer component={Paper} sx={{ maxHeight: "220px" }}>
-                  <Table>
-                    <TableHead
-                      style={{
-                        position: "sticky",
-                        top: 0,
-                        backgroundColor: colors.primary[400],
-                      }}
-                    >
-                      <TableRow>
-                        <TableCell
-                          style={{
-                            fontSize: "12px",
-                            padding: "4px 8px",
-                          }}
-                        >
-                          <Typography variant="h5"> Component Name</Typography>
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            fontSize: "12px",
-                            padding: "0px 0px 0px 25px",
-                          }}
-                        >
-                          <Typography variant="h5">Status</Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {clusterStatus.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell
-                            style={{ fontSize: "12px", padding: "4px 8px" }}
-                          >
-                            <Typography variant="h5"> {row.name} </Typography>
-                          </TableCell>
+              {ClusterData.length > 0 ? (
+                <Card elevation={5} sx={{ padding: "10px", maxheight: "38vh" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{ fontWeight: "bold", paddingBottom: "10px" }}
+                  >
+                    Cluster Status Data
+                  </Typography>
+                  <TableContainer component={Paper} sx={{ maxHeight: "220px" }}>
+                    <Table>
+                      <TableHead
+                        style={{
+                          position: "sticky",
+                          top: 0,
+                          backgroundColor: colors.primary[400],
+                        }}
+                      >
+                        <TableRow>
                           <TableCell
                             style={{
                               fontSize: "12px",
                               padding: "4px 8px",
                             }}
                           >
-                            <TableCell
-                              style={{
-                                fontSize: "12px",
-                                padding: "4px 8px",
-                                paddingBottom: 0,
-                              }}
-                            >
-                              {row.condition === "Healthy" && (
-                                <FiberManualRecordIcon
-                                  style={{ color: "green" }}
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell
-                              style={{
-                                fontSize: "12px",
-                                padding: "4px 8px",
-                                paddingBottom: 0,
-                              }}
-                            >
-                              <Typography variant="h5">
-                                {row.condition}
-                              </Typography>
-                            </TableCell>
+                            <Typography variant="h5">
+                              {" "}
+                              Component Name
+                            </Typography>
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              fontSize: "12px",
+                              padding: "0px 0px 0px 25px",
+                            }}
+                          >
+                            <Typography variant="h5">Status</Typography>
                           </TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Card>
+                      </TableHead>
+                      <TableBody>
+                        {ClusterData[0].clusterStatus.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell
+                              style={{ fontSize: "12px", padding: "4px 8px" }}
+                            >
+                              <Typography variant="h5"> {row.name} </Typography>
+                            </TableCell>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  paddingBottom: 0,
+                                }}
+                              >
+                                {row.condition === "Healthy" && (
+                                  <FiberManualRecordIcon
+                                    style={{ color: "green" }}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  paddingBottom: 0,
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {row.condition}
+                                </Typography>
+                              </TableCell>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Card>
+              ) : (
+                <>No data to show</>
+              )}
             </div>
 
             {/* --------------------------------------------------------------------------------------------------------------------------------------- */}
@@ -412,7 +442,7 @@ const Status = () => {
                 maxheight: "30vh",
               }}
             >
-              {clusterInventory.length > 0 ? (
+              {ClusterData.length > 0 ? (
                 <Card elevation={5} sx={{ padding: "10px", maxheight: "30vh" }}>
                   <Typography
                     variant="h4"
@@ -449,95 +479,133 @@ const Status = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        <TableRow
-                          style={{
-                            padding: "4px 8px",
-                          }}
-                        >
-                          <TableCell
+                        {ClusterData[0].nodeInventory && (
+                          <TableRow
                             style={{
                               padding: "4px 8px",
                             }}
                           >
-                            <Typography variant="h5">Pods</Typography>
-                          </TableCell>
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">
-                              {clusterInventory[0].Pods}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow
-                          style={{
-                            padding: "4px 8px",
-                          }}
-                        >
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">Node</Typography>
-                          </TableCell>
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">
-                              {" "}
-                              {clusterInventory[0].Node}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow
-                          style={{
-                            padding: "4px 8px",
-                          }}
-                        >
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">
-                              PersistentVolumeClaims
-                            </Typography>
-                          </TableCell>
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">
-                              {" "}
-                              {clusterInventory[0].PersistentVolumeClaims}{" "}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">StorageClass</Typography>
-                          </TableCell>
-                          <TableCell
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5">
-                              {" "}
-                              {clusterInventory[0].StorageClass}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
+                            <TableCell
+                              style={{
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <Typography variant="h5">Pods</Typography>
+                            </TableCell>
+                            <TableCell
+                              style={{
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <Typography variant="h5">
+                                {ClusterData[0].nodeInventory}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        )}
+
+                        {ClusterData[0].clusterInventory && (
+                          <>
+                            {" "}
+                            <TableRow
+                              style={{
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">Pods</Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {ClusterData[0].clusterInventory[0].Pods}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow
+                              style={{
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">Node</Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {" "}
+                                  {ClusterData[0].clusterInventory[0].Node}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow
+                              style={{
+                                padding: "4px 8px",
+                              }}
+                            >
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  PersistentVolumeClaims
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {" "}
+                                  {
+                                    ClusterData[0].clusterInventory[0]
+                                      .PersistentVolumeClaims
+                                  }{" "}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  StorageClass
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  padding: "4px 8px",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {" "}
+                                  {
+                                    ClusterData[0].clusterInventory[0]
+                                      .StorageClass
+                                  }
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

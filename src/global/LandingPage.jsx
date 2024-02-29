@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Observai from "../assets/observai.png";
 import Infra from "../assets/Infra.jpeg";
 import Sustainability from "../assets/sustainability.jpeg";
@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useTokenExpirationCheck } from "./TokenExpiry";
 import { isTokenExpired, logout } from "./AuthMechanism";
 import "./LandingPage.css";
+import { GlobalContext } from "./globalContext/GlobalContext";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const LandingPage = () => {
   const [userRole, setUserRole] = useState("");
 
   console.log("authenticated", authenticated);
+
+  const { setSelectedCluster } = useContext(GlobalContext);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log("userInfo", userInfo);
@@ -58,6 +61,7 @@ const LandingPage = () => {
 
   const handleLogout = async () => {
     // Check if the token is expired
+    // setSelectedCluster([]);
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken && isTokenExpired(accessToken)) {
       // Token is expired, clear local storage and navigate to the home page
