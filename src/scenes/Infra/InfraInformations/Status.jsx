@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Typography } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   ListOfNodeDetails,
@@ -51,27 +51,28 @@ const Status = () => {
 
   const getSelectedClusterData = useCallback(
     async (selectedCluster) => {
+      setEmptyMessage("");
+      setErrorMessage("");
       setLoading(true);
 
       try {
         const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-        // console.log("userDetailsinSatuspge", userDetails.username);
         const response = await viewClusterDetails(
           selectedCluster,
           userDetails.username
         );
-
-        if (response.data[0] === "You are not logged in.") {
+        console.log("Status Page Response", response.data);
+        if (response.data[0] == "You are not logged in.") {
           setClusterData([]);
-          // setSelectedNode("");
+          setEmptyMessage("Please check your openshift login credentials!!!");
         } else {
-          // setSelectedNode("");
           setClusterData(JSON.parse(JSON.stringify(response.data)));
 
-          console.log(response.data, "data");
+          console.log("Clusterdata", response.data);
         }
       } catch (error) {
         console.log("ClusterStatusPage Error " + error);
+        setErrorMessage("Unable to fetch cluster details at this time.");
       } finally {
         setLoading(false);
       }
@@ -108,13 +109,9 @@ const Status = () => {
   );
 
   useEffect(() => {
-    console.log("useEffect STATUS");
+    console.log("useEffect StatusPage----->");
     console.log("Selected Node " + selectedNode);
     console.log("Selected Cluster" + selectedCluster);
-    // if (selectedNode !== "") {
-    //   getSelectedNodeData(selectedNode);
-    // } else {
-
     if (selectedNode.length > 0) {
       getSelectedNodeData(selectedNode);
     } else {
@@ -123,11 +120,56 @@ const Status = () => {
 
     // }
   }, [selectedCluster, getSelectedNodeData]);
-
   return (
     <div>
       {loading ? (
-        <Loading />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "75vh",
+          }}
+        >
+          <CircularProgress
+            style={{ color: colors.blueAccent[400] }}
+            size={80}
+            thickness={4}
+          />
+          <Typography variant="h5" fontWeight={"600"} mt={2}>
+            LOADING.....
+          </Typography>
+        </div>
+      ) : emptyMessage ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "75vh",
+          }}
+        >
+          <Typography variant="h5" fontWeight={"600"}>
+            {emptyMessage}
+          </Typography>
+        </div>
+      ) : errorMessage ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "75vh",
+          }}
+        >
+          <Typography variant="h5" fontWeight={"600"}>
+            {errorMessage}
+          </Typography>
+        </div>
       ) : (
         <div style={{ display: "flex" }}>
           {ClusterData.length > 0 ? (
@@ -206,7 +248,7 @@ const Status = () => {
                         variant="h5"
                         sx={{ fontWeight: "bold", marginTop: "10px" }}
                       >
-                        IngressIP:
+                        Internal IP:
                         <br></br>{" "}
                         <Typography variant="h5">
                           {ClusterData[0].clusterIP[0].InternalIP}
@@ -216,7 +258,7 @@ const Status = () => {
                         variant="h5"
                         sx={{ fontWeight: "bold", marginTop: "10px" }}
                       >
-                        Worker Nodes:
+                        Node Type:
                         <br></br>{" "}
                         <Typography variant="h5">
                           {ClusterData[0].clusterIP[0].nodeType}
@@ -243,7 +285,7 @@ const Status = () => {
                         variant="h5"
                         sx={{ fontWeight: "bold", marginTop: "10px" }}
                       >
-                        IngressIP:
+                        Ingress IP:
                         <br></br>{" "}
                         <Typography variant="h5">
                           {ClusterData[0].clusterIP[0].ingressIP}
@@ -444,12 +486,23 @@ const Status = () => {
             >
               {ClusterData.length > 0 ? (
                 <Card elevation={5} sx={{ padding: "10px", maxheight: "30vh" }}>
-                  <Typography
-                    variant="h4"
-                    sx={{ fontWeight: "bold", paddingBottom: "10px" }}
-                  >
-                    Cluster Inventory Data
-                  </Typography>
+                  {ClusterData[0].clusterInventory && (
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: "bold", paddingBottom: "10px" }}
+                    >
+                      Cluster Inventory Data
+                    </Typography>
+                  )}
+                  {ClusterData[0].nodeInventory && (
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: "bold", paddingBottom: "10px" }}
+                    >
+                      Node Inventory Data
+                    </Typography>
+                  )}
+
                   <TableContainer component={Paper} sx={{ maxHeight: "210px" }}>
                     <Table>
                       <TableHead
@@ -614,34 +667,6 @@ const Status = () => {
                 <>No Data To Show !!!</>
               )}
             </div>
-
-            {/* {clusterInventory.length > 0 ? (
-              <div
-                style={{
-                  width: "300px",
-                  minHeight: "30vh",
-                  maxHeight: "30vh",
-                }}
-              >
-                <Card
-                  elevation={5}
-                  sx={{ padding: "10px", minHeight: "30vh", maxHeight: "30vh" }}
-                >
-                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                    Cluster Inventory Data
-                  </Typography>
-                  <p>Pods: {clusterInventory[0].Pods}</p>
-                  <p>Node: {clusterInventory[0].Node}</p>
-                  <p>
-                    PersistentVolumeClaims :{" "}
-                    {clusterInventory[0].PersistentVolumeClaims}
-                  </p>
-                  <p>StorageClass: {clusterInventory[0].StorageClass}</p>
-                </Card>
-              </div>
-            ) : (
-              <>No data to show</>
-            )} */}
           </div>
         </div>
       )}

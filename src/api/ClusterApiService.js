@@ -180,7 +180,7 @@ export const viewClusterNodeInformation = async (
       `${openshiftLoginURL}/getClusterNodeInformation?clusterName=${clusterName}&nodeName=${nodeName}&username=${username}`
     );
 
-    console.log("viewClusterNodeInformation response", response);
+    // console.log("viewClusterNodeInformation response", response);
 
     return response;
   } catch (error) {
