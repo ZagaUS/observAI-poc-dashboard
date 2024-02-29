@@ -7,7 +7,8 @@ export const getClusterUtilization = async (
     endDate,
     minutesAgo,
     nodeName,
-    clusterName
+    clusterName,
+    userName
 ) => {
     try {
         let finalUrl;
@@ -34,23 +35,23 @@ export const getClusterUtilization = async (
 
         if (nodeName) {
             if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}`);
+                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
 
-                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}`;
+                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
             } else {
-                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}`);
+                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
 
-                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}`;
+                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
             }
         } else {
             if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}`);
+                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`);
 
-                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}`;
+                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`;
             } else {
-                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}`);
+                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`);
 
-                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}`;
+                finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`;
             }
         }
 

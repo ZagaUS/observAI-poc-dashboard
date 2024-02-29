@@ -55,52 +55,69 @@ const ClusterUtilization = () => {
     selectedEndDate,
     needHistoricalData,
     lookBackVal,
-    nodeName, clusterName, setNodeName, setClusterName
+    nodeName, clusterName, setNodeName, setClusterName, selectedNode, selectedCluster, setSelectedCluster, setSelectedNode
   } = useContext(GlobalContext);
   const [clusterUtilization, setClusterUtilization] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  console.log(userInfo, "userDetails");
+  const userName = userInfo.username;
+  console.log(userName)
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleGetClusterUtilization = useCallback(async () => {
+    const selectedNodestring = selectedNode[0];
     try {
       setLoading(true);
       const clusterUtilData = await getClusterUtilization(
         selectedStartDate,
         selectedEndDate,
         lookBackVal.value,
-        nodeName, clusterName
+        // nodeName, clusterName,
+        selectedNode, selectedCluster,
+        userName
       );
       if (clusterUtilData.length !== 0) {
-        const mappedData = clusterUtilData.flatMap((item) => [
-          {
-            resources: "CPU",
-            // availability: ``,
-            // capacity: ``,
-            // usage: `${item.cpuUsage}`,
-            usage: `${parseFloat((item.cpuUsage).toFixed(2))}`
-          },
-          {
-            resources: "Memory",
-            // availability: `${item.memoryAvailable} GB`,
-            availability: `${parseFloat((item.memoryAvailable).toFixed(2))} GB`,
-            // capacity: ``,
-            // usage: `${item.memoryUsage} GB`,
-            usage: `${parseFloat((item.memoryUsage).toFixed(2))} GB`
-          },
-          {
-            resources: "FileSystem",
-            // availability: `${item.fileSystemAvailable} GB`,
-            availability: `${parseFloat((item.fileSystemAvailable).toFixed(2))} GB`,
-            // capacity: `${item.fileSystemCapacity} GB`,
-            capacity: `${parseFloat((item.fileSystemCapacity).toFixed(2))} GB`,
-            // usage: `${item.fileSystemUsage} GB`,
-            usage: `${parseFloat((item.fileSystemUsage).toFixed(2))} GB`
-          },
-        ]);
+        const mappedData = clusterUtilData.flatMap((item) => {
+          // const cpuUsage = (item.cpuUsage / item.totalCpuCapacity) * 100;
+          const cpuAvail =  item.cpuCapacity + item.cpuUsage;
+          const memoryCpuCapacity = item.memoryUsage - item.memoryAvailable;
+          return [
+            {
+              resources: "CPU",
+              // availability: cpuAvail,
+              availability: `${parseFloat((cpuAvail).toFixed(2))}`,
+              capacity: `${item.cpuCapacity}`,
+              // usage: `${item.cpuUsage}`,
+              usage: `${parseFloat((item.cpuUsage).toFixed(2))}`
+            },
+            {
+              resources: "Memory",
+              // availability: `${item.memoryAvailable} GB`,
+              availability: `${parseFloat((item.memoryAvailable).toFixed(2))} GB`,
+              // capacity: memoryCpuCapacity,
+              capacity: `${parseFloat((memoryCpuCapacity).toFixed(2))}`,
+              // usage: `${item.memoryUsage} GB`,
+              usage: `${parseFloat((item.memoryUsage).toFixed(2))} GB`
+            },
+            {
+              resources: "FileSystem",
+              // availability: `${item.fileSystemAvailable} GB`,
+              availability: `${parseFloat((item.fileSystemAvailable).toFixed(2))} GB`,
+              // capacity: `${item.fileSystemCapacity} GB`,
+              capacity: `${parseFloat((item.fileSystemCapacity).toFixed(2))} GB`,
+              // usage: `${item.fileSystemUsage} GB`,
+              usage: `${parseFloat((item.fileSystemUsage).toFixed(2))} GB`
+            },
+          ]
+        }
+
+        );
 
         const rowClusterData = mappedData.map((item) =>
           createData(
@@ -124,11 +141,15 @@ const ClusterUtilization = () => {
       setLoading(false);
     }
   }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, 
-    clusterName, nodeName
+    // clusterName, nodeName,
+    selectedNode, selectedCluster, userName
   ]);
 
   useEffect(() => {
     handleGetClusterUtilization();
+    // setSelectedNode([]);
+    // setSelectedCluster([]);
+
     // console.log("------------cluster name------ " , clusterName)
     return () => {
       setErrorMessage("");
