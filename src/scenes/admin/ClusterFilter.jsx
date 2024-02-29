@@ -62,7 +62,7 @@ const ClusterFilter = () => {
       );
       if (NodeResponse.data == "You are unauthorized to do this action.") {
         setNodes([]);
-        setEmptyMessage("Please check your openshift login credentials!!!");
+        setEmptyMessage("Openshift is down please try again later!!!");
         console.log(NodeResponse.data, "Nodesdata");
       } else {
         setNodes(NodeResponse.data);
@@ -75,7 +75,7 @@ const ClusterFilter = () => {
   }, [selectedCluster]);
 
   useEffect(() => {
-    console.log("UseEffect FilterPage------->");
+    console.log("UseEffect FilterPage-->");
     console.log("Selected Cluster" + selectedCluster);
     fetchNodes();
   }, [fetchNodes]);
@@ -128,8 +128,25 @@ const ClusterFilter = () => {
   );
   const largem = useMediaQuery((theme) => theme.breakpoints.down("lg"));
 
+  // const handleNodeToggle = (node) => () => {
+  //   setSelectedNode([node]);
+  // };
+
   const handleNodeToggle = (node) => () => {
-    setSelectedNode([node]);
+    // setSelectedNode([node]);
+    setSelectedNode((prevSelected) =>
+      prevSelected.includes(node) ? [] : [node]
+    );
+    // You can update the setSelectedNode here if you want to set the value after the checkbox is clicked
+    // setSelectedNode((prevSelected) => {
+    //   if (prevSelected.includes(node)) {
+    //     // If node is already selected, remove it
+    //     return prevSelected.filter((selected) => selected !== node);
+    //   } else {
+    //     // If node is not selected, add it
+    //     return [...prevSelected, node];
+    //   }
+    // });
   };
 
   const handleServiceToggle = (clusterName) => () => {
@@ -317,6 +334,53 @@ const ClusterFilter = () => {
                   </FormControl>
                 </AccordionDetails>
               ) : (
+                //  <AccordionDetails>
+                //   <Typography variant="h5" color={"#fff"}>
+                //     Nodes
+                //   </Typography>
+                //   <FormControl component="fieldset">
+                //     <FormGroup>
+                //       {Nodes.map((nodes) => (
+                //         <FormControlLabel
+                //           key={nodes}
+                //           control={
+                //             <Checkbox
+                //               checked={selectedNode.includes(nodes)}
+                //               onChange={() => handleNodeToggle(nodes)}
+                //               sx={{ "&.Mui-checked": { color: "white" } }}
+                //             />
+                //           }
+                //           label={nodes}
+                //           sx={{
+                //             color: "white",
+                //           }}
+                //         />
+                //       ))}
+                //     </FormGroup>
+                //   </FormControl>
+                // </AccordionDetails>
+                // <AccordionDetails>
+
+                // <AccordionDetails>
+                //   <List sx={{ width: "100%", maxWidth: 360 }}>
+                //     {Nodes.map((node) => (
+                //       <ListItem
+                //         key={node}
+                //         button
+                //         selected={selectedNode === node}
+                //         onClick={() => handleNodeToggle(node)}
+                //       >
+                //         <ListItemText
+                //           sx={{
+                //             backgroundColor:
+                //               selectedNode === node ? "blue" : "red", // Change background color for selected node
+                //           }}
+                //           primary={node}
+                //         />
+                //       </ListItem>
+                //     ))}
+                //   </List>
+                // </AccordionDetails>
                 <div>
                   <Typography variant="h5" fontWeight={"600"} mt={2}>
                     Unable to fetch node details at this time.
@@ -325,7 +389,6 @@ const ClusterFilter = () => {
               )}
             </Accordion>
           </ListItem>
-          // <></>
         )}
 
         <Divider />

@@ -64,7 +64,7 @@ const Status = () => {
         console.log("Status Page Response", response.data);
         if (response.data[0] == "You are not logged in.") {
           setClusterData([]);
-          setEmptyMessage("Please check your openshift login credentials!!!");
+          setEmptyMessage("Openshift is down please try again later!!!");
         } else {
           setClusterData(JSON.parse(JSON.stringify(response.data)));
 
@@ -72,7 +72,9 @@ const Status = () => {
         }
       } catch (error) {
         console.log("ClusterStatusPage Error " + error);
-        setErrorMessage("Unable to fetch cluster details at this time.");
+        setErrorMessage(
+          "Network Error !!! Unable to fetch cluster details at this time."
+        );
       } finally {
         setLoading(false);
       }
@@ -97,7 +99,7 @@ const Status = () => {
           setClusterData([]);
         } else {
           setClusterData(JSON.parse(JSON.stringify(response.data)));
-          console.log(response.data, "data");
+          console.log("NodeData", response.data);
         }
       } catch (error) {
         console.log("getSelectedNodeData Error " + error);
@@ -173,11 +175,6 @@ const Status = () => {
       ) : (
         <div style={{ display: "flex" }}>
           {ClusterData.length > 0 ? (
-            // clusterInfo.length > 0 &&
-            // NetworkData.length > 0 &&
-            // IpTableData.length > 0 &&
-            // NodeIP.length > 0 ?
-            // NodeLists.length > 0
             <Card
               elevation={5}
               sx={{
@@ -196,124 +193,118 @@ const Status = () => {
                 >
                   Cluster Data
                 </Typography>
-                {/* <p>Channel: {clusterInfo[0].channel}</p>
-                <p>Cluster ID: {clusterInfo[0].clusterID}</p>
-                <p>Version: {clusterInfo[0].version}</p>
-                <p>Hostname: {IpTableData[0].Hostname}</p>
-                <p>InternalIP: {IpTableData[0].InternalIP}</p> */}
-                <>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Channel:
-                    <br></br>{" "}
-                    <Typography variant="h5">
-                      {ClusterData[0].clusterInfo[0].channel}
-                    </Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Cluster ID: <br></br>{" "}
-                    <Typography variant="h5">
-                      {ClusterData[0].clusterInfo[0].clusterID}
-                    </Typography>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", marginTop: "10px" }}
-                  >
-                    Version:
-                    <br></br>{" "}
-                    <Typography variant="h5">
-                      {ClusterData[0].clusterInfo[0].version}
-                    </Typography>
-                  </Typography>
 
-                  {ClusterData[0].clusterIP[0].Hostname && (
-                    <>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Host Name:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterIP[0].Hostname}
-                        </Typography>
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Internal IP:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterIP[0].InternalIP}
-                        </Typography>
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Node Type:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterIP[0].nodeType}
-                        </Typography>
-                      </Typography>
-                    </>
-                  )}
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Channel:
+                  <br></br>{" "}
+                  <Typography variant="h5">
+                    {ClusterData[0].clusterInfo[0].channel}
+                  </Typography>
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Cluster ID: <br></br>{" "}
+                  <Typography variant="h5">
+                    {ClusterData[0].clusterInfo[0].clusterID}
+                  </Typography>
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ fontWeight: "bold", marginTop: "10px" }}
+                >
+                  Version:
+                  <br></br>{" "}
+                  <Typography variant="h5">
+                    {ClusterData[0].clusterInfo[0].version}
+                  </Typography>
+                </Typography>
 
-                  {ClusterData[0].clusterNodes && (
-                    <>
-                      {" "}
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        API IP:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterIP[0].apiIP ||
-                            ClusterData[0].clusterIP[0].apiServerInternalIP}
-                        </Typography>
+                {ClusterData[0].clusterIP[0].Hostname && (
+                  <>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Host Name:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterIP[0].Hostname}
                       </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Ingress IP:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterIP[0].ingressIP}
-                        </Typography>
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Internal IP:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterIP[0].InternalIP}
                       </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Worker Nodes:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterNodes[0].workerNodes}
-                        </Typography>
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Node Type:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterIP[0].nodeType}
                       </Typography>
-                      <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", marginTop: "10px" }}
-                      >
-                        Control Plane Nodes:
-                        <br></br>{" "}
-                        <Typography variant="h5">
-                          {ClusterData[0].clusterNodes[0].controlPlaneNodes}
-                        </Typography>
+                    </Typography>
+                  </>
+                )}
+
+                {ClusterData[0].clusterNodes && (
+                  <>
+                    {" "}
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      API IP:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterIP[0].apiIP ||
+                          ClusterData[0].clusterIP[0].apiServerInternalIP}
                       </Typography>
-                    </>
-                  )}
-                </>
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Ingress IP:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterIP[0].ingressIP}
+                      </Typography>
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Worker Nodes:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterNodes[0].workerNodes}
+                      </Typography>
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", marginTop: "10px" }}
+                    >
+                      Control Plane Nodes:
+                      <br></br>{" "}
+                      <Typography variant="h5">
+                        {ClusterData[0].clusterNodes[0].controlPlaneNodes}
+                      </Typography>
+                    </Typography>
+                  </>
+                )}
               </div>
               <div style={{ marginTop: "40px" }}>
                 <Typography
