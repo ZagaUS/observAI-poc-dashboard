@@ -230,7 +230,7 @@ const DashboardTopBar = () => {
     if (newValue === 0) {
       navigate("/mainpage/infraInfo");
     } else if (newValue === 1) {
-      navigate("/mainpage/infraInfo/cpuUtilization");
+      navigate("/mainpage/infraInfo/clusterUtilization");
     } else if (newValue === 2) {
       navigate("/mainpage/infraInfo/alerts");
     } else if (newValue === 3) {
@@ -575,7 +575,7 @@ const DashboardTopBar = () => {
                         "/mainpage/infraNode/nodeMemory" ||
                       window.location.pathname === "/mainpage/infraInfo" ||
                       window.location.pathname ===
-                        "/mainpage/infraInfo/cpuUtilization" ||
+                        "/mainpage/infraInfo/clusterUtilization" ||
                       window.location.pathname ===
                         "/mainpage/infraInfo/alerts" ||
                       window.location.pathname ===
@@ -1067,7 +1067,7 @@ const DashboardTopBar = () => {
 
           {isSmallScreen ? null : window.location.pathname ===
               "/mainpage/infraInfo" ||
-            window.location.pathname === "/mainpage/infraInfo/cpuUtilization" ||
+            window.location.pathname === "/mainpage/infraInfo/clusterUtilization" ||
             window.location.pathname === "/mainpage/infraInfo/alerts" ||
             window.location.pathname === "/mainpage/infraInfo/events" ? (
             <Tabs
@@ -1084,7 +1084,7 @@ const DashboardTopBar = () => {
               indicatorColor="primary"
             >
               <Tab label="Status" sx={{ color: "#FFF" }} />
-              <Tab label="CPU     Utilizations" sx={{ color: "#FFF" }} />
+              <Tab label="Resource Utilization" sx={{ color: "#FFF" }} />
               <Tab label="Alerts" sx={{ color: "#FFF" }} />
               <Tab label="Events" sx={{ color: "#FFF" }} />
             </Tabs>

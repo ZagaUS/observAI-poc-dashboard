@@ -15,7 +15,7 @@ const GlobalContextProvider = ({ children }) => {
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const defaultValue = 120;
+  const defaultValue = 30;
   const defaultLabel = options.find((option) => option.value === defaultValue);
   const [lookBackVal, setLookBackVal] = useState(defaultLabel);
   const [needFilterCall, setNeedFilterCall] = useState(false);
@@ -106,6 +106,9 @@ const GlobalContextProvider = ({ children }) => {
   const [password, setPassword] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [serviceListData, setServiceListData] = useState([]);
+
+  const [nodeName, setNodeName] = useState('zagaocp-us-sno');
+  const [clusterName, setClusterName] = useState('zagaobservability-tztcb');
 
   return (
     <GlobalContext.Provider
@@ -260,6 +263,7 @@ const GlobalContextProvider = ({ children }) => {
         setUsername,
         password,
         setPassword,
+        nodeName, setNodeName, clusterName, setClusterName
       }}
     >
       {children}
