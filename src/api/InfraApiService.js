@@ -70,6 +70,20 @@ export const getRecentEvent = async (minutesAgo) => {
     }
 };
 
+export const getRecentEvents = async (minutesAgo) => {
+    try {
+        console.log("Minutes Ago", minutesAgo);
+        const response = await axios.get(
+            `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}`
+        );
+        console.log("Recent Event Response", response);
+        return response.data;
+    } catch (error) {
+        console.error("Error Retrieving Recent Event Data:", error);
+        throw error;
+    }
+};
+
 export const getAllEvent = async (minutesAgo) => {
     try {
         console.log("Minutes Ago - allEvent", minutesAgo);

@@ -10,11 +10,32 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { getClusterUtilization } from "../../../api/ClusterUtilizationApiService";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import Loading from "../../../global/Loading/Loading";
+import { tokens } from "../../../theme";
+
+const tableHeader = [
+  {
+    id: "resourceName",
+    label: "Resource Name"
+  },
+  {
+    id: "availability",
+    label: "Availability"
+  },
+  {
+    id: "capacity",
+    label: "Capacity"
+  },
+  {
+    id: "usage",
+    label: "Usage"
+  }
+]
 
 function createData(resources, availability, capacity, usage) {
   return { resources, availability, capacity, usage };
@@ -40,6 +61,9 @@ const ClusterUtilization = () => {
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleGetClusterUtilization = useCallback(async () => {
     try {
@@ -141,7 +165,7 @@ const ClusterUtilization = () => {
             height: "80vh",
           }}
         >
-          <Typography variant="h5" fontWeight={"600"}>
+          <Typography variant="h6" fontWeight={"600"}>
             {errorMessage}
           </Typography>
         </div>
@@ -153,12 +177,29 @@ const ClusterUtilization = () => {
                 <TableContainer component={Paper} sx={{ maxHeight: "350px" }}>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
-                      <TableRow>
+                      {/* <TableRow sx={{ backgroundColor: colors.primary[400] }}>
                         <TableCell>Resource Name</TableCell>
                         <TableCell>Availability</TableCell>
                         <TableCell>Capacity</TableCell>
                         <TableCell>Usage</TableCell>
-                      </TableRow>
+                      </TableRow> */}
+                      {tableHeader.map((column, index) => (
+                        <TableCell
+                          key={index}
+                          align={column.align}
+                          sx={{
+                            height: "30px",
+                            backgroundColor: colors.primary[400],
+                            color: "#FFF",
+                          }}
+                        >
+                          <Typography
+                            variant="h5" 
+                          >
+                            {column.label}
+                          </Typography>
+                        </TableCell>
+                      ))}
                     </TableHead>
 
                     <TableBody>
@@ -181,16 +222,24 @@ const ClusterUtilization = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {row.resources}
+                            <Typography variant="h7">
+                              {row.resources}
+                            </Typography>
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            {row.availability}
+                            <Typography variant="h7">
+                              {row.availability}
+                            </Typography>
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            {row.capacity}
+                            <Typography variant="h7">
+                              {row.capacity}
+                            </Typography>
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            {row.usage}
+                            <Typography variant="h7">
+                              {row.usage}
+                            </Typography>
                           </TableCell>
                         </TableRow>
                       ))}

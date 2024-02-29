@@ -109,6 +109,9 @@ const DashboardTopBar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const isEventsPage =
+    window.location.pathname === "/mainpage/infraInfo/events";
+
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
     "(max-width: 1000px) and (orientation: landscape)"
@@ -163,7 +166,7 @@ const DashboardTopBar = () => {
   const EmptyformattedDate = format(new Date(), "yyyy-MM-dd");
 
   const handleRefreshClick = () => {
-    const defaultValue = 120;
+    const defaultValue = 30;
     const defaultLabel = options.find(
       (option) => option.value === defaultValue
     );
@@ -616,74 +619,128 @@ const DashboardTopBar = () => {
               justifyContent: "space-between",
             }}
           >
-            <div
-              style={{
-                alignItems: "center",
-                marginBottom: "10px",
-                marginRight: "10px",
-              }}
-            >
-              <label
+            {isEventsPage ? (
+              <div
                 style={{
-                  fontSize: "10px",
-                  marginBottom: "5px",
-                  color: colors.tabColor[500],
+                  alignItems: "center",
+                  marginBottom: "10px",
+                  marginRight: "10px",
                 }}
               >
-                Start Date
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    position: "relative",
+                <label
+                  style={{
+                    fontSize: "10px",
+                    marginBottom: "5px",
+                    color: colors.tabColor[500],
                   }}
                 >
-                  <DatePicker
-                    value={startDate}
-                    onChange={handleStartDateChange}
-                    slotProps={{
-                      textField: { variant: "standard" },
-                    }}
-                    maxDate={endDate}
-                    disableFuture
+                  Start Date
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Box
                     sx={{
-                      width: isipadpro ? 130 : 153,
-                      marginRight: 2,
-                      backgroundColor:
-                        theme.palette.mode === "dark" ? "#848482" : "#FFF",
-
-                      "& .MuiInput-underline:before": {
-                        borderBottom: "none", // Remove the default underline
-                      },
-
-                      "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-                        borderBottom: "none",
-                      },
-
-                      padding: "7px",
-                      "& .MuiInputBase-input": {
-                        padding: 0,
-                        "&:hover": {
-                          border: "none", // Remove hover border effect
-                        },
-                      },
-                      "& .MuiInputBase-root": {
-                        "&:hover": {
-                          border: "none", // Remove hover border effect
-                        },
-                      },
-                      "& .MuiSvgIcon-root": {
-                        fontSize: 18, // Adjust the font size of the clearable icon
-                      },
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      position: "relative",
                     }}
-                  />
-                </Box>
-              </LocalizationProvider>
-            </div>
+                  >
+                    <DatePicker
+                      disabled
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      slotProps={{
+                        textField: { variant: "standard" },
+                      }}
+                      maxDate={endDate}
+                      disableFuture
+                      sx={{
+                        width: isipadpro ? 130 : 153,
+                        marginRight: 2,
+                        backgroundColor:
+                          theme.palette.mode === "dark" ? "#848482" : "#FFF",
+                        "& .MuiInput-underline:before": {
+                          borderBottom: "none",
+                        },
+                        // padding: "0px 7px",
+                        padding: "2px 7px 0px 7px"
+                      }}
+                    />
+                  </Box>
+                </LocalizationProvider>
+              </div>
+            ) : (
+              <div
+                style={{
+                  alignItems: "center",
+                  marginBottom: "10px",
+                  marginRight: "10px",
+                }}
+              >
+                <label
+                  style={{
+                    fontSize: "10px",
+                    marginBottom: "5px",
+                    color: colors.tabColor[500],
+                  }}
+                >
+                  Start Date
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      position: "relative",
+                    }}
+                  >
+                    <DatePicker
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      slotProps={{
+                        textField: { variant: "standard" },
+                      }}
+                      maxDate={endDate}
+                      disableFuture
+                      sx={{
+                        width: isipadpro ? 130 : 153,
+                        marginRight: 2,
+                        backgroundColor:
+                          theme.palette.mode === "dark" ? "#848482" : "#FFF",
+
+                        "& .MuiInput-underline:before": {
+                          borderBottom: "none", // Remove the default underline
+                        },
+
+                        "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                          {
+                            borderBottom: "none",
+                          },
+
+                        padding: "7px",
+                        "& .MuiInputBase-input": {
+                          padding: 0,
+                          "&:hover": {
+                            border: "none", // Remove hover border effect
+                          },
+                        },
+                        "& .MuiInputBase-root": {
+                          "&:hover": {
+                            border: "none", // Remove hover border effect
+                          },
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 18, // Adjust the font size of the clearable icon
+                        },
+                      }}
+                    />
+                  </Box>
+                </LocalizationProvider>
+              </div>
+            )}
             <div
               style={{
                 alignItems: "center",
@@ -770,43 +827,25 @@ const DashboardTopBar = () => {
               >
                 TimeBy
               </label>
-              {/* <Dropdown
-                        options={options}
-                        placeholder="Lookback for"
-                        value={lookBackVal.label}
-                        onChange={(val) => handleLookbackChange(val)}
-                        arrowClosed={<span className="arrow-closed" />}
-                        arrowOpen={<span className="arrow-open" />}
-                      /> */}
-
               <div>
-                {" "}
-                <Select
-                  value={lookBackVal}
-                  onChange={
-                    endDate !== null || previousStartDate
-                      ? null
-                      : handleLookbackChange
-                  }
-                  sx={{
-                    minWidth: isipadpro ? 130 : 153,
-                    maxHeight: 35,
-                    // marginTop: "10px",
-                    marginRight: "25px",
-                    borderRadius: 0,
-                    // color:"",
-                    backgroundColor:
-                      theme.palette.mode === "dark" ? "#848482" : "#FFF",
-                    color:
-                      theme.palette.mode === "dark"
-                        ? endDate !== null || previousStartDate
-                          ? "#B3B3AD"
-                          : "#FFF"
-                        : endDate !== null || previousStartDate
-                        ? "lightgray"
-                        : "#000",
-                    padding: "7px 16px",
-                    "& .MuiSelect-icon": {
+                  {" "}
+                  <Select
+                  disabled={isEventsPage ? true : null}
+                    value={lookBackVal}
+                    onChange={
+                      endDate !== null || previousStartDate
+                        ? null
+                        : handleLookbackChange
+                    }
+                    sx={{
+                      minWidth: isipadpro ? 130 : 153,
+                      maxHeight: 35,
+                      // marginTop: "10px",
+                      marginRight: "25px",
+                      borderRadius: 0,
+                      // color:"",
+                      backgroundColor:
+                        theme.palette.mode === "dark" ? "#848482" : "#FFF",
                       color:
                         theme.palette.mode === "dark"
                           ? endDate !== null || previousStartDate
@@ -814,39 +853,49 @@ const DashboardTopBar = () => {
                             : "#FFF"
                           : endDate !== null || previousStartDate
                           ? "lightgray"
-                          : "#000", // Customize the dropdown arrow color
-                    },
-                    "& .MuiSelect-root": {
-                      color: "#000", // Customize the dropdown text color
-                    },
-                    "& .MuiInputBase-input": {
-                      padding: 0, // Remove input padding
-                    },
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select Time
-                  </MenuItem>
-                  {options.map((option, index) => (
-                    <MenuItem
-                      key={index}
-                      value={option}
-                      sx={{
+                          : "#000",
+                      padding: "7px 16px",
+                      "& .MuiSelect-icon": {
                         color:
                           theme.palette.mode === "dark"
                             ? endDate !== null || previousStartDate
-                              ? "#666663"
+                              ? "#B3B3AD"
                               : "#FFF"
                             : endDate !== null || previousStartDate
                             ? "lightgray"
-                            : "#000",
-                      }}
-                    >
-                      {option.label}
+                            : "#000", // Customize the dropdown arrow color
+                      },
+                      "& .MuiSelect-root": {
+                        color: "#000", // Customize the dropdown text color
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: 0, // Remove input padding
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select Time
                     </MenuItem>
-                  ))}
-                </Select>
-              </div>
+                    {options.map((option, index) => (
+                      <MenuItem
+                        key={index}
+                        value={option}
+                        sx={{
+                          color:
+                            theme.palette.mode === "dark"
+                              ? endDate !== null || previousStartDate
+                                ? "#666663"
+                                : "#FFF"
+                              : endDate !== null || previousStartDate
+                              ? "lightgray"
+                              : "#000",
+                        }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
             </div>
             {/* ) : null} */}
 
@@ -1067,7 +1116,8 @@ const DashboardTopBar = () => {
 
           {isSmallScreen ? null : window.location.pathname ===
               "/mainpage/infraInfo" ||
-            window.location.pathname === "/mainpage/infraInfo/clusterUtilization" ||
+            window.location.pathname ===
+              "/mainpage/infraInfo/clusterUtilization" ||
             window.location.pathname === "/mainpage/infraInfo/alerts" ||
             window.location.pathname === "/mainpage/infraInfo/events" ? (
             <Tabs

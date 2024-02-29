@@ -16,7 +16,7 @@ import {
   } from "@mui/material";
   import React, { useCallback, useContext, useEffect, useState } from "react";
   import { GlobalContext } from "../../../global/globalContext/GlobalContext";
-  import { getRecentEvent } from "../../../api/InfraApiService";
+  import { getRecentEvent, getRecentEvents } from "../../../api/InfraApiService";
   import AllEvents from "./AllEvents";
   import Loading from "../../../global/Loading/Loading";
   import { format } from "date-fns";
@@ -153,7 +153,8 @@ import {
             setLoading(false);
             return;
         }
-        const eventData = await getRecentEvent(lookBackVal.value);
+        // const eventData = await getRecentEvent(lookBackVal.value);
+        const eventData = await getRecentEvents(lookBackVal.value);
         if (eventData.length !== 0) {
           const finalOutputData = mapEventData(eventData);
           // setEventRowsData(eventData);
