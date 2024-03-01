@@ -261,7 +261,6 @@ const Status = () => {
 
                 {ClusterData[0].clusterNodes && (
                   <>
-                    {" "}
                     <Typography
                       variant="h5"
                       sx={{ fontWeight: "bold", marginTop: "10px" }}
@@ -369,21 +368,24 @@ const Status = () => {
           >
             <div
               style={{
+                // backgroundColor: "red",
                 display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 flexDirection: "column",
                 width: "300px",
-                maxheight: "38vh",
+                height: "35vh",
               }}
             >
               {ClusterData.length > 0 ? (
-                <Card elevation={5} sx={{ padding: "10px", maxheight: "38vh" }}>
+                <Card elevation={5} sx={{ padding: "10px", height: "35vh" }}>
                   <Typography
                     variant="h4"
                     sx={{ fontWeight: "bold", paddingBottom: "10px" }}
                   >
                     Cluster Status Data
                   </Typography>
-                  <TableContainer component={Paper} sx={{ maxHeight: "220px" }}>
+                  <TableContainer component={Paper} sx={{ maxHeight: "200px" }}>
                     <Table>
                       <TableHead
                         style={{
@@ -464,93 +466,81 @@ const Status = () => {
               )}
             </div>
 
-            {/* --------------------------------------------------------------------------------------------------------------------------------------- */}
-
             <div
               style={{
                 // backgroundColor: "blue",
                 display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 flexDirection: "column",
                 width: "300px",
-                maxheight: "30vh",
+                height: "33vh",
               }}
             >
               {ClusterData.length > 0 ? (
-                <Card elevation={5} sx={{ padding: "10px", maxheight: "30vh" }}>
-                  {ClusterData[0].clusterInventory && (
-                    <Typography
-                      variant="h4"
-                      sx={{ fontWeight: "bold", paddingBottom: "10px" }}
-                    >
-                      Cluster Inventory Data
-                    </Typography>
-                  )}
-                  {ClusterData[0].nodeInventory && (
-                    <Typography
-                      variant="h4"
-                      sx={{ fontWeight: "bold", paddingBottom: "10px" }}
-                    >
-                      Node Inventory Data
-                    </Typography>
-                  )}
-
-                  <TableContainer component={Paper} sx={{ maxHeight: "210px" }}>
-                    <Table>
-                      <TableHead
-                        style={{
-                          position: "sticky",
-                          top: 0,
-                          backgroundColor: colors.primary[400],
-                        }}
+                <Card
+                  elevation={5}
+                  sx={{
+                    padding: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "33vh",
+                  }}
+                >
+                  <div>
+                    {ClusterData[0].clusterInventory && (
+                      <Typography
+                        variant="h4"
+                        sx={{ fontWeight: "bold", paddingBottom: "10px" }}
                       >
-                        <TableRow>
-                          <TableCell
-                            style={{
-                              fontSize: "12px",
-                              padding: "4px 8px",
-                            }}
-                          >
-                            <Typography variant="h5"> Resourse Name</Typography>
-                          </TableCell>
-                          <TableCell
-                            style={{
-                              fontSize: "12px",
-                              padding: "0px 0px 0px 0px",
-                            }}
-                          >
-                            <Typography variant="h5">Count</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {ClusterData[0].nodeInventory && (
-                          <TableRow
-                            style={{
-                              padding: "4px 8px",
-                            }}
-                          >
+                        Cluster Inventory Data
+                      </Typography>
+                    )}
+                    {ClusterData[0].nodeInventory && (
+                      <Typography
+                        variant="h4"
+                        sx={{ fontWeight: "bold", paddingBottom: "10px" }}
+                      >
+                        Node Inventory Data
+                      </Typography>
+                    )}
+                    <TableContainer
+                      component={Paper}
+                      sx={{ maxHeight: "220px", width: "275px" }}
+                    >
+                      <Table>
+                        <TableHead
+                          style={{
+                            position: "sticky",
+                            top: 0,
+                            backgroundColor: colors.primary[400],
+                          }}
+                        >
+                          <TableRow>
                             <TableCell
                               style={{
-                                padding: "4px 8px",
-                              }}
-                            >
-                              <Typography variant="h5">Pods</Typography>
-                            </TableCell>
-                            <TableCell
-                              style={{
+                                fontSize: "12px",
                                 padding: "4px 8px",
                               }}
                             >
                               <Typography variant="h5">
-                                {ClusterData[0].nodeInventory}
+                                {" "}
+                                Resourse Name
                               </Typography>
                             </TableCell>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                padding: "0px 0px 0px 0px",
+                              }}
+                            >
+                              <Typography variant="h5">Count</Typography>
+                            </TableCell>
                           </TableRow>
-                        )}
-
-                        {ClusterData[0].clusterInventory && (
-                          <>
-                            {" "}
+                        </TableHead>
+                        <TableBody>
+                          {ClusterData[0].nodeInventory && (
                             <TableRow
                               style={{
                                 padding: "4px 8px",
@@ -569,90 +559,118 @@ const Status = () => {
                                 }}
                               >
                                 <Typography variant="h5">
-                                  {ClusterData[0].clusterInventory[0].Pods}
+                                  {ClusterData[0].nodeInventory}
                                 </Typography>
                               </TableCell>
                             </TableRow>
-                            <TableRow
-                              style={{
-                                padding: "4px 8px",
-                              }}
-                            >
-                              <TableCell
+                          )}
+
+                          {ClusterData[0].clusterInventory && (
+                            <>
+                              {" "}
+                              <TableRow
                                 style={{
                                   padding: "4px 8px",
                                 }}
                               >
-                                <Typography variant="h5">Node</Typography>
-                              </TableCell>
-                              <TableCell
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">Pods</Typography>
+                                </TableCell>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    {ClusterData[0].clusterInventory[0].Pods}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                              <TableRow
                                 style={{
                                   padding: "4px 8px",
                                 }}
                               >
-                                <Typography variant="h5">
-                                  {" "}
-                                  {ClusterData[0].clusterInventory[0].Node}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow
-                              style={{
-                                padding: "4px 8px",
-                              }}
-                            >
-                              <TableCell
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">Node</Typography>
+                                </TableCell>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    {" "}
+                                    {ClusterData[0].clusterInventory[0].Node}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                              <TableRow
                                 style={{
                                   padding: "4px 8px",
                                 }}
                               >
-                                <Typography variant="h5">
-                                  PersistentVolumeClaims
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  padding: "4px 8px",
-                                }}
-                              >
-                                <Typography variant="h5">
-                                  {" "}
-                                  {
-                                    ClusterData[0].clusterInventory[0]
-                                      .PersistentVolumeClaims
-                                  }{" "}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell
-                                style={{
-                                  padding: "4px 8px",
-                                }}
-                              >
-                                <Typography variant="h5">
-                                  StorageClass
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  padding: "4px 8px",
-                                }}
-                              >
-                                <Typography variant="h5">
-                                  {" "}
-                                  {
-                                    ClusterData[0].clusterInventory[0]
-                                      .StorageClass
-                                  }
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    PersistentVolumeClaims
+                                  </Typography>
+                                </TableCell>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    {" "}
+                                    {
+                                      ClusterData[0].clusterInventory[0]
+                                        .PersistentVolumeClaims
+                                    }{" "}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    StorageClass
+                                  </Typography>
+                                </TableCell>
+                                <TableCell
+                                  style={{
+                                    padding: "4px 8px",
+                                  }}
+                                >
+                                  <Typography variant="h5">
+                                    {" "}
+                                    {
+                                      ClusterData[0].clusterInventory[0]
+                                        .StorageClass
+                                    }
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
                 </Card>
               ) : (
                 <>No Data To Show !!!</>

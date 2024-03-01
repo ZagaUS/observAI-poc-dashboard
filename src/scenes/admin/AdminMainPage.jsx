@@ -23,7 +23,7 @@ import {
 } from "../../api/LoginApiService";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
 
 // import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
@@ -34,19 +34,15 @@ const AdminTopBar = () => {
   const [editedPassword, setEditedPassword] = useState("");
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
-  const [deleted,SetDeleted] = useState(false);
+  const [deleted, SetDeleted] = useState(false);
   const theme = useTheme(); // Define the theme object using useTheme hook
 
-
-  const handleDeleteRow = async(clusterId,clusterUsername) => {
- 
-    await deleteClusterDetails(clusterId,clusterUsername);
+  const handleDeleteRow = async (clusterId, clusterUsername) => {
+    await deleteClusterDetails(clusterId, clusterUsername);
     SetDeleted(!deleted);
-    
   };
 
   useEffect(() => {
-
     console.log("useeffet called");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const payload = {
@@ -69,7 +65,7 @@ const AdminTopBar = () => {
 
     // Call the async function immediately
     fetchData();
-  }, [editableRowId,deleted]);
+  }, [editableRowId, deleted]);
 
   const handleAddCluster = () => {
     navigate("/admin/addCluster");
@@ -89,7 +85,9 @@ const AdminTopBar = () => {
     setEditedHostURL(currentHostURL);
   };
 
- 
+  const handleCancelButton = () => {
+    setEditableRowId(null);
+  };
 
   const handleSaveRow = async () => {
     // Implement logic to save the edited row data
@@ -121,22 +119,20 @@ const AdminTopBar = () => {
   };
 
   const handleClusterOpen = async (clusterUrl, password, username) => {
-    const ClusterLoginInfo = await openshiftClusterLogin(
-      clusterUrl,
-      password,
-      username
-    );
-    console.log("infooo", ClusterLoginInfo);
-    if (ClusterLoginInfo === "Login successful!") {
-      navigate("/admin/clusterDashboard");
-      // setTimeout(() => {
-      //   alert("Login Successfull !!!");
-      // }, 1000);
-    } else if (ClusterLoginInfo === "Incorrect username or password.") {
-      alert("Incorrect username or password.");
-    } else {
-      alert("Network Error !!.Please try again later.");
-    }
+    navigate("/admin/clusterDashboard");
+    // const ClusterLoginInfo = await openshiftClusterLogin(
+    //   clusterUrl,
+    //   password,
+    //   username
+    // );
+    // console.log("infooo", ClusterLoginInfo);
+    // if (ClusterLoginInfo === "Login successful!") {
+    //   navigate("/admin/clusterDashboard");
+    // } else if (ClusterLoginInfo === "Incorrect username or password.") {
+    //   alert("Incorrect username or password.");
+    // } else {
+    //   alert("Network Error !!.Please try again later.");
+    // }
   };
 
   return (
@@ -153,10 +149,12 @@ const AdminTopBar = () => {
           color="primary"
           onClick={handleAddCluster}
           sx={{
-            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-            marginRight: '20px',
-            '&:hover': {
-              backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+            backgroundColor:
+              theme.palette.mode === "light" ? "lightgray" : "darkgray",
+            marginRight: "20px",
+            "&:hover": {
+              backgroundColor:
+                theme.palette.mode === "light" ? "lightgray" : "darkgray",
             },
           }}
         >
@@ -236,32 +234,36 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                          marginRight: '20px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
                           },
                         }}
-                        onClick={() =>
-                          handleEditRow(
-                            row.clusterId,
-                            row.clusterUsername,
-                            row.clusterPassword,
-                            row.clusterType,
-                            row.hostUrl
-                          )
-                        }
+                        onClick={handleCancelButton}
                       >
-                        Edit
+                        Cancle
                       </Button>
                       <Button
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                          marginRight: '20px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
                           },
                         }}
                         onClick={handleSaveRow}
@@ -272,10 +274,16 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                          marginRight: '20px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
                           },
                         }}
                         onClick={() =>
@@ -291,31 +299,42 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                          marginRight: '20px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
                           },
                         }}
-                        onClick={
-                          () =>
-                            handleClusterOpen(
-                              row.hostUrl,
-                              row.clusterPassword,
-                              row.clusterUsername
-                            )
+                        onClick={() =>
+                          handleClusterOpen(
+                            row.hostUrl,
+                            row.clusterPassword,
+                            row.clusterUsername
+                          )
                         }
                       >
-                        View
+                        View Cluster Details
                       </Button>
                       <Button
-                       sx={{
-                        backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                        marginRight: '20px',
-                        '&:hover': {
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
-                        },
-                      }}
+                        sx={{
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
+                          },
+                        }}
                         variant="contained"
                         color="primary"
                         onClick={() =>
@@ -334,10 +353,16 @@ const AdminTopBar = () => {
                         variant="contained"
                         color="primary"
                         sx={{
-                          backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-                          marginRight: '20px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
+                          backgroundColor:
+                            theme.palette.mode === "light"
+                              ? "lightgray"
+                              : "darkgray",
+                          marginRight: "20px",
+                          "&:hover": {
+                            backgroundColor:
+                              theme.palette.mode === "light"
+                                ? "lightgray"
+                                : "darkgray", // lighter shade for hover
                           },
                         }}
                         onClick={() =>
