@@ -15,9 +15,7 @@ import {
   Button,
   Grid,
   styled,
-  useTheme
-  
-  
+  useTheme,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -53,13 +51,19 @@ function Row({ row }) {
 
   return (
     <>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" }, 
-                  color: theme.palette.mode === "dark" ? "white" : "black",
-                  backgroundColor: theme.palette.mode === "dark" ? "#2C3539" : "#e0e0e0",
-                  "&:hover": {
-                  // backgroundColor: theme.palette.mode === "dark" ? "#d0d1d5" : "#ffffff",
-                  backgroundColor: "#d0d1d5",
-                }, }} onClick={() => setOpen(!open)} >
+      <TableRow
+        sx={{
+          "& > *": { borderBottom: "unset" },
+          color: theme.palette.mode === "dark" ? "white" : "black",
+          backgroundColor:
+            theme.palette.mode === "dark" ? "#2C3539" : "#e0e0e0",
+          "&:hover": {
+            // backgroundColor: theme.palette.mode === "dark" ? "#d0d1d5" : "#ffffff",
+            backgroundColor: "#d0d1d5",
+          },
+        }}
+        onClick={() => setOpen(!open)}
+      >
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -70,7 +74,9 @@ function Row({ row }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          <Typography variant="h5" sx={{ fontWeight: "600px" }}>{row.serviceName}</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "600px" }}>
+            {row.serviceName}
+          </Typography>
         </TableCell>
 
         {/* <TableCell component="th" scope="row">
@@ -78,7 +84,6 @@ function Row({ row }) {
             Edit
           </Button>
         </TableCell> */}
-
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -86,43 +91,57 @@ function Row({ row }) {
             <Box sx={{ margin: 1 }}>
               <Typography variant="h4">Rules</Typography>
               {row.rules ? (
-                  <Box sx={{ marginTop: 2 }}>
-                    <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-                      <Table size="small" aria-label="rule-details">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Rule Type</TableCell>
+                <Box sx={{ marginTop: 2 }}>
+                  <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+                    <Table size="small" aria-label="rule-details">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Rule Type</TableCell>
                           <TableCell>Start Date</TableCell>
                           <TableCell>Expiry Date</TableCell>
                           <TableCell>Action</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {row.rules.map((rule, index) => (
-                        <TableRow key={index}>
-                          <StyledTableCell>{rule.ruleType}</StyledTableCell>
-                          <StyledTableCell>{rule.startDateTime}</StyledTableCell>
-                          <StyledTableCell>{rule.expiryDateTime}</StyledTableCell>
-                          <StyledTableCell>
-                            <Button variant="contained" color="primary"   sx={{
-              
-                backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray',
-             
-                '&:hover': {
-                  backgroundColor: theme.palette.mode === 'light' ? 'lightgray' : 'darkgray', // lighter shade for hover
-                },
-              }} onClick={() => handleOpenPopup(rule)}>
-                              View
-                            </Button>
-                          </StyledTableCell>
                         </TableRow>
-                      ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                // ))
+                      </TableHead>
+                      <TableBody>
+                        {row.rules.map((rule, index) => (
+                          <TableRow key={index}>
+                            <StyledTableCell>{rule.ruleType}</StyledTableCell>
+                            <StyledTableCell>
+                              {rule.startDateTime}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              {rule.expiryDateTime}
+                            </StyledTableCell>
+                            <StyledTableCell>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  backgroundColor:
+                                    theme.palette.mode === "light"
+                                      ? "lightgray"
+                                      : "darkgray",
+
+                                  "&:hover": {
+                                    backgroundColor:
+                                      theme.palette.mode === "light"
+                                        ? "lightgray"
+                                        : "darkgray", // lighter shade for hover
+                                  },
+                                }}
+                                onClick={() => handleOpenPopup(rule)}
+                              >
+                                View
+                              </Button>
+                            </StyledTableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
               ) : (
+                // ))
                 <Typography variant="body2">No rules available.</Typography>
               )}
             </Box>
@@ -131,7 +150,11 @@ function Row({ row }) {
       </TableRow>
 
       {selectedRule && (
-        <RuleDetailsPopup rule={selectedRule} serviceName={row.serviceName} />
+        <RuleDetailsPopup
+          rule={selectedRule}
+          serviceName={row.serviceName}
+          onClose={handleOpenPopup}
+        />
       )}
     </>
   );
@@ -204,7 +227,7 @@ const RulesDetails = () => {
   useEffect(() => {
     const handleGetAllRules = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const data = await getAllRules(payload);
         const rowsData = data.map((item) =>
           createData(item.serviceName, item.rules)
@@ -215,8 +238,8 @@ const RulesDetails = () => {
         console.log("Rules Lists:", data);
       } catch (error) {
         console.error("Error fetching rules:", error);
-        setErrorMessage("Error in Displaying Rules")
-        setLoading(false)
+        setErrorMessage("Error in Displaying Rules");
+        setLoading(false);
       }
     };
     handleGetAllRules();
@@ -276,12 +299,19 @@ const RulesDetails = () => {
             </div>
           </div>
 
-          <TableContainer component={Paper} sx={{ maxHeight: "500px", overflowY: "auto", marginTop:"10px" }}>
+          <TableContainer
+            component={Paper}
+            sx={{ maxHeight: "500px", overflowY: "auto", marginTop: "10px" }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }} />
-                  <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
+                  <TableCell
+                    sx={{ color: "white", backgroundColor: "#00888C" }}
+                  />
+                  <TableCell
+                    sx={{ color: "white", backgroundColor: "#00888C" }}
+                  >
                     Service Name
                   </TableCell>
                   {/* <TableCell sx={{ color: "white", backgroundColor: "#00888C" }}>
@@ -291,12 +321,12 @@ const RulesDetails = () => {
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
-              <Row
-                key={row.serviceName}
-                row={row}
-                onClick={() => handleServiceClick(row.serviceName)}
-              />
-            ))}
+                  <Row
+                    key={row.serviceName}
+                    row={row}
+                    onClick={() => handleServiceClick(row.serviceName)}
+                  />
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

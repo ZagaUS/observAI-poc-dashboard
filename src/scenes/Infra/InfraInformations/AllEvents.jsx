@@ -34,12 +34,17 @@ const allEventDatas = [
 ];
 
 const AllEvents = () => {
-  const { selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal } = useContext(GlobalContext);
+  const { selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, selectedNode, selectedCluster } = useContext(GlobalContext);
   const [allEventData, setAllEventData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  console.log(userInfo, "userDetails");
+  const userName = userInfo.username;
+  console.log(userName)
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -101,9 +106,10 @@ const AllEvents = () => {
   // }, [lookBackVal]);
 
   const handleGetAllEvents = useCallback(async () => {
+    const selectedNodestring = selectedNode[0];
     try {
       setLoading(true);
-      const eventsData = await getAllEventByDate(selectedStartDate, selectedEndDate, lookBackVal.value);
+      const eventsData = await getAllEventByDate(selectedStartDate, selectedEndDate, lookBackVal.value, selectedCluster, selectedNodestring, userName);
       if (eventsData.length !== 0) {
         console.log("All Events Data", eventsData);
         const finalData = mapAllEvents(eventsData);
@@ -121,7 +127,7 @@ const AllEvents = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal]);
+  }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, selectedCluster, selectedNode, userName]);
 
   useEffect(() => {
     handleGetAllEvents();

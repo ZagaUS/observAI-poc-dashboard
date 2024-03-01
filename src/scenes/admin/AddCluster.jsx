@@ -13,12 +13,18 @@ const AddCluster = () => {
     clusterPassword: '',
     hostURL: '',
     clusterType: '',
+    clusterName: '',
+    openshiftClusterName: ''
+
+
   });
   const [errors, setErrors] = useState({
     clusterUsername: '',
     clusterPassword: '',
     hostURL: '',
     clusterType: '',
+    clusterName: '',
+    openshiftClusterName: ''
   });
   
   const handleChange = (e) => {
@@ -41,7 +47,7 @@ const AddCluster = () => {
     const newErrors = {};
     Object.keys(ClusterData).forEach((key) => {
       if (!ClusterData[key]) {
-        newErrors[key] = `Please fill in ${key==="clusterUsername"?"ClusterUserName":key==="clusterPassword"?"Password":key==="hostURL"?"HostURL":key==="clusterType"?"ClusterType":null} field`;
+        newErrors[key] = `Please fill in ${key==="clusterUsername"?"ClusterUserName":key==="clusterPassword"?"Password":key==="hostURL"?"HostURL":key==="clusterType"?"ClusterType":key==="clusterName"?"ClusterName":key==="openshiftClusterName"?"InfrastructureName":null} field`;
       }
     });
 
@@ -63,7 +69,9 @@ const AddCluster = () => {
             clusterUsername: ClusterData.clusterUsername,
             clusterPassword: ClusterData.clusterPassword,
             hostUrl: ClusterData.hostURL,
-            clusterType: ClusterData.clusterType
+            clusterType: ClusterData.clusterType,
+            clusterName: ClusterData.clusterName,
+            openshiftClusterName: ClusterData.openshiftClusterName
           }
         ]
       }
@@ -132,6 +140,30 @@ const AddCluster = () => {
             required
             error={Boolean(errors.clusterType)}
             helperText={errors.clusterType}
+          />
+          <TextField
+            label="Cluster Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="clusterName"
+            value={ClusterData.clusterName}
+            onChange={handleChange}
+            required
+            error={Boolean(errors.clusterName)}
+            helperText={errors.clusterName}
+          />
+          <TextField
+            label="Infrastructure Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            name="openshiftClusterName"
+            value={ClusterData.openshiftClusterName}
+            onChange={handleChange}
+            required
+            error={Boolean(errors.openshiftClusterName)}
+            helperText={errors.openshiftClusterName}
           />
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ marginTop: 2,backgroundColor:"#091365",color:"white", "&:hover": { backgroundColor: "#091365" }, }} onClick={handleSubmit}>
             Submit
