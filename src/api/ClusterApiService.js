@@ -1,9 +1,13 @@
 import axios from "axios";
 const openshiftLoginURL = process.env.REACT_APP_APIURL_OPENSHIFT;
 
-export const getClusterListAllProjects = async () => {
+// http://localhost:8081/openshift/listAllProjects?clusterName=zagaind&username=admin
+
+export const getClusterListAllProjects = async (clusterName, username) => {
   try {
-    const response = await axios.get(`${openshiftLoginURL}/listAllProjects`);
+    const response = await axios.get(
+      `${openshiftLoginURL}/listAllProjects?clusterName=${clusterName}&username=${username}`
+    );
 
     console.log("getClusterListAllProjects", response);
 

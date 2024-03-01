@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import {
   deleteClusterDetails,
+  getAllClustersAPI,
   getClusterDetails,
   loginUser,
   openshiftClusterLogin,
@@ -30,33 +31,39 @@ const AdminTopBar = () => {
   const navigate = useNavigate();
   const [ClusterData, setClusterData] = useState([]);
   const [editableRowId, setEditableRowId] = useState(null);
+  const [editableClusterName, setEditableClusterName] = useState("");
   const [editedUserName, setEditedUserName] = useState("");
   const [editedPassword, setEditedPassword] = useState("");
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
   const [deleted, SetDeleted] = useState(false);
-  const theme = useTheme(); // Define the theme object using useTheme hook
-
+  const [Loading, setLoading] = useState(false);
+  const theme = useTheme();
+  // clusterName
   const handleDeleteRow = async (clusterId, clusterUsername) => {
     await deleteClusterDetails(clusterId, clusterUsername);
     SetDeleted(!deleted);
   };
 
   useEffect(() => {
-    console.log("useeffet called");
+    console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    const payload = {
-      username: userDetails.username,
-      password: userDetails.password,
-    };
+    // const payload = {
+    //   username: userDetails.username,
+    //   password: userDetails.password,
+    // };
     const fetchData = async () => {
       try {
         // Your asynchronous logic goes here
-        const response = await loginUser(payload);
+        // const response = await loginUser(payload);
+        // console.log("Admin UseEffect Called--->");
+        const response = await getAllClustersAPI(userDetails.username);
+        console.log("clusterData adminPage", response);
+        setClusterData(response);
 
         // Do something with the fetched data
-        console.log("clusterData adminPage", response.data.environments);
-        setClusterData(response.data.environments);
+        // console.log("clusterData adminPage", response.data.environments);
+        // setClusterData(response.data.environments);
       } catch (error) {
         // Handle errors
         console.error("Error fetching data:", error);
@@ -73,12 +80,14 @@ const AdminTopBar = () => {
 
   const handleEditRow = (
     rowId,
+    currentClusterName,
     currentUserName,
     currentclusterPassword,
     currentClusterType,
     currentHostURL
   ) => {
     setEditableRowId(rowId);
+    setEditableClusterName(currentClusterName);
     setEditedUserName(currentUserName);
     setEditedPassword(currentclusterPassword);
     setEditedClusterType(currentClusterType);
@@ -90,7 +99,6 @@ const AdminTopBar = () => {
   };
 
   const handleSaveRow = async () => {
-    // Implement logic to save the edited row data
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
 
     const updatedClusterPayload = {
@@ -100,10 +108,11 @@ const AdminTopBar = () => {
       environments: [
         {
           clusterId: editableRowId,
-          clusterUsername: editedUserName,
+          clusterName: editableClusterName,
           clusterPassword: editedPassword,
-          hostUrl: editedHostURL,
           clusterType: editedClusterType,
+          hostUrl: editedHostURL,
+          userName: editedUserName,
         },
       ],
     };
@@ -113,86 +122,76 @@ const AdminTopBar = () => {
     setEditableRowId(null);
   };
 
-  const data = {
-    username: "mariselvam",
-    password: "Selvam@3799",
-  };
-
-  const handleClusterOpen = async (clusterUrl, password, username) => {
+  const handleClusterOpen = () => {
     navigate("/admin/clusterDashboard");
-    // const ClusterLoginInfo = await openshiftClusterLogin(
-    //   clusterUrl,
-    //   password,
-    //   username
-    // );
-    // console.log("infooo", ClusterLoginInfo);
-    // if (ClusterLoginInfo === "Login successful!") {
-    //   navigate("/admin/clusterDashboard");
-    // } else if (ClusterLoginInfo === "Incorrect username or password.") {
-    //   alert("Incorrect username or password.");
-    // } else {
-    //   alert("Network Error !!.Please try again later.");
-    // }
   };
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "10px",
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddCluster}
-          sx={{
-            backgroundColor:
-              theme.palette.mode === "light" ? "lightgray" : "darkgray",
-            marginRight: "20px",
-            "&:hover": {
-              backgroundColor:
-                theme.palette.mode === "light" ? "lightgray" : "darkgray",
-            },
-          }}
-        >
-          Add Cluster
-        </Button>
-      </div>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead sx={{ backgroundColor: "#00888C" }}>
-            <TableRow>
-              <TableCell align="center" sx={{ color: "white" }}>
-                User Name
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
+      {Loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "10px",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddCluster}
+              sx={{
+                backgroundColor:
+                  theme.palette.mode === "light" ? "lightgray" : "darkgray",
+                marginRight: "20px",
+                "&:hover": {
+                  backgroundColor:
+                    theme.palette.mode === "light" ? "lightgray" : "darkgray",
+                },
+              }}
+            >
+              Add Cluster
+            </Button>
+          </div>
+          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+            <Table>
+              <TableHead sx={{ backgroundColor: "#00888C" }}>
+                <TableRow>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Cluster Name
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    User Name
+                  </TableCell>
+                  {/* <TableCell align="center" sx={{ color: "white" }}>
                 Password
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                Cluster Type
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                Host URL
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ClusterData.map((row, index) => (
-              <TableRow key={row.clusterId}>
-                <TableCell align="center">
+              </TableCell> */}
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Cluster Type
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Host URL
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {ClusterData.map((row, index) => (
+                  <TableRow key={row.clusterId}>
+                    {/* <TableCell align="center">
                   {editableRowId === row.clusterId ? (
                     <TextField
                       value={editedUserName}
                       onChange={(e) => setEditedUserName(e.target.value)}
                     />
                   ) : (
-                    row.clusterUsername
+                    row.clusterName
                   )}
                 </TableCell>
                 <TableCell align="center">
@@ -205,180 +204,221 @@ const AdminTopBar = () => {
                   ) : (
                     "*".repeat(row.clusterPassword.length)
                   )}
-                </TableCell>
+                </TableCell> */}
 
-                <TableCell align="center">
+                    <TableCell align="center">
+                      {editableRowId === row.clusterId ? (
+                        <TextField
+                          value={editableClusterName}
+                          onChange={(e) =>
+                            setEditableClusterName(e.target.value)
+                          }
+                        />
+                      ) : (
+                        row.clusterName
+                      )}
+                    </TableCell>
+
+                    <TableCell align="center">
+                      {editableRowId === row.clusterId ? (
+                        <TextField
+                          value={editedUserName}
+                          onChange={(e) => setEditedUserName(e.target.value)}
+                        />
+                      ) : (
+                        row.userName
+                      )}
+                    </TableCell>
+                    {/* <TableCell align="center">
                   {editableRowId === row.clusterId ? (
                     <TextField
-                      value={editedClusterType}
-                      onChange={(e) => setEditedClusterType(e.target.value)}
+                      type="text"
+                      value={editedPassword}
+                      onChange={(e) => setEditedPassword(e.target.value)}
                     />
                   ) : (
-                    row.clusterType
+                    "*".repeat(row.clusterPassword.length)
                   )}
-                </TableCell>
-                <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <TextField
-                      value={editedHostURL}
-                      onChange={(e) => setEditedHostURL(e.target.value)}
-                    />
-                  ) : (
-                    row.hostUrl
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        onClick={handleCancelButton}
-                      >
-                        Cancle
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        onClick={handleSaveRow}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        onClick={() =>
-                          handleDeleteRow(row.clusterId, row.clusterUsername)
-                        }
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        onClick={() =>
-                          handleClusterOpen(
-                            row.hostUrl,
-                            row.clusterPassword,
-                            row.clusterUsername
-                          )
-                        }
-                      >
-                        View Cluster Details
-                      </Button>
-                      <Button
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        variant="contained"
-                        color="primary"
-                        onClick={() =>
-                          handleEditRow(
-                            row.clusterId,
-                            row.clusterUsername,
-                            row.clusterPassword,
-                            row.clusterType,
-                            row.hostUrl
-                          )
-                        }
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "light"
-                              ? "lightgray"
-                              : "darkgray",
-                          marginRight: "20px",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.palette.mode === "light"
-                                ? "lightgray"
-                                : "darkgray", // lighter shade for hover
-                          },
-                        }}
-                        onClick={() =>
-                          handleDeleteRow(row.clusterId, row.clusterUsername)
-                        }
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                </TableCell> */}
+
+                    <TableCell align="center">
+                      {editableRowId === row.clusterId ? (
+                        <TextField
+                          value={editedClusterType}
+                          onChange={(e) => setEditedClusterType(e.target.value)}
+                        />
+                      ) : (
+                        row.clusterType
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {editableRowId === row.clusterId ? (
+                        <TextField
+                          value={editedHostURL}
+                          onChange={(e) => setEditedHostURL(e.target.value)}
+                        />
+                      ) : (
+                        row.hostUrl
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {editableRowId === row.clusterId ? (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray", // lighter shade for hover
+                              },
+                            }}
+                            onClick={handleCancelButton}
+                          >
+                            Cancle
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray", // lighter shade for hover
+                              },
+                            }}
+                            onClick={handleSaveRow}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray", // lighter shade for hover
+                              },
+                            }}
+                            onClick={() =>
+                              handleDeleteRow(row.clusterId, row.clusterName)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray", // lighter shade for hover
+                              },
+                            }}
+                            onClick={() =>
+                              handleClusterOpen(
+                                row.hostUrl,
+                                row.clusterPassword,
+                                row.clusterUsername
+                              )
+                            }
+                          >
+                            View Cluster Details
+                          </Button>
+                          <Button
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray", // lighter shade for hover
+                              },
+                            }}
+                            variant="contained"
+                            color="primary"
+                            onClick={() =>
+                              handleEditRow(
+                                row.clusterId,
+                                row.userName,
+                                row.clusterName,
+                                row.clusterPassword,
+                                row.clusterType,
+                                row.hostUrl
+                              )
+                            }
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor:
+                                theme.palette.mode === "light"
+                                  ? "lightgray"
+                                  : "darkgray",
+                              marginRight: "20px",
+                              "&:hover": {
+                                backgroundColor:
+                                  theme.palette.mode === "light"
+                                    ? "lightgray"
+                                    : "darkgray",
+                              },
+                            }}
+                            onClick={() =>
+                              handleDeleteRow(
+                                row.clusterId,
+                                row.clusterUsername
+                              )
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
     </div>
   );
 };

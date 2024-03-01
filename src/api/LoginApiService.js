@@ -128,8 +128,9 @@ export const addClusterDetails = async (Cluster) => {
 
 export const updateClusterDetails = async (UpdatedClusterData) => {
   try {
-    console.log("updatedcluster api data", JSON.stringify(UpdatedClusterData));
-    // const data=JSON.stringify(Cluster);
+    // console.log("updatedcluster api data", JSON.stringify(UpdatedClusterData));
+    // const data = JSON.stringify(UpdatedClusterData);
+    // console.log("json", data);
     const response = await axios.put(
       `${loginURL}/clusterDataUpdate`,
       UpdatedClusterData
