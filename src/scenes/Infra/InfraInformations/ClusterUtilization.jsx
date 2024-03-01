@@ -130,14 +130,14 @@ const ClusterUtilization = () => {
         setClusterUtilization(rowClusterData);
         setLoading(false);
       } else {
-        setEmptyMessage("No Cluster Utilization Data");
+        setEmptyMessage("No Resource Utilization Data");
       }
       setLoading(false);
       // setClusterUtilization(mappedData);
       // setClusterUtilization(clusterUtilData);
     } catch (error) {
-      console.error("Error fetching Cluster Utilization Data:", error);
-      setErrorMessage("Error in Displaying Cluster Utilization Data");
+      console.error("Error fetching Resource Utilization Data:", error);
+      setErrorMessage("Error in Displaying Resource Utilization Data");
       setLoading(false);
     }
   }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, 

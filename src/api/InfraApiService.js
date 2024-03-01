@@ -70,12 +70,26 @@ export const getRecentEvent = async (minutesAgo) => {
     }
 };
 
-export const getRecentEvents = async (minutesAgo) => {
+export const getRecentEvents = async (minutesAgo, clusterName, nodeName, userName) => {
     try {
+        let finalUrl;
         console.log("Minutes Ago", minutesAgo);
-        const response = await axios.get(
-            `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}`
-        );
+        // const response = await axios.get(
+        //     `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}`
+        // );
+
+        // clusterName=zagaus&minutesAgo=30&userName=admin
+        if (nodeName) {
+            console.log(`History call + ${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+
+            finalUrl = `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
+        } else {
+            console.log(`History call + ${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`);
+
+            finalUrl = `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`;
+        }
+
+        const response = await axios.get(finalUrl);
         console.log("Recent Event Response", response);
         return response.data;
     } catch (error) {
@@ -98,7 +112,7 @@ export const getAllEvent = async (minutesAgo) => {
     }
 };
 
-export const getAllEventByDate = async (startDate, endDate, minutesAgo) => {
+export const getAllEventByDate = async (startDate, endDate, minutesAgo, clusterName, nodeName, userName) => {
     try {
         console.log("Minutes Ago - allEvent", startDate, endDate, minutesAgo);
         // const response = await axios.get(
@@ -106,14 +120,35 @@ export const getAllEventByDate = async (startDate, endDate, minutesAgo) => {
         // );
         var finalUrl;
 
-        if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-            console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}`);
+        // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+        //     console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}`);
 
-            finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}`
+        //     finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}`
+        // } else {
+        //     console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}`);
+
+        //     finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}`
+        // }
+        if (nodeName) {
+            if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+                console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+
+                finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
+            } else {
+                console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+
+                finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`
+            }
         } else {
-            console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}`);
+            if(JSON.parse(localStorage.getItem("needHistoricalData"))) {
+                console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`);
 
-            finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}`
+                finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`;
+            } else {
+                console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`);
+
+                finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`;
+            }
         }
 
         const response = await axios.get(finalUrl);
