@@ -143,6 +143,7 @@ export const viewClusterNodeIPApiCall = async () => {
 // http://localhost:8081/openshift/getClusterInformation?clusterName=ZagaObservability&username=admin
 export const viewClusterDetails = async (clusterName, username) => {
   try {
+    console.log("-----------[FINAL URL]------  " + `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`);
     const response = await axios.get(
       `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`
     );

@@ -41,8 +41,9 @@ const AdminTopBar = () => {
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
   // clusterName
-  const handleDeleteRow = async (clusterId, clusterUsername) => {
-    await deleteClusterDetails(clusterId, clusterUsername);
+  const handleDeleteRow = async (clusterId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    await deleteClusterDetails(clusterId, userDetails.username);
     SetDeleted(!deleted);
   };
 
@@ -51,6 +52,7 @@ const AdminTopBar = () => {
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("-------[USER DETAILS]------------ ", userDetails.username)
     // const payload = {
     //   username: userDetails.username,
     //   password: userDetails.password,
@@ -412,7 +414,7 @@ const AdminTopBar = () => {
                             onClick={() =>
                               handleDeleteRow(
                                 row.clusterId,
-                                row.clusterUserName
+                                // userDetails.username
                               )
                             }
                           >
