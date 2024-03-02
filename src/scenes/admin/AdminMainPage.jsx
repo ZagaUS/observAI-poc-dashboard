@@ -36,6 +36,7 @@ const AdminTopBar = () => {
   const [editedPassword, setEditedPassword] = useState("");
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
+  const [editedInfraName, setEditedInfraName] = useState("");
   const [deleted, SetDeleted] = useState(false);
   const [Loading, setLoading] = useState(false);
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
@@ -47,7 +48,11 @@ const AdminTopBar = () => {
     SetDeleted(!deleted);
   };
 
+  const selectedClusterName = ClusterData.clusterName;
+  console.log(selectedClusterName)
+
   console.log("---------Cluster Data", ClusterData);
+  console.log("-----editedRules", editableRowId)
 
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
@@ -65,7 +70,7 @@ const AdminTopBar = () => {
         const response = await getAllClustersAPI(userDetails.username);
         console.log("clusterData adminPage", response);
         setClusterData(response);
-
+        console.log("CLUSTER RESPONSE_-------------------", ClusterData)
         // Do something with the fetched data
         // console.log("clusterData adminPage", response.data.environments);
         // setClusterData(response.data.environments);
@@ -86,17 +91,19 @@ const AdminTopBar = () => {
   const handleEditRow = (
     rowId,
     currentClusterName,
-    currentUserName,
+    currentCusterUserName,
     currentclusterPassword,
     currentClusterType,
-    currentHostURL
+    currentHostURL,
+    currentInfraName
   ) => {
     setEditableRowId(rowId);
     setEditableClusterName(currentClusterName);
-    setEditedUserName(currentUserName);
+    setEditedUserName(currentCusterUserName);
     setEditedPassword(currentclusterPassword);
     setEditedClusterType(currentClusterType);
     setEditedHostURL(currentHostURL);
+    setEditedInfraName(currentInfraName);
   };
 
   const handleCancelButton = () => {
@@ -116,13 +123,16 @@ const AdminTopBar = () => {
           clusterName: editableClusterName,
           clusterPassword: editedPassword,
           clusterType: editedClusterType,
+          clusterUsername: editedUserName,
           hostUrl: editedHostURL,
-          clusterUserName: editedUserName,
+          openshiftClusterName: editedInfraName
         },
       ],
     };
 
     console.log("edited Row Details", updatedClusterPayload);
+    console.log("CLUSTER NAME UPDATED", updatedClusterPayload);
+    console.log("EDITED CLUSTER NAME+++--------------------------------------", editableClusterName)
     await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
   };
@@ -213,7 +223,7 @@ const AdminTopBar = () => {
                 </TableCell> */}
 
                     <TableCell align="center">
-                      {/* {editableRowId === row.clusterId ? (
+                      {editableRowId === row.clusterId ? (
                         <TextField
                           value={editableClusterName}
                           onChange={(e) =>
@@ -222,8 +232,8 @@ const AdminTopBar = () => {
                         />
                       ) : (
                         row.clusterName
-                      )} */}
-                      {row.clusterName}
+                      )}
+                      {/* {row.clusterName} */}
                     </TableCell>
 
                     <TableCell align="center">
@@ -250,26 +260,26 @@ const AdminTopBar = () => {
                 </TableCell> */}
 
                     <TableCell align="center">
-                      {/* {editableRowId === row.clusterId ? (
+                      {editableRowId === row.clusterId ? (
                         <TextField
                           value={editedClusterType}
                           onChange={(e) => setEditedClusterType(e.target.value)}
                         />
                       ) : (
                         row.clusterType
-                      )} */}
-                      {row.clusterType}
+                      )}
+                      {/* {row.clusterType} */}
                     </TableCell>
                     <TableCell align="center">
-                      {/* {editableRowId === row.clusterId ? (
+                      {editableRowId === row.clusterId ? (
                         <TextField
                           value={editedHostURL}
                           onChange={(e) => setEditedHostURL(e.target.value)}
                         />
                       ) : (
                         row.hostUrl
-                      )} */}
-                      {row.hostUrl}
+                      )}
+                      {/* {row.hostUrl} */}
                     </TableCell>
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
@@ -357,10 +367,10 @@ const AdminTopBar = () => {
                             }}
                             onClick={() =>
                               handleClusterOpen(
-                                row.hostUrl,
-                                row.clusterPassword,
-                                row.clusterUserName,
-                                row.clusterName
+                                // row.hostUrl,
+                                // row.clusterPassword,
+                                // row.clusterUserName,
+                                // row.clusterName
                               )
                             }
                           >
@@ -385,11 +395,12 @@ const AdminTopBar = () => {
                             onClick={() =>
                               handleEditRow(
                                 row.clusterId,
-                                row.userName,
                                 row.clusterName,
+                                row.clusterUserName,
                                 row.clusterPassword,
                                 row.clusterType,
-                                row.hostUrl
+                                row.hostUrl,
+                                row.openshiftClusterName
                               )
                             }
                           >
