@@ -24,8 +24,9 @@ import { useCallback } from "react";
 import LoadingOverlay from "react-loading-overlay";
 import { useTheme } from '@mui/material/styles';
 
-const ClusterInfo = () => {
+const ClusterInfo = ({ selectedClusterDetails }) => {
   const [data, setData] = useState([]);
+  const [selectedClusterName, setSelectedClusterName] = useState(null);
   const [namespaceOptions, setNamespaceOptions] = useState([]);
   const [selectedApplicationType, setSelectedApplicationType] = useState("all");
   const [selectedInstrumentedStatus, setSelectedInstrumentedStatus] =
@@ -46,11 +47,48 @@ const ClusterInfo = () => {
     ServiceListsApiCall();
   }, []);
 
-  const ServiceListsApiCall = useCallback(async () => {
+  // const ServiceListsApiCall = useCallback(async () => {
+  //   console.log("ServiceListsApiCall Called");
+  //   try {
+  //     setLoading(true);
+  //     var response = await getClusterListAllProjects();
+  //     if (response.length !== 0) {
+  //       setData(response);
+  //       console.log("response", response);
+  //       const uniqueNamespaces = [
+  //         ...new Set(response.map((item) => item.namespaceName)),
+  //       ];
+  //       setNamespaceOptions(uniqueNamespaces);
+  //     } else {
+  //       setEmptyMessage("No Data to show");
+  //     }
+
+  //     setLoading(false);
+  //     setInstrumentLoadig(false);
+  //   } catch (error) {
+  //     setErrorMessage("An error Occurred!");
+  //     console.error("Error fetching data:", error);
+  //     setLoading(false);
+  //     setInstrumentLoadig(false);
+  //   }
+  //   console.log("ServiceListsApiCall Ended");
+  // }, [changeInstrument]);
+  const clusterDetails = JSON.parse(localStorage.getItem("clusterListData"));
+  console.log("List of Clusters", clusterDetails);
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userName = userInfo.username;
+  console.log(userName);
+
+  console.log("Selected CLuster", selectedClusterDetails);
+
+  const ServiceListsApiCall = useCallback(async (clusterName) => {
+    console.log("CLuster NAME", clusterName)
     console.log("ServiceListsApiCall Called");
     try {
       setLoading(true);
-      var response = await getClusterListAllProjects();
+      var response = await getClusterListAllProjects(selectedClusterName, userName);
+      console.log("API RESPONSE", response);
       if (response.length !== 0) {
         setData(response);
         console.log("response", response);
@@ -58,6 +96,7 @@ const ClusterInfo = () => {
           ...new Set(response.map((item) => item.namespaceName)),
         ];
         setNamespaceOptions(uniqueNamespaces);
+        console.log("NAMESPACE", uniqueNamespaces)
       } else {
         setEmptyMessage("No Data to show");
       }
@@ -71,7 +110,7 @@ const ClusterInfo = () => {
       setInstrumentLoadig(false);
     }
     console.log("ServiceListsApiCall Ended");
-  }, [changeInstrument]);
+  }, [changeInstrument, selectedClusterName]);
 
   const filteredData = data.filter((item) => {
     let namespaceFilterCondition = true;

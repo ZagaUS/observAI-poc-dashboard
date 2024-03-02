@@ -38,12 +38,16 @@ const AdminTopBar = () => {
   const [editedHostURL, setEditedHostURL] = useState("");
   const [deleted, SetDeleted] = useState(false);
   const [Loading, setLoading] = useState(false);
+  const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
   // clusterName
   const handleDeleteRow = async (clusterId, clusterUsername) => {
     await deleteClusterDetails(clusterId, clusterUsername);
     SetDeleted(!deleted);
   };
+
+  console.log("---------Cluster Data", ClusterData);
+  console.log("--------SELECTED CLUSTER", selectedClusterDetails);
 
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
@@ -112,7 +116,7 @@ const AdminTopBar = () => {
           clusterPassword: editedPassword,
           clusterType: editedClusterType,
           hostUrl: editedHostURL,
-          userName: editedUserName,
+          clusterUserName: editedUserName,
         },
       ],
     };
@@ -122,7 +126,8 @@ const AdminTopBar = () => {
     setEditableRowId(null);
   };
 
-  const handleClusterOpen = () => {
+  const handleClusterOpen = (clusterDetails) => {
+    setSelectedClusterDetails(clusterDetails); 
     navigate("/admin/clusterDashboard");
   };
 
@@ -226,7 +231,7 @@ const AdminTopBar = () => {
                           onChange={(e) => setEditedUserName(e.target.value)}
                         />
                       ) : (
-                        row.userName
+                        row.clusterUserName
                       )}
                     </TableCell>
                     {/* <TableCell align="center">
@@ -349,7 +354,8 @@ const AdminTopBar = () => {
                               handleClusterOpen(
                                 row.hostUrl,
                                 row.clusterPassword,
-                                row.clusterUsername
+                                row.clusterUsername,
+                                row.clusterName
                               )
                             }
                           >
