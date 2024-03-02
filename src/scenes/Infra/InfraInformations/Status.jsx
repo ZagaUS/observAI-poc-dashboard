@@ -172,7 +172,7 @@ const Status = () => {
             {errorMessage}
           </Typography>
         </div>
-      ) : (
+      ) : ClusterData[0] != "You are unauthorized to do this action." ? (
         <div style={{ display: "flex" }}>
           {ClusterData.length > 0 ? (
             <Card
@@ -677,6 +677,20 @@ const Status = () => {
               )}
             </div>
           </div>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "75vh",
+          }}
+        >
+          <Typography variant="h5" fontWeight={"600"}>
+            Oops!!....Something went wrong with the openshift environment
+          </Typography>
         </div>
       )}
     </div>
