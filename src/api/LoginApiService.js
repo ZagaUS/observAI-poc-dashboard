@@ -144,12 +144,12 @@ export const updateClusterDetails = async (UpdatedClusterData) => {
   }
 };
 
-export const deleteClusterDetails = async (clusterId, clusterUsername) => {
+export const deleteClusterDetails = async (clusterId, userName) => {
   try {
-    console.log("deleted api data", clusterId, clusterUsername);
+    console.log("deleted api data", clusterId, userName);
 
     const response = await axios.delete(
-      `${loginURL}/${clusterUsername}/delete-environments/${clusterId}?clusterId=${clusterId}&clusterUsername=${clusterUsername}`
+      `${loginURL}/delete-environments?clusterId=${clusterId}&userName=${userName}`
     );
 
     return response.data;
