@@ -47,7 +47,6 @@ const AdminTopBar = () => {
   };
 
   console.log("---------Cluster Data", ClusterData);
-  console.log("--------SELECTED CLUSTER", selectedClusterDetails);
 
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
@@ -212,7 +211,7 @@ const AdminTopBar = () => {
                 </TableCell> */}
 
                     <TableCell align="center">
-                      {editableRowId === row.clusterId ? (
+                      {/* {editableRowId === row.clusterId ? (
                         <TextField
                           value={editableClusterName}
                           onChange={(e) =>
@@ -221,7 +220,8 @@ const AdminTopBar = () => {
                         />
                       ) : (
                         row.clusterName
-                      )}
+                      )} */}
+                      {row.clusterName}
                     </TableCell>
 
                     <TableCell align="center">
@@ -233,6 +233,7 @@ const AdminTopBar = () => {
                       ) : (
                         row.clusterUserName
                       )}
+                      {/* {row.clusterUserName} */}
                     </TableCell>
                     {/* <TableCell align="center">
                   {editableRowId === row.clusterId ? (
@@ -247,24 +248,26 @@ const AdminTopBar = () => {
                 </TableCell> */}
 
                     <TableCell align="center">
-                      {editableRowId === row.clusterId ? (
+                      {/* {editableRowId === row.clusterId ? (
                         <TextField
                           value={editedClusterType}
                           onChange={(e) => setEditedClusterType(e.target.value)}
                         />
                       ) : (
                         row.clusterType
-                      )}
+                      )} */}
+                      {row.clusterType}
                     </TableCell>
                     <TableCell align="center">
-                      {editableRowId === row.clusterId ? (
+                      {/* {editableRowId === row.clusterId ? (
                         <TextField
                           value={editedHostURL}
                           onChange={(e) => setEditedHostURL(e.target.value)}
                         />
                       ) : (
                         row.hostUrl
-                      )}
+                      )} */}
+                      {row.hostUrl}
                     </TableCell>
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
@@ -287,7 +290,7 @@ const AdminTopBar = () => {
                             }}
                             onClick={handleCancelButton}
                           >
-                            Cancle
+                            Cancel
                           </Button>
                           <Button
                             variant="contained"
@@ -354,7 +357,7 @@ const AdminTopBar = () => {
                               handleClusterOpen(
                                 row.hostUrl,
                                 row.clusterPassword,
-                                row.clusterUsername,
+                                row.clusterUserName,
                                 row.clusterName
                               )
                             }
@@ -409,7 +412,7 @@ const AdminTopBar = () => {
                             onClick={() =>
                               handleDeleteRow(
                                 row.clusterId,
-                                row.clusterUsername
+                                row.clusterUserName
                               )
                             }
                           >

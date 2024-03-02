@@ -24,7 +24,7 @@ import { useCallback } from "react";
 import LoadingOverlay from "react-loading-overlay";
 import { useTheme } from '@mui/material/styles';
 
-const ClusterInfo = ({ selectedClusterDetails }) => {
+const ClusterInfo = () => {
   const [data, setData] = useState([]);
   const [selectedClusterName, setSelectedClusterName] = useState(null);
   const [namespaceOptions, setNamespaceOptions] = useState([]);
@@ -79,8 +79,6 @@ const ClusterInfo = ({ selectedClusterDetails }) => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const userName = userInfo.username;
   console.log(userName);
-
-  console.log("Selected CLuster", selectedClusterDetails);
 
   const ServiceListsApiCall = useCallback(async (clusterName) => {
     console.log("CLuster NAME", clusterName)
