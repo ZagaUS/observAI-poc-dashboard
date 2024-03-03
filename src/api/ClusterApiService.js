@@ -18,10 +18,19 @@ export const getClusterListAllProjects = async (clusterName, username) => {
   }
 };
 
-export const changeToInstrument = async (namespace, deploymentName) => {
+// http://localhost:8081/openshift/unInstrument/order-srv-1/observai-main?clusterName=zagaind&username=admin
+
+// http://localhost:8081/openshift/instrument/order-srv-1/observai-main?clusterName=zagaind&username=admin
+
+export const changeToInstrument = async (
+  deploymentName,
+  namespace,
+  clusterName,
+  username
+) => {
   try {
     const response = await axios.post(
-      `${openshiftLoginURL}/instrument/${namespace}/${deploymentName}`
+      `${openshiftLoginURL}/instrument/${namespace}/${deploymentName}?clusterName=${clusterName}&username=${username}`
     );
 
     console.log("response", response);
@@ -33,10 +42,15 @@ export const changeToInstrument = async (namespace, deploymentName) => {
   }
 };
 
-export const changeToUninstrument = async (namespace, deploymentName) => {
+export const changeToUninstrument = async (
+  deploymentName,
+  namespace,
+  clusterName,
+  username
+) => {
   try {
     const response = await axios.post(
-      `${openshiftLoginURL}/unInstrument/${namespace}/${deploymentName}`
+      `${openshiftLoginURL}/unInstrument/${namespace}/${deploymentName}?clusterName=${clusterName}&username=${username}`
     );
 
     console.log("response", response);
@@ -143,7 +157,10 @@ export const viewClusterNodeIPApiCall = async () => {
 // http://localhost:8081/openshift/getClusterInformation?clusterName=ZagaObservability&username=admin
 export const viewClusterDetails = async (clusterName, username) => {
   try {
-    console.log("-----------[FINAL URL]------  " + `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`);
+    console.log(
+      "-----------[FINAL URL]------  " +
+        `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`
+    );
     const response = await axios.get(
       `${openshiftLoginURL}/getClusterInformation?clusterName=${clusterName}&username=${username}`
     );

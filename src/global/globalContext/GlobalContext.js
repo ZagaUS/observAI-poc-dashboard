@@ -62,6 +62,7 @@ const GlobalContextProvider = ({ children }) => {
 
   const [selectedNode, setSelectedNode] = useState([]);
 
+  const [AdminPageSelecteCluster, setAdminPageSelecteCluster] = useState("");
   const formattedDate = format(new Date(), "yyyy-MM-dd");
   const [selectedStartDate, setSelectedStartDate] = useState(formattedDate);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedDate);
@@ -267,6 +268,8 @@ const GlobalContextProvider = ({ children }) => {
         setNodeName,
         clusterName,
         setClusterName,
+        AdminPageSelecteCluster,
+        setAdminPageSelecteCluster,
       }}
     >
       {children}

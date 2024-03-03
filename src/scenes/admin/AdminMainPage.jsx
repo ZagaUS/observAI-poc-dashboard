@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -25,6 +25,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
 import { useTheme } from "@mui/material/styles";
+import { GlobalContext } from "../../global/globalContext/GlobalContext";
 
 // import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
@@ -42,6 +43,10 @@ const AdminTopBar = () => {
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
   // clusterName
+
+  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
+    useContext(GlobalContext);
+
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     await deleteClusterDetails(clusterId, userDetails.username);
@@ -49,15 +54,15 @@ const AdminTopBar = () => {
   };
 
   const selectedClusterName = ClusterData.clusterName;
-  console.log(selectedClusterName)
+  console.log(selectedClusterName);
 
   console.log("---------Cluster Data", ClusterData);
-  console.log("-----editedRules", editableRowId)
+  console.log("-----editedRules", editableRowId);
 
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username)
+    console.log("-------[USER DETAILS]------------ ", userDetails.username);
     // const payload = {
     //   username: userDetails.username,
     //   password: userDetails.password,
@@ -70,7 +75,7 @@ const AdminTopBar = () => {
         const response = await getAllClustersAPI(userDetails.username);
         console.log("clusterData adminPage", response);
         setClusterData(response);
-        console.log("CLUSTER RESPONSE_-------------------", ClusterData)
+        console.log("CLUSTER RESPONSE_-------------------", ClusterData);
         // Do something with the fetched data
         // console.log("clusterData adminPage", response.data.environments);
         // setClusterData(response.data.environments);
@@ -125,20 +130,25 @@ const AdminTopBar = () => {
           clusterType: editedClusterType,
           clusterUsername: editedUserName,
           hostUrl: editedHostURL,
-          openshiftClusterName: editedInfraName
+          openshiftClusterName: editedInfraName,
         },
       ],
     };
 
     console.log("edited Row Details", updatedClusterPayload);
     console.log("CLUSTER NAME UPDATED", updatedClusterPayload);
-    console.log("EDITED CLUSTER NAME+++--------------------------------------", editableClusterName)
+    console.log(
+      "EDITED CLUSTER NAME+++--------------------------------------",
+      editableClusterName
+    );
     await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
   };
 
   const handleClusterOpen = (clusterDetails) => {
-    setSelectedClusterDetails(clusterDetails); 
+    console.log("clusterName", clusterDetails);
+    // setSelectedClusterDetails(clusterDetails);
+    setAdminPageSelecteCluster(clusterDetails);
     navigate("/admin/clusterDashboard");
   };
 
@@ -365,14 +375,7 @@ const AdminTopBar = () => {
                                     : "darkgray", // lighter shade for hover
                               },
                             }}
-                            onClick={() =>
-                              handleClusterOpen(
-                                // row.hostUrl,
-                                // row.clusterPassword,
-                                // row.clusterUserName,
-                                // row.clusterName
-                              )
-                            }
+                            onClick={() => handleClusterOpen(row.clusterName)}
                           >
                             View Cluster Details
                           </Button>
@@ -424,7 +427,7 @@ const AdminTopBar = () => {
                             }}
                             onClick={() =>
                               handleDeleteRow(
-                                row.clusterId,
+                                row.clusterId
                                 // userDetails.username
                               )
                             }
