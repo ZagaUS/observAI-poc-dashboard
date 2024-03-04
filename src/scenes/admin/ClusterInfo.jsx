@@ -217,12 +217,12 @@ const ClusterInfo = () => {
       //   "Instrumentation in Progress: Please wait for a few minutes ..."
       // );
     } else {
-      // setInstrumentLoadig(false);
-      // setTimeout(() => {
-      //   alert(
-      //     "Instrumentation Error: Something went wrong with the instrumentation."
-      //   );
-      // }, 2000);
+      setInstrumentLoadig(false);
+      setTimeout(() => {
+        alert(
+          "Instrumentation Error: Something went wrong with the instrumentation."
+        );
+      }, 2000);
     }
   };
 
@@ -239,12 +239,18 @@ const ClusterInfo = () => {
       AdminPageSelecteCluster,
       userDetails.username
     );
-    if (instrumentresponse.status === 20) {
+    if (instrumentresponse.status === 200) {
       setChangeInstrument(!changeInstrument);
       // ServiceListsApiCall();
       // setChangeInstrument(!changeInstrument);
     } else {
-      // setInstrumentLoadig(false);
+      setInstrumentLoadig(false);
+
+      setTimeout(() => {
+        alert(
+          "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
+        );
+      }, 2000);
       // alert(
       //   "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
       // );
