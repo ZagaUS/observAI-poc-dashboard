@@ -55,7 +55,7 @@ export const loginUser = async (data) => {
   try {
     console.log("api call loginUser data", data);
     const response = await axios.post(`${loginURL}/login`, data);
-    console.log("Login API RESPONSE", response.data)
+    console.log("Login API RESPONSE", response.data);
     return response;
   } catch (error) {
     console.error("Error in login User:", error);
@@ -153,6 +153,26 @@ export const deleteClusterDetails = async (clusterId, userName) => {
     );
 
     return response.data;
+  } catch (error) {
+    console.error("Error in update Cluster User:", error);
+    throw error;
+  }
+};
+// http://localhost:8082/AuthController/clusterStatusUpdate?clusterId=1&clusterStatus=active&userName=admin
+
+export const updateClusetrStatus = async (
+  clusterId,
+  clusterStatus,
+  userName
+) => {
+  try {
+    console.log("updat api data", clusterId, clusterStatus, userName);
+
+    const response = await axios.put(
+      `${loginURL}/clusterStatusUpdate?clusterId=${clusterId}&clusterStatus=${clusterStatus}&userName=${userName}`
+    );
+
+    return response;
   } catch (error) {
     console.error("Error in update Cluster User:", error);
     throw error;

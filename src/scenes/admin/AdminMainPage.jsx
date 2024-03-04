@@ -23,6 +23,7 @@ import {
   getClusterDetails,
   loginUser,
   openshiftClusterLogin,
+  updateClusetrStatus,
   updateClusterDetails,
 } from "../../api/LoginApiService";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +31,7 @@ import logo from "../../assets/zaga-logedit.jpg";
 import { useTheme } from "@mui/material/styles";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import Loading from "../../global/Loading/Loading";
+import { set } from "date-fns";
 
 const AdminTopBar = () => {
   const navigate = useNavigate();
@@ -41,7 +43,9 @@ const AdminTopBar = () => {
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
   const [editedInfraName, setEditedInfraName] = useState("");
+  const [editedClusterStatus, setEditedClusterStatus] = useState("");
   const [deleted, SetDeleted] = useState(false);
+  const [statusChanged, setStatusCahnged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
@@ -63,14 +67,37 @@ const AdminTopBar = () => {
   console.log("---------Cluster Data", ClusterData);
   console.log("-----editedRules", editableRowId);
 
+  const handleActiveInactiveBtn = async (clusterID, clusterStatus) => {
+    console.log("data", clusterID, clusterStatus);
+    // setLoading(true);
+
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    const Status = clusterStatus === "inactive" ? "active" : "inactive";
+
+    console.log("stst", Status);
+
+    const response = await updateClusetrStatus(
+      clusterID,
+      Status,
+      userDetails.username
+    );
+    if (response.status === 200) {
+      // setLoading(false);
+      setStatusCahnged(!statusChanged);
+    }
+  };
+
+  const handleClusterOpen = (clusterDetails) => {
+    console.log("clusterName", clusterDetails);
+    // setSelectedClusterDetails(clusterDetails);
+    setAdminPageSelecteCluster(clusterDetails);
+    navigate("/admin/clusterDashboard");
+  };
+
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username)
-    // const payload = {
-    //   username: userDetails.username,
-    //   password: userDetails.password,
-    // };
+    console.log("-------[USER DETAILS]------------ ", userDetails.username);
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -88,7 +115,7 @@ const AdminTopBar = () => {
       }
     };
     fetchData();
-  }, [editableRowId, deleted, clusterStatus]);
+  }, [editableRowId, deleted, statusChanged]);
 
   const handleAddCluster = () => {
     navigate("/admin/addCluster");
@@ -99,6 +126,7 @@ const AdminTopBar = () => {
     currentClusterName,
     currentCusterUserName,
     currentclusterPassword,
+    currentClusterStatus,
     currentClusterType,
     currentHostURL,
     currentInfraName
@@ -107,6 +135,7 @@ const AdminTopBar = () => {
     setEditableClusterName(currentClusterName);
     setEditedUserName(currentCusterUserName);
     setEditedPassword(currentclusterPassword);
+    setEditedClusterStatus(currentClusterStatus);
     setEditedClusterType(currentClusterType);
     setEditedHostURL(currentHostURL);
     setEditedInfraName(currentInfraName);
@@ -128,6 +157,7 @@ const AdminTopBar = () => {
           clusterId: editableRowId,
           clusterName: editableClusterName,
           clusterPassword: editedPassword,
+          clusterStatus: editedClusterStatus,
           clusterType: editedClusterType,
           clusterUsername: editedUserName,
           hostUrl: editedHostURL,
@@ -144,30 +174,6 @@ const AdminTopBar = () => {
     );
     await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
-  };
-
-  const handleActiveInactiveBtn = (
-    clusterValue,
-    rowId,
-    currentClusterName,
-    currentUserName,
-    currentclusterPassword,
-    currentClusterType,
-    currentHostURL
-  ) => {
-    console.log("------------> BEFORE PERSIST----------  ", clusterValue , rowId , currentClusterName, currentUserName);
-    if (clusterValue == "active") {
-      setClusterStatus("inactive");
-    } else {
-      setClusterStatus("active");
-    }
-    console.log("------------> AFTER PERSIST----------  ", clusterValue);
-  };
-  const handleClusterOpen = (clusterDetails) => {
-    console.log("clusterName", clusterDetails);
-    // setSelectedClusterDetails(clusterDetails);
-    setAdminPageSelecteCluster(clusterDetails);
-    navigate("/admin/clusterDashboard");
   };
 
   return (
@@ -397,6 +403,7 @@ const AdminTopBar = () => {
                                 row.clusterName,
                                 row.clusterUserName,
                                 row.clusterPassword,
+                                row.clusterStatus,
                                 row.clusterType,
                                 row.hostUrl,
                                 row.openshiftClusterName
@@ -446,13 +453,8 @@ const AdminTopBar = () => {
                             }
                             onChange={() =>
                               handleActiveInactiveBtn(
-                                row.clusterStatus,
                                 row.clusterId,
-                                row.clusterUserName,
-                                row.clusterName,
-                                row.clusterPassword,
-                                row.clusterType,
-                                row.hostUrl
+                                row.clusterStatus
                               )
                             }
                           />
