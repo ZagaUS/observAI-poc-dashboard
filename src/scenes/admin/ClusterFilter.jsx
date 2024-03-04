@@ -27,21 +27,37 @@ import { useContext } from "react";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { getMetricDataApi } from "../../api/MetricApiService";
 import { tokens } from "../../theme";
-import { loginUser, openshiftClusterLogin } from "../../api/LoginApiService";
+import {
+  getAllClustersAPI,
+  loginUser,
+  openshiftClusterLogin,
+} from "../../api/LoginApiService";
 import { ClusterDetailsMock } from "../../global/MockData/ClusterDetailsMock";
 import { MenuItem } from "react-pro-sidebar";
 import { ListOfNodeDetails } from "../../api/ClusterApiService";
 import Loading from "../../global/Loading/Loading";
 
 const ClusterFilter = () => {
-  const { selectedCluster, setSelectedCluster, selectedNode, setSelectedNode } =
-    useContext(GlobalContext);
+  const {
+    selectedCluster,
+    setSelectedCluster,
+    selectedNode,
+    setSelectedNode,
+    username,
+    setUsername,
+  } = useContext(GlobalContext);
 
   const [clusters, setClusters] = useState(
     JSON.parse(localStorage.getItem("clusterListData"))
   );
+  // const [clusterListData, setClusterListData] = useState([]);
+
+  // const clusterListData =
+
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [ClusterLoading, setClusterLoading] = useState(false);
 
   const [Nodes, setNodes] = useState([]);
 
@@ -49,6 +65,31 @@ const ClusterFilter = () => {
 
   // console.log("selectedCluster", selectedCluster);
   // console.log("ClustersCollection", clusters);
+
+  // const environmetsPayload = (clusterData) => {
+  //   clusterData.forEach((item) => {
+  //     clusterListData.push(item.clusterName);
+  //   });
+  //   localStorage.setItem("clusterListData", JSON.stringify(clusterListData));
+  //   console.log("clusterName " + clusterListData);
+  // };
+
+  // const fetchClusterData = async (username) => {
+  //   console.log("fetchClusterCallled-->");
+  //   try {
+  //     const response = await getAllClustersAPI(username);
+  //     console.log("res", response);
+
+  //     if (response.length !== 0) {
+  //       environmetsPayload(response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setClusters(clusterListData);
+  //     console.log("ClusterListDataFilterPage", clusters);
+  //   }
+  // };
 
   const fetchNodes = useCallback(async () => {
     setEmptyMessage("");
@@ -77,6 +118,8 @@ const ClusterFilter = () => {
   useEffect(() => {
     console.log("UseEffect FilterPage-->");
     console.log("Selected Cluster" + selectedCluster);
+    console.log("userName Cluster Filter Page", username);
+    // fetchClusterData(username);
     fetchNodes();
   }, [fetchNodes]);
 
@@ -242,20 +285,21 @@ const ClusterFilter = () => {
                     color: theme.palette.mode === "light" ? "#000" : "#FFF",
                   }}
                 >
-                  {clusters.map((clusters) => (
-                    <FormControlLabel
-                      key={clusters}
-                      value={clusters}
-                      control={
-                        <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
-                      }
-                      label={clusters}
-                      sx={{
-                        color: "white",
-                      }}
-                      onChange={handleServiceToggle(clusters)}
-                    />
-                  ))}
+                  {clusters &&
+                    clusters.map((clusters) => (
+                      <FormControlLabel
+                        key={clusters}
+                        value={clusters}
+                        control={
+                          <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
+                        }
+                        label={clusters}
+                        sx={{
+                          color: "white",
+                        }}
+                        onChange={handleServiceToggle(clusters)}
+                      />
+                    ))}
                 </RadioGroup>
               </FormControl>
             </AccordionDetails>
