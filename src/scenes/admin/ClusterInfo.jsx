@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -22,10 +22,12 @@ import {
 import Loading from "../../global/Loading/Loading";
 import { useCallback } from "react";
 import LoadingOverlay from "react-loading-overlay";
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
+import { GlobalContext } from "../../global/globalContext/GlobalContext";
 
 const ClusterInfo = () => {
   const [data, setData] = useState([]);
+  const [selectedClusterName, setSelectedClusterName] = useState(null);
   const [namespaceOptions, setNamespaceOptions] = useState([]);
   const [selectedApplicationType, setSelectedApplicationType] = useState("all");
   const [selectedInstrumentedStatus, setSelectedInstrumentedStatus] =
@@ -42,18 +44,28 @@ const ClusterInfo = () => {
   const [message, setMessage] = useState("");
   const theme = useTheme(); // Define the theme object using useTheme hook
 
-  useEffect(() => {
-    ServiceListsApiCall();
-  }, []);
+  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
+    useContext(GlobalContext);
+
+  // const UserName = JSON.parse(localStorage.getItem("userInfo"));
 
   const ServiceListsApiCall = useCallback(async () => {
     console.log("ServiceListsApiCall Called");
+    setErrorMessage("");
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    // console.log("-------[USER DETAILS]------------ ", userDetails.username);
+    // console.log(
+    //   "-------[CLUSTER DETAILS]------------ ",
+    //   AdminPageSelecteCluster
+    // );
     try {
       setLoading(true);
-      var response = await getClusterListAllProjects();
+      var response = await getClusterListAllProjects(
+        AdminPageSelecteCluster,
+        userDetails.username
+      );
       if (response.length !== 0) {
         setData(response);
-        console.log("response", response);
         const uniqueNamespaces = [
           ...new Set(response.map((item) => item.namespaceName)),
         ];
@@ -65,13 +77,81 @@ const ClusterInfo = () => {
       setLoading(false);
       setInstrumentLoadig(false);
     } catch (error) {
-      setErrorMessage("An error Occurred!");
-      console.error("Error fetching data:", error);
+      console.log("error in getallproject api", error);
+      setErrorMessage(
+        "Network Error !!! Unable to fetch cluster details at this time."
+      );
       setLoading(false);
-      setInstrumentLoadig(false);
     }
-    console.log("ServiceListsApiCall Ended");
-  }, [changeInstrument]);
+  }, [AdminPageSelecteCluster]);
+
+  useEffect(() => {
+    ServiceListsApiCall();
+  }, [ServiceListsApiCall, changeInstrument]);
+
+  // const ServiceListsApiCall = useCallback(async () => {
+  //   console.log("ServiceListsApiCall Called");
+  //   try {
+  //     setLoading(true);
+  //     var response = await getClusterListAllProjects();
+  //     if (response.length !== 0) {
+  //       setData(response);
+  //       console.log("response", response);
+  //       const uniqueNamespaces = [
+  //         ...new Set(response.map((item) => item.namespaceName)),
+  //       ];
+  //       setNamespaceOptions(uniqueNamespaces);
+  //     } else {
+  //       setEmptyMessage("No Data to show");
+  //     }
+
+  //     setLoading(false);
+  //     setInstrumentLoadig(false);
+  //   } catch (error) {
+  //     setErrorMessage("An error Occurred!");
+  //     console.error("Error fetching data:", error);
+  //     setLoading(false);
+  //     setInstrumentLoadig(false);
+  //   }
+  //   console.log("ServiceListsApiCall Ended");
+  // }, [changeInstrument]);
+  // console.log("List of Clusters", clusterDetails);
+
+  // const ServiceListsApiCall = useCallback(
+  //   async (clusterName) => {
+  //     console.log("CLuster NAME", clusterName);
+  //     console.log("ServiceListsApiCall Called");
+  //     try {
+  //       setLoading(true);
+  //       var response = await getClusterListAllProjects(
+  //         selectedClusterName,
+  //         userName
+  //       );
+  //       console.log("API RESPONSE", response);
+  //       if (response.length !== 0) {
+  //         setData(response);
+  //         console.log("response", response);
+  //         const uniqueNamespaces = [
+  //           ...new Set(response.map((item) => item.namespaceName)),
+  //         ];
+  //         setNamespaceOptions(uniqueNamespaces);
+  //         console.log("NAMESPACE", uniqueNamespaces);
+  //       } else {
+  //         setEmptyMessage("No Data to show");
+  //       }
+
+  //       setLoading(false);
+  //       setInstrumentLoadig(false);
+  //     } catch (error) {
+  //       setErrorMessage("An error Occurred!");
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //       setInstrumentLoadig(false);
+  //     }
+  //     console.log("ServiceListsApiCall Ended");
+  //   },
+  //   [changeInstrument, selectedClusterName]
+  // );
 
   const filteredData = data.filter((item) => {
     let namespaceFilterCondition = true;
@@ -119,43 +199,61 @@ const ClusterInfo = () => {
   };
 
   const handleInstrument = async (deploymentName, namespace) => {
+    setInstrumentLoadig(true);
+    setMessage(
+      "Instrumentation in Progress: Please wait for a few minutes ..."
+    );
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const instrumentresponse = await changeToInstrument(
+      deploymentName,
       namespace,
-      deploymentName
+      AdminPageSelecteCluster,
+      userDetails.username
     );
 
     if (instrumentresponse.status === 200) {
-      ServiceListsApiCall();
       setChangeInstrument(!changeInstrument);
-      setMessage(
-        "Instrumentation in Progress: Please wait for a few minutes ..."
-      );
-      setInstrumentLoadig(true);
-      // alert("Instrumentation in Progress: Please wait for a few minutes !!!");
+      // setMessage(
+      //   "Instrumentation in Progress: Please wait for a few minutes ..."
+      // );
     } else {
-      alert(
-        "Instrumentation Error: Something went wrong with the instrumentation."
-      );
+      setInstrumentLoadig(false);
+      setTimeout(() => {
+        alert(
+          "Instrumentation Error: Something went wrong with the instrumentation."
+        );
+      }, 2000);
     }
   };
 
   const handleUnInstrument = async (deploymentName, namespace) => {
+    setInstrumentLoadig(true);
+    setMessage(
+      "Uninstrumentation in Progress: Please wait for a few minutes ..."
+    );
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const instrumentresponse = await changeToUninstrument(
+      deploymentName,
       namespace,
-      deploymentName
+
+      AdminPageSelecteCluster,
+      userDetails.username
     );
     if (instrumentresponse.status === 200) {
-      ServiceListsApiCall();
       setChangeInstrument(!changeInstrument);
-      setMessage(
-        "Uninstrumentation in Progress: Please wait for a few minutes ..."
-      );
-      setInstrumentLoadig(true);
-      // alert("Uninstrumentation in Progress: Please wait for a few minutes !!!");
+      // ServiceListsApiCall();
+      // setChangeInstrument(!changeInstrument);
     } else {
-      alert(
-        "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
-      );
+      setInstrumentLoadig(false);
+
+      setTimeout(() => {
+        alert(
+          "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
+        );
+      }, 2000);
+      // alert(
+      //   "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
+      // );
     }
   };
 
@@ -240,8 +338,8 @@ const ClusterInfo = () => {
                           width: "170px",
                           backgroundColor: "#FFF",
                           // color: theme.palette.mode === 'light' ? 'white' : 'black',
-                          color: 'black',
-                        height: "40px",
+                          color: "black",
+                          height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="application-type-label"
@@ -249,7 +347,7 @@ const ClusterInfo = () => {
                         value={selectedApplicationType}
                         onChange={handleApplicationTypeChange}
                       >
-                        <MenuItem value="all" >APPLICATIONS</MenuItem>
+                        <MenuItem value="all">APPLICATIONS</MenuItem>
                         <MenuItem value="openshift">OpenShift</MenuItem>
                         <MenuItem value="normal">Applications</MenuItem>
                       </Select>
@@ -277,8 +375,8 @@ const ClusterInfo = () => {
                           width: "170px",
                           backgroundColor: "#FFF",
                           // color: theme.palette.mode === 'light' ? 'white' : 'black',
-                          color: 'black',
-                        height: "40px",
+                          color: "black",
+                          height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="namespace-label"
@@ -330,14 +428,13 @@ const ClusterInfo = () => {
                           width: "170px",
                           backgroundColor: "#FFF",
                           // color: theme.palette.mode === 'light' ? 'white' : 'black',
-                          color: 'black',
-                        height: "40px",
+                          color: "black",
+                          height: "40px",
                           marginBottom: "10px",
                         }}
                         labelId="instrumented-status-label"
                         id="instrumented-status"
-                        
-                      value={selectedInstrumentedStatus}
+                        value={selectedInstrumentedStatus}
                         onChange={handleInstrumentedStatusChange}
                       >
                         <MenuItem value="all">STATUS</MenuItem>

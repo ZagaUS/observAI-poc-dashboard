@@ -28,7 +28,7 @@ const CllusterDashboard = () => {
   const { ClusterActiveTab, setClusterActiveTab } = useContext(GlobalContext);
   const [tabValue, setTabValue] = useState(0);
 
-  console.log("ClusterActiveTab", ClusterActiveTab);
+  // console.log("ClusterActiveTab", ClusterActiveTab);
 
   const handleTabChange = (event, newValue) => {
     if (newValue === 0) {
@@ -49,10 +49,8 @@ const CllusterDashboard = () => {
     }
   }, [handleTabChange]);
 
- 
   return (
     <div>
-     
       <AppBar position="static">
         <Toolbar
           style={{

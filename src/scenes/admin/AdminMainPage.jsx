@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -28,8 +28,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
 import { useTheme } from "@mui/material/styles";
+import { GlobalContext } from "../../global/globalContext/GlobalContext";
+import Loading from "../../global/Loading/Loading";
 
-// import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
   const navigate = useNavigate();
   const [ClusterData, setClusterData] = useState([]);
@@ -39,32 +40,53 @@ const AdminTopBar = () => {
   const [editedPassword, setEditedPassword] = useState("");
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
+  const [editedInfraName, setEditedInfraName] = useState("");
   const [deleted, SetDeleted] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
   const [clusterStatus, setClusterStatus] = useState("");
   const [checked, setChecked] = useState(false);
-  // clusterName
+
+  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
+    useContext(GlobalContext);
+
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     await deleteClusterDetails(clusterId, userDetails.username);
     SetDeleted(!deleted);
   };
 
+  const selectedClusterName = ClusterData.clusterName;
+  console.log(selectedClusterName);
+
+  console.log("---------Cluster Data", ClusterData);
+  console.log("-----editedRules", editableRowId);
+
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    console.log("-------[USER DETAILS]------------ ", userDetails.username)
+    // const payload = {
+    //   username: userDetails.username,
+    //   password: userDetails.password,
+    // };
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await getAllClustersAPI(userDetails.username);
-        setClusterData(response);
-        console.log("---------- CLUSTER DATA - -------- ", response);
+
+        if (response.length > 0) {
+          console.log("clusterData adminPage", response);
+          setClusterData(response);
+          setLoading(false);
+          console.log("CLUSTER RESPONSE_-------------------", ClusterData);
+        }
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching data:", error);
       }
     };
-
-    // Call the async function immediately
     fetchData();
   }, [editableRowId, deleted, clusterStatus]);
 
@@ -75,17 +97,19 @@ const AdminTopBar = () => {
   const handleEditRow = (
     rowId,
     currentClusterName,
-    currentUserName,
+    currentCusterUserName,
     currentclusterPassword,
     currentClusterType,
-    currentHostURL
+    currentHostURL,
+    currentInfraName
   ) => {
     setEditableRowId(rowId);
     setEditableClusterName(currentClusterName);
-    setEditedUserName(currentUserName);
+    setEditedUserName(currentCusterUserName);
     setEditedPassword(currentclusterPassword);
     setEditedClusterType(currentClusterType);
     setEditedHostURL(currentHostURL);
+    setEditedInfraName(currentInfraName);
   };
 
   const handleCancelButton = () => {
@@ -105,14 +129,20 @@ const AdminTopBar = () => {
           clusterName: editableClusterName,
           clusterPassword: editedPassword,
           clusterType: editedClusterType,
+          clusterUsername: editedUserName,
           hostUrl: editedHostURL,
-          userName: editedUserName,
+          openshiftClusterName: editedInfraName,
         },
       ],
     };
 
     console.log("edited Row Details", updatedClusterPayload);
-    // await updateClusterDetails(updatedClusterPayload);
+    console.log("CLUSTER NAME UPDATED", updatedClusterPayload);
+    console.log(
+      "EDITED CLUSTER NAME+++--------------------------------------",
+      editableClusterName
+    );
+    await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
   };
 
@@ -133,13 +163,16 @@ const AdminTopBar = () => {
     }
     console.log("------------> AFTER PERSIST----------  ", clusterValue);
   };
-  const handleClusterOpen = () => {
+  const handleClusterOpen = (clusterDetails) => {
+    console.log("clusterName", clusterDetails);
+    // setSelectedClusterDetails(clusterDetails);
+    setAdminPageSelecteCluster(clusterDetails);
     navigate("/admin/clusterDashboard");
   };
 
   return (
     <div>
-      {Loading ? (
+      {loading ? (
         <Loading />
       ) : (
         <>
@@ -206,6 +239,7 @@ const AdminTopBar = () => {
                       ) : (
                         row.clusterName
                       )}
+                      {/* {row.clusterName} */}
                     </TableCell>
 
                     <TableCell align="center">
@@ -215,8 +249,9 @@ const AdminTopBar = () => {
                           onChange={(e) => setEditedUserName(e.target.value)}
                         />
                       ) : (
-                        row.userName
+                        row.clusterUserName
                       )}
+                      {/* {row.clusterUserName} */}
                     </TableCell>
                     {/* <TableCell align="center">
                   {editableRowId === row.clusterId ? (
@@ -239,6 +274,7 @@ const AdminTopBar = () => {
                       ) : (
                         row.clusterType
                       )}
+                      {/* {row.clusterType} */}
                     </TableCell>
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
@@ -249,6 +285,7 @@ const AdminTopBar = () => {
                       ) : (
                         row.hostUrl
                       )}
+                      {/* {row.hostUrl} */}
                     </TableCell>
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
@@ -271,7 +308,7 @@ const AdminTopBar = () => {
                             }}
                             onClick={handleCancelButton}
                           >
-                            Cancle
+                            Cancel
                           </Button>
                           <Button
                             variant="contained"
@@ -334,13 +371,7 @@ const AdminTopBar = () => {
                                     : "darkgray", // lighter shade for hover
                               },
                             }}
-                            onClick={() =>
-                              handleClusterOpen(
-                                row.hostUrl,
-                                row.clusterPassword,
-                                row.clusterUsername
-                              )
-                            }
+                            onClick={() => handleClusterOpen(row.clusterName)}
                           >
                             View Cluster Details
                           </Button>
@@ -363,11 +394,12 @@ const AdminTopBar = () => {
                             onClick={() =>
                               handleEditRow(
                                 row.clusterId,
-                                row.userName,
                                 row.clusterName,
+                                row.clusterUserName,
                                 row.clusterPassword,
                                 row.clusterType,
-                                row.hostUrl
+                                row.hostUrl,
+                                row.openshiftClusterName
                               )
                             }
                           >
@@ -435,6 +467,7 @@ const AdminTopBar = () => {
         </>
       )}
     </div>
+    // <></>
   );
 };
 
