@@ -9,7 +9,7 @@ export const getClusterListAllProjects = async (clusterName, username) => {
       `${openshiftLoginURL}/listAllProjects?clusterName=${clusterName}&username=${username}`
     );
 
-    console.log("getClusterListAllProjects", response);
+    // console.log("getClusterListAllProjects", response);
 
     return response.data;
   } catch (error) {

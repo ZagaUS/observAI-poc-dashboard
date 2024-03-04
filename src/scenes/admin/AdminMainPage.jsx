@@ -26,8 +26,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
 import { useTheme } from "@mui/material/styles";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
+import Loading from "../../global/Loading/Loading";
 
-// import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
   const navigate = useNavigate();
   const [ClusterData, setClusterData] = useState([]);
@@ -39,10 +39,9 @@ const AdminTopBar = () => {
   const [editedHostURL, setEditedHostURL] = useState("");
   const [editedInfraName, setEditedInfraName] = useState("");
   const [deleted, SetDeleted] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
-  // clusterName
 
   const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
     useContext(GlobalContext);
@@ -62,30 +61,23 @@ const AdminTopBar = () => {
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username);
-    // const payload = {
-    //   username: userDetails.username,
-    //   password: userDetails.password,
-    // };
+
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // Your asynchronous logic goes here
-        // const response = await loginUser(payload);
-        // console.log("Admin UseEffect Called--->");
         const response = await getAllClustersAPI(userDetails.username);
-        console.log("clusterData adminPage", response);
-        setClusterData(response);
-        console.log("CLUSTER RESPONSE_-------------------", ClusterData);
-        // Do something with the fetched data
-        // console.log("clusterData adminPage", response.data.environments);
-        // setClusterData(response.data.environments);
+
+        if (response.length > 0) {
+          console.log("clusterData adminPage", response);
+          setClusterData(response);
+          setLoading(false);
+          console.log("CLUSTER RESPONSE_-------------------", ClusterData);
+        }
       } catch (error) {
-        // Handle errors
+        setLoading(false);
         console.error("Error fetching data:", error);
       }
     };
-
-    // Call the async function immediately
     fetchData();
   }, [editableRowId, deleted]);
 
@@ -154,7 +146,7 @@ const AdminTopBar = () => {
 
   return (
     <div>
-      {Loading ? (
+      {loading ? (
         <Loading />
       ) : (
         <>
@@ -445,6 +437,7 @@ const AdminTopBar = () => {
         </>
       )}
     </div>
+    // <></>
   );
 };
 

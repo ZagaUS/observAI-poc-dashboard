@@ -51,12 +51,13 @@ const ClusterInfo = () => {
 
   const ServiceListsApiCall = useCallback(async () => {
     console.log("ServiceListsApiCall Called");
+    setErrorMessage("");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username);
-    console.log(
-      "-------[CLUSTER DETAILS]------------ ",
-      AdminPageSelecteCluster
-    );
+    // console.log("-------[USER DETAILS]------------ ", userDetails.username);
+    // console.log(
+    //   "-------[CLUSTER DETAILS]------------ ",
+    //   AdminPageSelecteCluster
+    // );
     try {
       setLoading(true);
       var response = await getClusterListAllProjects(
@@ -75,8 +76,13 @@ const ClusterInfo = () => {
 
       setLoading(false);
       setInstrumentLoadig(false);
+    } catch (error) {
+      console.log("error in getallproject api", error);
+      setErrorMessage(
+        "Network Error !!! Unable to fetch cluster details at this time."
+      );
       setLoading(false);
-    } catch (error) {}
+    }
   }, [AdminPageSelecteCluster]);
 
   useEffect(() => {
@@ -109,12 +115,7 @@ const ClusterInfo = () => {
   //   }
   //   console.log("ServiceListsApiCall Ended");
   // }, [changeInstrument]);
-  const clusterDetails = JSON.parse(localStorage.getItem("clusterListData"));
-  console.log("List of Clusters", clusterDetails);
-
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const userName = userInfo.username;
-  console.log(userName);
+  // console.log("List of Clusters", clusterDetails);
 
   // const ServiceListsApiCall = useCallback(
   //   async (clusterName) => {
@@ -198,31 +199,38 @@ const ClusterInfo = () => {
   };
 
   const handleInstrument = async (deploymentName, namespace) => {
+    setInstrumentLoadig(true);
+    setMessage(
+      "Instrumentation in Progress: Please wait for a few minutes ..."
+    );
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const instrumentresponse = await changeToInstrument(
       deploymentName,
       namespace,
-
       AdminPageSelecteCluster,
       userDetails.username
     );
 
     if (instrumentresponse.status === 200) {
-      ServiceListsApiCall();
       setChangeInstrument(!changeInstrument);
-      setMessage(
-        "Instrumentation in Progress: Please wait for a few minutes ..."
-      );
-      setInstrumentLoadig(true);
-      // alert("Instrumentation in Progress: Please wait for a few minutes !!!");
+      // setMessage(
+      //   "Instrumentation in Progress: Please wait for a few minutes ..."
+      // );
     } else {
-      alert(
-        "Instrumentation Error: Something went wrong with the instrumentation."
-      );
+      // setInstrumentLoadig(false);
+      // setTimeout(() => {
+      //   alert(
+      //     "Instrumentation Error: Something went wrong with the instrumentation."
+      //   );
+      // }, 2000);
     }
   };
 
   const handleUnInstrument = async (deploymentName, namespace) => {
+    setInstrumentLoadig(true);
+    setMessage(
+      "Uninstrumentation in Progress: Please wait for a few minutes ..."
+    );
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const instrumentresponse = await changeToUninstrument(
       deploymentName,
@@ -231,18 +239,15 @@ const ClusterInfo = () => {
       AdminPageSelecteCluster,
       userDetails.username
     );
-    if (instrumentresponse.status === 200) {
-      ServiceListsApiCall();
+    if (instrumentresponse.status === 20) {
       setChangeInstrument(!changeInstrument);
-      setMessage(
-        "Uninstrumentation in Progress: Please wait for a few minutes ..."
-      );
-      setInstrumentLoadig(true);
-      // alert("Uninstrumentation in Progress: Please wait for a few minutes !!!");
+      // ServiceListsApiCall();
+      // setChangeInstrument(!changeInstrument);
     } else {
-      alert(
-        "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
-      );
+      // setInstrumentLoadig(false);
+      // alert(
+      //   "Uninstrumentation Error: Something went wrong with the Uninstrumentation."
+      // );
     }
   };
 
