@@ -36,6 +36,7 @@ const PodCpuMetric = () => {
     selectedEndDate,
     needHistoricalData,
     podCurrentPage,
+    setInfraActiveTab,
   } = useContext(GlobalContext);
 
   const theme = useTheme();
@@ -140,7 +141,8 @@ const PodCpuMetric = () => {
   // getPodMetricDataPaginated
   useEffect(() => {
     // setKeplerActiveTab(0);
-    // setInfraActiveTab(1);
+
+    setInfraActiveTab(2);
     setInfraPodActiveTab(0);
     console.log("useeffect called------>PodMetrics");
     fetchPodMetrics();
@@ -273,8 +275,11 @@ const PodCpuMetric = () => {
                         aria-label="a dense table"
                         sx={{
                           "& .MuiTableRow-root:hover": {
-                            backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
-                            },
+                            backgroundColor:
+                              theme.palette.mode === "dark"
+                                ? "#696969"
+                                : "lightgrey",
+                          },
                         }}
                       >
                         <TableBody>
