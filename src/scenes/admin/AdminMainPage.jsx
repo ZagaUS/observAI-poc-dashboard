@@ -13,6 +13,9 @@ import {
   Paper,
   TextField,
   Box,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import {
   deleteClusterDetails,
@@ -39,6 +42,8 @@ const AdminTopBar = () => {
   const [deleted, SetDeleted] = useState(false);
   const [Loading, setLoading] = useState(false);
   const theme = useTheme();
+  const [clusterStatus, setClusterStatus] = useState("");
+  const [checked, setChecked] = useState(false);
   // clusterName
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
@@ -49,32 +54,19 @@ const AdminTopBar = () => {
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username)
-    // const payload = {
-    //   username: userDetails.username,
-    //   password: userDetails.password,
-    // };
     const fetchData = async () => {
       try {
-        // Your asynchronous logic goes here
-        // const response = await loginUser(payload);
-        // console.log("Admin UseEffect Called--->");
         const response = await getAllClustersAPI(userDetails.username);
-        console.log("clusterData adminPage", response);
         setClusterData(response);
-
-        // Do something with the fetched data
-        // console.log("clusterData adminPage", response.data.environments);
-        // setClusterData(response.data.environments);
+        console.log("---------- CLUSTER DATA - -------- ", response);
       } catch (error) {
-        // Handle errors
         console.error("Error fetching data:", error);
       }
     };
 
     // Call the async function immediately
     fetchData();
-  }, [editableRowId, deleted]);
+  }, [editableRowId, deleted, clusterStatus]);
 
   const handleAddCluster = () => {
     navigate("/admin/addCluster");
@@ -120,10 +112,27 @@ const AdminTopBar = () => {
     };
 
     console.log("edited Row Details", updatedClusterPayload);
-    await updateClusterDetails(updatedClusterPayload);
+    // await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
   };
 
+  const handleActiveInactiveBtn = (
+    clusterValue,
+    rowId,
+    currentClusterName,
+    currentUserName,
+    currentclusterPassword,
+    currentClusterType,
+    currentHostURL
+  ) => {
+    console.log("------------> BEFORE PERSIST----------  ", clusterValue , rowId , currentClusterName, currentUserName);
+    if (clusterValue == "active") {
+      setClusterStatus("inactive");
+    } else {
+      setClusterStatus("active");
+    }
+    console.log("------------> AFTER PERSIST----------  ", clusterValue);
+  };
   const handleClusterOpen = () => {
     navigate("/admin/clusterDashboard");
   };
@@ -186,28 +195,6 @@ const AdminTopBar = () => {
               <TableBody>
                 {ClusterData.map((row, index) => (
                   <TableRow key={row.clusterId}>
-                    {/* <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <TextField
-                      value={editedUserName}
-                      onChange={(e) => setEditedUserName(e.target.value)}
-                    />
-                  ) : (
-                    row.clusterName
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <TextField
-                      type="text"
-                      value={editedPassword}
-                      onChange={(e) => setEditedPassword(e.target.value)}
-                    />
-                  ) : (
-                    "*".repeat(row.clusterPassword.length)
-                  )}
-                </TableCell> */}
-
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
                         <TextField
@@ -404,13 +391,39 @@ const AdminTopBar = () => {
                             }}
                             onClick={() =>
                               handleDeleteRow(
-                                row.clusterId,
+                                row.clusterId
                                 // userDetails.username
                               )
                             }
                           >
                             Delete
                           </Button>
+                          {/* <FormGroup>
+                            <FormControlLabel
+                              // value={ClusterStatus}
+                              control={<Switch 
+                                checked = {row.clusterStatus}
+                                onChange={() => handleActiveInactiveBtn(row.clusterStatus)}
+                              />}
+                              label="ClusterStatus"
+                            />
+                          </FormGroup> */}
+                          <Switch
+                            checked={
+                              row.clusterStatus == "active" ? true : false
+                            }
+                            onChange={() =>
+                              handleActiveInactiveBtn(
+                                row.clusterStatus,
+                                row.clusterId,
+                                row.clusterUserName,
+                                row.clusterName,
+                                row.clusterPassword,
+                                row.clusterType,
+                                row.hostUrl
+                              )
+                            }
+                          />
                         </>
                       )}
                     </TableCell>
