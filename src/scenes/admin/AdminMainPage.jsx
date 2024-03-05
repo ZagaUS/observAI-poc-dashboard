@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -13,6 +13,9 @@ import {
   Paper,
   TextField,
   Box,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import {
   deleteClusterDetails,
@@ -20,13 +23,16 @@ import {
   getClusterDetails,
   loginUser,
   openshiftClusterLogin,
+  updateClusetrStatus,
   updateClusterDetails,
 } from "../../api/LoginApiService";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/zaga-logedit.jpg";
 import { useTheme } from "@mui/material/styles";
+import { GlobalContext } from "../../global/globalContext/GlobalContext";
+import Loading from "../../global/Loading/Loading";
+import { set } from "date-fns";
 
-// import { Button, useTheme } from '@mui/material';
 const AdminTopBar = () => {
   const navigate = useNavigate();
   const [ClusterData, setClusterData] = useState([]);
@@ -37,11 +43,18 @@ const AdminTopBar = () => {
   const [editedClusterType, setEditedClusterType] = useState("");
   const [editedHostURL, setEditedHostURL] = useState("");
   const [editedInfraName, setEditedInfraName] = useState("");
+  const [editedClusterStatus, setEditedClusterStatus] = useState("");
   const [deleted, SetDeleted] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [statusChanged, setStatusCahnged] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedClusterDetails, setSelectedClusterDetails] = useState(null);
   const theme = useTheme();
-  // clusterName
+  const [clusterStatus, setClusterStatus] = useState("");
+  const [checked, setChecked] = useState(false);
+
+  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
+    useContext(GlobalContext);
+
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     await deleteClusterDetails(clusterId, userDetails.username);
@@ -49,40 +62,60 @@ const AdminTopBar = () => {
   };
 
   const selectedClusterName = ClusterData.clusterName;
-  console.log(selectedClusterName)
+  console.log(selectedClusterName);
 
   console.log("---------Cluster Data", ClusterData);
-  console.log("-----editedRules", editableRowId)
+  console.log("-----editedRules", editableRowId);
+
+  const handleActiveInactiveBtn = async (clusterID, clusterStatus) => {
+    console.log("data", clusterID, clusterStatus);
+    // setLoading(true);
+
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    const Status = clusterStatus === "inactive" ? "active" : "inactive";
+
+    console.log("stst", Status);
+
+    const response = await updateClusetrStatus(
+      clusterID,
+      Status,
+      userDetails.username
+    );
+    if (response.status === 200) {
+      // setLoading(false);
+      setStatusCahnged(!statusChanged);
+    }
+  };
+
+  const handleClusterOpen = (clusterDetails) => {
+    console.log("clusterName", clusterDetails);
+    // setSelectedClusterDetails(clusterDetails);
+    setAdminPageSelecteCluster(clusterDetails);
+    navigate("/admin/clusterDashboard");
+  };
 
   useEffect(() => {
     console.log("Admin UseEffect Called--->");
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("-------[USER DETAILS]------------ ", userDetails.username)
-    // const payload = {
-    //   username: userDetails.username,
-    //   password: userDetails.password,
-    // };
+    console.log("-------[USER DETAILS]------------ ", userDetails.username);
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // Your asynchronous logic goes here
-        // const response = await loginUser(payload);
-        // console.log("Admin UseEffect Called--->");
         const response = await getAllClustersAPI(userDetails.username);
-        console.log("clusterData adminPage", response);
-        setClusterData(response);
-        console.log("CLUSTER RESPONSE_-------------------", ClusterData)
-        // Do something with the fetched data
-        // console.log("clusterData adminPage", response.data.environments);
-        // setClusterData(response.data.environments);
+
+        if (response.length > 0) {
+          console.log("clusterData adminPage", response);
+          setClusterData(response);
+          setLoading(false);
+          console.log("CLUSTER RESPONSE_-------------------", ClusterData);
+        }
       } catch (error) {
-        // Handle errors
+        setLoading(false);
         console.error("Error fetching data:", error);
       }
     };
-
-    // Call the async function immediately
     fetchData();
-  }, [editableRowId, deleted]);
+  }, [editableRowId, deleted, statusChanged]);
 
   const handleAddCluster = () => {
     navigate("/admin/addCluster");
@@ -93,6 +126,7 @@ const AdminTopBar = () => {
     currentClusterName,
     currentCusterUserName,
     currentclusterPassword,
+    currentClusterStatus,
     currentClusterType,
     currentHostURL,
     currentInfraName
@@ -101,6 +135,7 @@ const AdminTopBar = () => {
     setEditableClusterName(currentClusterName);
     setEditedUserName(currentCusterUserName);
     setEditedPassword(currentclusterPassword);
+    setEditedClusterStatus(currentClusterStatus);
     setEditedClusterType(currentClusterType);
     setEditedHostURL(currentHostURL);
     setEditedInfraName(currentInfraName);
@@ -122,29 +157,28 @@ const AdminTopBar = () => {
           clusterId: editableRowId,
           clusterName: editableClusterName,
           clusterPassword: editedPassword,
+          clusterStatus: editedClusterStatus,
           clusterType: editedClusterType,
           clusterUsername: editedUserName,
           hostUrl: editedHostURL,
-          openshiftClusterName: editedInfraName
+          openshiftClusterName: editedInfraName,
         },
       ],
     };
 
     console.log("edited Row Details", updatedClusterPayload);
     console.log("CLUSTER NAME UPDATED", updatedClusterPayload);
-    console.log("EDITED CLUSTER NAME+++--------------------------------------", editableClusterName)
+    console.log(
+      "EDITED CLUSTER NAME+++--------------------------------------",
+      editableClusterName
+    );
     await updateClusterDetails(updatedClusterPayload);
     setEditableRowId(null);
   };
 
-  const handleClusterOpen = (clusterDetails) => {
-    setSelectedClusterDetails(clusterDetails); 
-    navigate("/admin/clusterDashboard");
-  };
-
   return (
     <div>
-      {Loading ? (
+      {loading ? (
         <Loading />
       ) : (
         <>
@@ -200,28 +234,6 @@ const AdminTopBar = () => {
               <TableBody>
                 {ClusterData.map((row, index) => (
                   <TableRow key={row.clusterId}>
-                    {/* <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <TextField
-                      value={editedUserName}
-                      onChange={(e) => setEditedUserName(e.target.value)}
-                    />
-                  ) : (
-                    row.clusterName
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {editableRowId === row.clusterId ? (
-                    <TextField
-                      type="text"
-                      value={editedPassword}
-                      onChange={(e) => setEditedPassword(e.target.value)}
-                    />
-                  ) : (
-                    "*".repeat(row.clusterPassword.length)
-                  )}
-                </TableCell> */}
-
                     <TableCell align="center">
                       {editableRowId === row.clusterId ? (
                         <TextField
@@ -365,14 +377,7 @@ const AdminTopBar = () => {
                                     : "darkgray", // lighter shade for hover
                               },
                             }}
-                            onClick={() =>
-                              handleClusterOpen(
-                                // row.hostUrl,
-                                // row.clusterPassword,
-                                // row.clusterUserName,
-                                // row.clusterName
-                              )
-                            }
+                            onClick={() => handleClusterOpen(row.clusterName)}
                           >
                             View Cluster Details
                           </Button>
@@ -398,6 +403,7 @@ const AdminTopBar = () => {
                                 row.clusterName,
                                 row.clusterUserName,
                                 row.clusterPassword,
+                                row.clusterStatus,
                                 row.clusterType,
                                 row.hostUrl,
                                 row.openshiftClusterName
@@ -424,13 +430,34 @@ const AdminTopBar = () => {
                             }}
                             onClick={() =>
                               handleDeleteRow(
-                                row.clusterId,
+                                row.clusterId
                                 // userDetails.username
                               )
                             }
                           >
                             Delete
                           </Button>
+                          {/* <FormGroup>
+                            <FormControlLabel
+                              // value={ClusterStatus}
+                              control={<Switch 
+                                checked = {row.clusterStatus}
+                                onChange={() => handleActiveInactiveBtn(row.clusterStatus)}
+                              />}
+                              label="ClusterStatus"
+                            />
+                          </FormGroup> */}
+                          <Switch
+                            checked={
+                              row.clusterStatus == "active" ? true : false
+                            }
+                            onChange={() =>
+                              handleActiveInactiveBtn(
+                                row.clusterId,
+                                row.clusterStatus
+                              )
+                            }
+                          />
                         </>
                       )}
                     </TableCell>
@@ -442,6 +469,7 @@ const AdminTopBar = () => {
         </>
       )}
     </div>
+    // <></>
   );
 };
 

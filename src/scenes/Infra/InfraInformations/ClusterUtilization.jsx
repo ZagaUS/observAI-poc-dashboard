@@ -21,21 +21,21 @@ import { tokens } from "../../../theme";
 const tableHeader = [
   {
     id: "resourceName",
-    label: "Resource Name"
+    label: "Resource Name",
   },
   {
     id: "availability",
-    label: "Availability"
+    label: "Availability",
   },
   {
     id: "capacity",
-    label: "Capacity"
+    label: "Capacity",
   },
   {
     id: "usage",
-    label: "Usage"
-  }
-]
+    label: "Usage",
+  },
+];
 
 function createData(resources, availability, capacity, usage) {
   return { resources, availability, capacity, usage };
@@ -55,8 +55,21 @@ const ClusterUtilization = () => {
     selectedEndDate,
     needHistoricalData,
     lookBackVal,
-    nodeName, clusterName, setNodeName, setClusterName, selectedNode, selectedCluster, setSelectedCluster, setSelectedNode
+    nodeName,
+    clusterName,
+    setNodeName,
+    setClusterName,
+    selectedNode,
+    selectedCluster,
+    setSelectedCluster,
+    setSelectedNode,
+    setInfraActiveTab,
+    setInfraInfoActiveTab,
   } = useContext(GlobalContext);
+
+  // const { setInfraActiveTab, setInfraInfoActiveTab } =
+  // useContext(GlobalContext);
+
   const [clusterUtilization, setClusterUtilization] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -65,7 +78,7 @@ const ClusterUtilization = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log(userInfo, "userDetails");
   const userName = userInfo.username;
-  console.log(userName)
+  console.log(userName);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -79,45 +92,46 @@ const ClusterUtilization = () => {
         selectedEndDate,
         lookBackVal.value,
         // nodeName, clusterName,
-        selectedNodestring, selectedCluster,
+        selectedNodestring,
+        selectedCluster,
         userName
       );
       if (clusterUtilData.length !== 0) {
         const mappedData = clusterUtilData.flatMap((item) => {
           // const cpuUsage = (item.cpuUsage / item.totalCpuCapacity) * 100;
-          const cpuAvail =  item.cpuCapacity + item.cpuUsage;
+          const cpuAvail = item.cpuCapacity + item.cpuUsage;
           const memoryCpuCapacity = item.memoryUsage - item.memoryAvailable;
           return [
             {
               resources: "CPU",
               // availability: cpuAvail,
-              availability: `${parseFloat((cpuAvail).toFixed(2))}`,
+              availability: `${parseFloat(cpuAvail.toFixed(2))}`,
               capacity: `${item.cpuCapacity}`,
               // usage: `${item.cpuUsage}`,
-              usage: `${parseFloat((item.cpuUsage).toFixed(2))}`
+              usage: `${parseFloat(item.cpuUsage.toFixed(2))}`,
             },
             {
               resources: "Memory",
               // availability: `${item.memoryAvailable} GB`,
-              availability: `${parseFloat((item.memoryAvailable).toFixed(2))} GB`,
+              availability: `${parseFloat(item.memoryAvailable.toFixed(2))} GB`,
               // capacity: memoryCpuCapacity,
-              capacity: `${parseFloat((memoryCpuCapacity).toFixed(2))}`,
+              capacity: `${parseFloat(memoryCpuCapacity.toFixed(2))}`,
               // usage: `${item.memoryUsage} GB`,
-              usage: `${parseFloat((item.memoryUsage).toFixed(2))} GB`
+              usage: `${parseFloat(item.memoryUsage.toFixed(2))} GB`,
             },
             {
               resources: "FileSystem",
               // availability: `${item.fileSystemAvailable} GB`,
-              availability: `${parseFloat((item.fileSystemAvailable).toFixed(2))} GB`,
+              availability: `${parseFloat(
+                item.fileSystemAvailable.toFixed(2)
+              )} GB`,
               // capacity: `${item.fileSystemCapacity} GB`,
-              capacity: `${parseFloat((item.fileSystemCapacity).toFixed(2))} GB`,
+              capacity: `${parseFloat(item.fileSystemCapacity.toFixed(2))} GB`,
               // usage: `${item.fileSystemUsage} GB`,
-              usage: `${parseFloat((item.fileSystemUsage).toFixed(2))} GB`
+              usage: `${parseFloat(item.fileSystemUsage.toFixed(2))} GB`,
             },
-          ]
-        }
-
-        );
+          ];
+        });
 
         const rowClusterData = mappedData.map((item) =>
           createData(
@@ -140,9 +154,15 @@ const ClusterUtilization = () => {
       setErrorMessage("Error in Displaying Resource Utilization Data");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, 
+  }, [
+    selectedStartDate,
+    selectedEndDate,
+    needHistoricalData,
+    lookBackVal,
     // clusterName, nodeName,
-    selectedNode, selectedCluster, userName
+    selectedNode,
+    selectedCluster,
+    userName,
   ]);
 
   useEffect(() => {
@@ -150,11 +170,13 @@ const ClusterUtilization = () => {
     // setSelectedNode([]);
     // setSelectedCluster([]);
 
+    setInfraActiveTab(0);
+    setInfraInfoActiveTab(1);
+
     // console.log("------------cluster name------ " , clusterName)
     return () => {
       setErrorMessage("");
       setEmptyMessage("");
-      
     };
   }, [handleGetClusterUtilization, setErrorMessage, setEmptyMessage]);
 
@@ -214,11 +236,7 @@ const ClusterUtilization = () => {
                             color: "#FFF",
                           }}
                         >
-                          <Typography
-                            variant="h5" 
-                          >
-                            {column.label}
-                          </Typography>
+                          <Typography variant="h5">{column.label}</Typography>
                         </TableCell>
                       ))}
                     </TableHead>
@@ -253,14 +271,10 @@ const ClusterUtilization = () => {
                             </Typography>
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            <Typography variant="h7">
-                              {row.capacity}
-                            </Typography>
+                            <Typography variant="h7">{row.capacity}</Typography>
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            <Typography variant="h7">
-                              {row.usage}
-                            </Typography>
+                            <Typography variant="h7">{row.usage}</Typography>
                           </TableCell>
                         </TableRow>
                       ))}

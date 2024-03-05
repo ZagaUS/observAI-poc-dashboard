@@ -25,6 +25,10 @@ import { useNavigate } from "react-router-dom";
 import { options } from "../../../global/MockData/MockTraces";
 
 const tableHeader = [
+    {
+    id: "severityText",
+    label: "Severity Text",
+  },
   {
     id: "resource",
     label: "Resource",
@@ -43,8 +47,8 @@ const tableHeader = [
   },
 ];
 
-function createData(resource, resourceName, eventMessage, createdTime) {
-  return { resource, resourceName, eventMessage, createdTime };
+function createData(severityText,resource, resourceName, eventMessage, createdTime) {
+  return {severityText, resource, resourceName, eventMessage, createdTime };
 }
 
 const rows = [
@@ -134,6 +138,7 @@ const RecentEvent = () => {
             objectName: data.objectName,
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
+            severityText: logRecord.severityText
           };
 
           extractEventData.push(extractEventInfo);
@@ -146,6 +151,7 @@ const RecentEvent = () => {
     extractEventData.forEach((eventField, index) => {
       finalData.push(
         createData(
+          eventField.severityText,
           eventField.objectKind,
           eventField.objectName,
           eventField.stringValue,
@@ -157,6 +163,13 @@ const RecentEvent = () => {
 
     return finalData;
   };
+  const severityColors = {
+    "Warning": "yellow",
+    "Error": "red",
+    "Info": "black", 
+    "Normal":"black"
+  };
+  
 
   const handleGetRecentEvent = useCallback(async () => {
     const selectedNodestring = selectedNode[0];

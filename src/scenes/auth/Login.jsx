@@ -42,9 +42,11 @@ const Login = () => {
     setAlertResponse,
     userDetails,
     setUserDetails,
+    username,
+    setUsername,
   } = useContext(GlobalContext);
 
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [environments, setEnvironments] = useState([]);
   const [role, setRole] = useState("none");
@@ -62,7 +64,10 @@ const Login = () => {
   };
 
   const environmetsPayload = (clusterData) => {
-    clusterData.forEach((item) => {
+    const FilterClusters = clusterData.filter(
+      (env) => env.clusterStatus === "active"
+    );
+    FilterClusters.forEach((item) => {
       clusterListData.push(item.clusterName);
     });
     localStorage.setItem("clusterListData", JSON.stringify(clusterListData));
@@ -345,6 +350,8 @@ const Login = () => {
         // };
 
         //call database login api
+
+        console.log("checkGlobalUsername", username);
         await fetchClusterData(username);
         // const ClusterApiResponse = await getAllClustersAPI(username);
         // if (ClusterApiResponse.length !== 0) {

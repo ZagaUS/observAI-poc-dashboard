@@ -153,7 +153,7 @@ export const PodMemoryMetric = () => {
   ]);
 
   useEffect(() => {
-    setInfraActiveTab(1);
+    setInfraActiveTab(2);
     setInfraPodActiveTab(1);
     setLoading(true);
 
@@ -282,7 +282,10 @@ export const PodMemoryMetric = () => {
                           aria-label="a dense table"
                           sx={{
                             "& .MuiTableRow-root:hover": {
-                              backgroundColor: theme.palette.mode === "dark" ? "#696969" : "lightgrey",
+                              backgroundColor:
+                                theme.palette.mode === "dark"
+                                  ? "#696969"
+                                  : "lightgrey",
                             },
                           }}
                         >

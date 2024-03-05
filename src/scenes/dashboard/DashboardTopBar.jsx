@@ -234,9 +234,11 @@ const DashboardTopBar = () => {
       navigate("/mainpage/infraInfo");
     } else if (newValue === 1) {
       navigate("/mainpage/infraInfo/clusterUtilization");
-    } else if (newValue === 2) {
-      navigate("/mainpage/infraInfo/alerts");
-    } else if (newValue === 3) {
+    }
+    // else if (newValue === 2) {
+    //   navigate("/mainpage/infraInfo/alerts");
+    // }
+    else if (newValue === 2) {
       navigate("/mainpage/infraInfo/events");
     }
     setInfraInfoActiveTab(newValue);
@@ -664,7 +666,7 @@ const DashboardTopBar = () => {
                           borderBottom: "none",
                         },
                         // padding: "0px 7px",
-                        padding: "2px 7px 0px 7px"
+                        padding: "2px 7px 0px 7px",
                       }}
                     />
                   </Box>
@@ -828,24 +830,34 @@ const DashboardTopBar = () => {
                 TimeBy
               </label>
               <div>
-                  {" "}
-                  <Select
+                {" "}
+                <Select
                   disabled={isEventsPage ? true : null}
-                    value={lookBackVal}
-                    onChange={
-                      endDate !== null || previousStartDate
-                        ? null
-                        : handleLookbackChange
-                    }
-                    sx={{
-                      minWidth: isipadpro ? 130 : 153,
-                      maxHeight: 35,
-                      // marginTop: "10px",
-                      marginRight: "25px",
-                      borderRadius: 0,
-                      // color:"",
-                      backgroundColor:
-                        theme.palette.mode === "dark" ? "#848482" : "#FFF",
+                  value={lookBackVal}
+                  onChange={
+                    endDate !== null || previousStartDate
+                      ? null
+                      : handleLookbackChange
+                  }
+                  sx={{
+                    minWidth: isipadpro ? 130 : 153,
+                    maxHeight: 35,
+                    // marginTop: "10px",
+                    marginRight: "25px",
+                    borderRadius: 0,
+                    // color:"",
+                    backgroundColor:
+                      theme.palette.mode === "dark" ? "#848482" : "#FFF",
+                    color:
+                      theme.palette.mode === "dark"
+                        ? endDate !== null || previousStartDate
+                          ? "#B3B3AD"
+                          : "#FFF"
+                        : endDate !== null || previousStartDate
+                        ? "lightgray"
+                        : "#000",
+                    padding: "7px 16px",
+                    "& .MuiSelect-icon": {
                       color:
                         theme.palette.mode === "dark"
                           ? endDate !== null || previousStartDate
@@ -853,49 +865,39 @@ const DashboardTopBar = () => {
                             : "#FFF"
                           : endDate !== null || previousStartDate
                           ? "lightgray"
-                          : "#000",
-                      padding: "7px 16px",
-                      "& .MuiSelect-icon": {
+                          : "#000", // Customize the dropdown arrow color
+                    },
+                    "& .MuiSelect-root": {
+                      color: "#000", // Customize the dropdown text color
+                    },
+                    "& .MuiInputBase-input": {
+                      padding: 0, // Remove input padding
+                    },
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select Time
+                  </MenuItem>
+                  {options.map((option, index) => (
+                    <MenuItem
+                      key={index}
+                      value={option}
+                      sx={{
                         color:
                           theme.palette.mode === "dark"
                             ? endDate !== null || previousStartDate
-                              ? "#B3B3AD"
+                              ? "#666663"
                               : "#FFF"
                             : endDate !== null || previousStartDate
                             ? "lightgray"
-                            : "#000", // Customize the dropdown arrow color
-                      },
-                      "& .MuiSelect-root": {
-                        color: "#000", // Customize the dropdown text color
-                      },
-                      "& .MuiInputBase-input": {
-                        padding: 0, // Remove input padding
-                      },
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      Select Time
+                            : "#000",
+                      }}
+                    >
+                      {option.label}
                     </MenuItem>
-                    {options.map((option, index) => (
-                      <MenuItem
-                        key={index}
-                        value={option}
-                        sx={{
-                          color:
-                            theme.palette.mode === "dark"
-                              ? endDate !== null || previousStartDate
-                                ? "#666663"
-                                : "#FFF"
-                              : endDate !== null || previousStartDate
-                              ? "lightgray"
-                              : "#000",
-                        }}
-                      >
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </div>
+                  ))}
+                </Select>
+              </div>
             </div>
             {/* ) : null} */}
 
@@ -1118,7 +1120,7 @@ const DashboardTopBar = () => {
               "/mainpage/infraInfo" ||
             window.location.pathname ===
               "/mainpage/infraInfo/clusterUtilization" ||
-            window.location.pathname === "/mainpage/infraInfo/alerts" ||
+            // window.location.pathname === "/mainpage/infraInfo/alerts" ||
             window.location.pathname === "/mainpage/infraInfo/events" ? (
             <Tabs
               value={InfraInfoActiveTab}
@@ -1135,7 +1137,7 @@ const DashboardTopBar = () => {
             >
               <Tab label="Status" sx={{ color: "#FFF" }} />
               <Tab label="Resource Utilization" sx={{ color: "#FFF" }} />
-              <Tab label="Alerts" sx={{ color: "#FFF" }} />
+              {/* <Tab label="Alerts" sx={{ color: "#FFF" }} /> */}
               <Tab label="Events" sx={{ color: "#FFF" }} />
             </Tabs>
           ) : null}

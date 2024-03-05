@@ -29,8 +29,14 @@ import { tokens } from "../../../theme";
 import { useTheme } from "@emotion/react";
 
 const Status = () => {
-  const { selectedCluster, selectedNode, setSelectedNode } =
-    useContext(GlobalContext);
+  const {
+    selectedCluster,
+    selectedNode,
+    setSelectedNode,
+    setInfraNodeActiveTab,
+    setInfraActiveTab,
+    setInfraInfoActiveTab,
+  } = useContext(GlobalContext);
 
   const [loading, setLoading] = useState(false);
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -114,13 +120,13 @@ const Status = () => {
     console.log("useEffect StatusPage----->");
     console.log("Selected Node " + selectedNode);
     console.log("Selected Cluster" + selectedCluster);
+    setInfraActiveTab(0);
+    setInfraInfoActiveTab(0);
     if (selectedNode.length > 0) {
       getSelectedNodeData(selectedNode);
     } else {
       getSelectedClusterData(selectedCluster);
     }
-
-    // }
   }, [selectedCluster, getSelectedNodeData]);
   return (
     <div>
