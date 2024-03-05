@@ -67,9 +67,6 @@ const ClusterUtilization = () => {
     setInfraInfoActiveTab,
   } = useContext(GlobalContext);
 
-  // const { setInfraActiveTab, setInfraInfoActiveTab } =
-  // useContext(GlobalContext);
-
   const [clusterUtilization, setClusterUtilization] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -99,7 +96,7 @@ const ClusterUtilization = () => {
       if (clusterUtilData.length !== 0) {
         const mappedData = clusterUtilData.flatMap((item) => {
           // const cpuUsage = (item.cpuUsage / item.totalCpuCapacity) * 100;
-          const cpuAvail = item.cpuCapacity + item.cpuUsage;
+          const cpuAvail = item.cpuCapacity - item.cpuUsage;
           const memoryCpuCapacity = item.memoryUsage - item.memoryAvailable;
           return [
             {
@@ -167,13 +164,9 @@ const ClusterUtilization = () => {
 
   useEffect(() => {
     handleGetClusterUtilization();
-    // setSelectedNode([]);
-    // setSelectedCluster([]);
-
     setInfraActiveTab(0);
     setInfraInfoActiveTab(1);
 
-    // console.log("------------cluster name------ " , clusterName)
     return () => {
       setErrorMessage("");
       setEmptyMessage("");
