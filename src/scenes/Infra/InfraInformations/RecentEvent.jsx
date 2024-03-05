@@ -22,6 +22,7 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+import { options } from "../../../global/MockData/MockTraces";
 
 const tableHeader = [
   {
@@ -76,7 +77,7 @@ const rows = [
 ];
 
 const RecentEvent = () => {
-  const { lookBackVal, selectedNode, selectedCluster } =
+  const { lookBackVal, selectedNode, selectedCluster, setLookBackVal, setSelectedStartDate } =
     useContext(GlobalContext);
   const [eventRowsData, setEventRowsData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
@@ -85,6 +86,10 @@ const RecentEvent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  
+  const EmptyformattedDate = format(new Date(), "yyyy-MM-dd");
+  const defaultValue = 30;
+  const defaultLabel = options.find((option) => option.value === defaultValue);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log(userInfo, "userDetails");
@@ -192,6 +197,8 @@ const RecentEvent = () => {
 
   useEffect(() => {
     handleGetRecentEvent();
+    setLookBackVal(defaultLabel);
+    setSelectedStartDate(EmptyformattedDate);
     console.log("Use Effect Recent Event");
 
     return () => {
