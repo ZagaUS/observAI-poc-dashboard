@@ -28,6 +28,7 @@ import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import { getMetricDataApi } from "../../api/MetricApiService";
 import { tokens } from "../../theme";
 import {
+  getActiveClustersAPI,
   getAllClustersAPI,
   loginUser,
   openshiftClusterLogin,
@@ -45,14 +46,16 @@ const ClusterFilter = () => {
     setSelectedNode,
     username,
     setUsername,
+    nodeDetails,
+    setNodeDetails,
   } = useContext(GlobalContext);
 
-  const [clusters, setClusters] = useState(
-    JSON.parse(localStorage.getItem("clusterListData"))
-  );
+  // const [clusters, setClusters] = useState(
+  //   JSON.parse(localStorage.getItem("clusterListData"))
+  // );
   // const [clusterListData, setClusterListData] = useState([]);
 
-  // const clusterListData =
+  const [clusters, setClusters] = useState([]);
 
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -63,50 +66,57 @@ const ClusterFilter = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // console.log("selectedCluster", selectedCluster);
-  // console.log("ClustersCollection", clusters);
-
-  // const environmetsPayload = (clusterData) => {
-  //   clusterData.forEach((item) => {
-  //     clusterListData.push(item.clusterName);
-  //   });
-  //   localStorage.setItem("clusterListData", JSON.stringify(clusterListData));
-  //   console.log("clusterName " + clusterListData);
-  // };
-
-  // const fetchClusterData = async (username) => {
-  //   console.log("fetchClusterCallled-->");
-  //   try {
-  //     const response = await getAllClustersAPI(username);
-  //     console.log("res", response);
-
-  //     if (response.length !== 0) {
-  //       environmetsPayload(response);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   } finally {
-  //     setClusters(clusterListData);
-  //     console.log("ClusterListDataFilterPage", clusters);
-  //   }
-  // };
-
   const fetchNodes = useCallback(async () => {
-    setEmptyMessage("");
+    // setEmptyMessage("");
+    setErrorMessage("");
     setLoading(true);
     try {
       const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-
-      const NodeResponse = await ListOfNodeDetails(
-        selectedCluster,
-        userDetails.username
-      );
-      if (NodeResponse.data == "You are unauthorized to do this action.") {
-        setNodes([]);
-        setEmptyMessage("Openshift is down please try again later!!!");
-        console.log(NodeResponse.data, "Nodesdata");
+      const ClusterDetails = await getActiveClustersAPI(userDetails.username);
+      console.log("--------[FILTER PAGE]-----------", ClusterDetails.length);
+      if (ClusterDetails === "Technical Exception error for this action") {
+        setErrorMessage("Something went wrong with the database");
+        setSelectedCluster([]);
+        setClusters([]);
+      }
+      if (ClusterDetails.length === 0) {
+        console.log("-------[CLUSTER DETAILS]-----------");
+        setErrorMessage("No active cluster available");
+        // setSelectedCluster([]);
+      }
+      if (ClusterDetails.length > 0 && selectedCluster.length === 0) {
+        setSelectedCluster([ClusterDetails[0].clusterName]);
+        setClusters(ClusterDetails);
+        const NodeResponse = await ListOfNodeDetails(
+          ClusterDetails[0].clusterName,
+          userDetails.username
+        );
+        if (NodeResponse.data == "You are unauthorized to do this action.") {
+          setNodes([]);
+          setNodeDetails([]);
+          setEmptyMessage("Openshift is down please try again later!!!");
+          console.log(NodeResponse.data, "Nodesdata");
+        } else {
+          console.log(NodeResponse.data, "Nodesdata");
+          setNodes(NodeResponse.data);
+          setNodeDetails(NodeResponse.data);
+        }
       } else {
-        setNodes(NodeResponse.data);
+        setClusters(ClusterDetails);
+        const NodeResponse = await ListOfNodeDetails(
+          selectedCluster,
+          userDetails.username
+        );
+        if (NodeResponse.data == "You are unauthorized to do this action.") {
+          setNodes([]);
+          setNodeDetails([]);
+          setEmptyMessage("Openshift is down please try again later!!!");
+          console.log(NodeResponse.data, "Nodesdata");
+        } else {
+          console.log(NodeResponse.data, "Nodesdata");
+          setNodes(NodeResponse.data);
+          setNodeDetails(NodeResponse.data);
+        }
       }
     } catch (error) {
       console.log("error", error);
@@ -119,48 +129,8 @@ const ClusterFilter = () => {
     console.log("UseEffect FilterPage-->");
     console.log("Selected Cluster" + selectedCluster);
     console.log("userName Cluster Filter Page", username);
-    // fetchClusterData(username);
     fetchNodes();
-  }, [fetchNodes]);
-
-  // const [clusters, setClusters] = useState(
-  //   JSON.parse(localStorage.getItem("ListOfClusterDetails"))
-  // );
-
-  // const ClusterInformations = ClusterDetailsMock;
-  // console.log("ClusterInformations", ClusterInformations);
-
-  // useEffect(() => {
-  //   console.log("useeffet called");
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const ClusterUrl = Environments[0].hostUrl;
-  //       const ClusterPassword = Environments[0].clusterPassword;
-  //       const ClusterUsername = Environments[0].clusterUsername;
-
-  //       const response = await openshiftClusterLogin(
-  //         ClusterUrl,
-  //         ClusterPassword,
-  //         ClusterUsername
-  //       );
-
-  //       // console.log("clusterData filter Page", response);
-
-  //       if (response === "Login successful!") {
-  //         setNeedStatusCall(true);
-  //       } else if (response === "Incorrect username or password.") {
-  //         alert("Incorrect username or password.");
-  //       } else {
-  //         alert("Network Error !!.Please try again later.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [selectedCluster]);
+  }, [selectedCluster]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -171,25 +141,10 @@ const ClusterFilter = () => {
   );
   const largem = useMediaQuery((theme) => theme.breakpoints.down("lg"));
 
-  // const handleNodeToggle = (node) => () => {
-  //   setSelectedNode([node]);
-  // };
-
   const handleNodeToggle = (node) => () => {
-    // setSelectedNode([node]);
     setSelectedNode((prevSelected) =>
       prevSelected.includes(node) ? [] : [node]
     );
-    // You can update the setSelectedNode here if you want to set the value after the checkbox is clicked
-    // setSelectedNode((prevSelected) => {
-    //   if (prevSelected.includes(node)) {
-    //     // If node is already selected, remove it
-    //     return prevSelected.filter((selected) => selected !== node);
-    //   } else {
-    //     // If node is not selected, add it
-    //     return [...prevSelected, node];
-    //   }
-    // });
   };
 
   const handleServiceToggle = (clusterName) => () => {
@@ -269,7 +224,7 @@ const ClusterFilter = () => {
 
         <ListItem>
           <Accordion
-            style={{ width: "500px", backgroundColor: colors.primary[400] }}
+            style={{ width: "500px", backgroundColor: colors.primary[400] }} defaultExpanded
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h5" color={"#fff"}>
@@ -285,7 +240,30 @@ const ClusterFilter = () => {
                     color: theme.palette.mode === "light" ? "#000" : "#FFF",
                   }}
                 >
-                  {clusters &&
+                  {errorMessage ? (
+                    <div>
+                      <Typography variant="h5" fontWeight={"600"} mt={2}>
+                        {errorMessage}
+                      </Typography>
+                    </div>
+                  ) : (
+                    clusters.map((clusters) => (
+                      <FormControlLabel
+                        key={clusters.clusterName}
+                        value={clusters.clusterName}
+                        control={
+                          <Radio sx={{ "&.Mui-checked": { color: "white" } }} />
+                        }
+                        label={clusters.clusterName}
+                        sx={{
+                          color: "white",
+                        }}
+                        onChange={handleServiceToggle(clusters.clusterName)}
+                      />
+                    ))
+                  )}
+
+                  {/* {clusters &&
                     clusters.map((clusters) => (
                       <FormControlLabel
                         key={clusters}
@@ -299,7 +277,7 @@ const ClusterFilter = () => {
                         }}
                         onChange={handleServiceToggle(clusters)}
                       />
-                    ))}
+                    ))} */}
                 </RadioGroup>
               </FormControl>
             </AccordionDetails>
@@ -346,7 +324,7 @@ const ClusterFilter = () => {
             <Accordion
               style={{ width: "500px", backgroundColor: colors.primary[400] }}
             >
-              {Nodes.length > 0 ? (
+              {nodeDetails.length > 0 ? (
                 <AccordionDetails>
                   <Typography variant="h5" color={"#fff"}>
                     Nodes
@@ -358,7 +336,7 @@ const ClusterFilter = () => {
                         color: theme.palette.mode === "light" ? "#000" : "#FFF",
                       }}
                     >
-                      {Nodes.map((nodes) => (
+                      {nodeDetails.map((nodes) => (
                         <FormControlLabel
                           key={nodes}
                           value={nodes}

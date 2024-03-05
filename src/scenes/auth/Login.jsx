@@ -352,7 +352,7 @@ const Login = () => {
         //call database login api
 
         console.log("checkGlobalUsername", username);
-        await fetchClusterData(username);
+        // await fetchClusterData(username);
         // const ClusterApiResponse = await getAllClustersAPI(username);
         // if (ClusterApiResponse.length !== 0) {
         //   environmetsPayload(ClusterApiResponse);

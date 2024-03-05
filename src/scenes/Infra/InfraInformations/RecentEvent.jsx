@@ -164,7 +164,7 @@ const RecentEvent = () => {
     return finalData;
   };
   const severityColors = {
-    "Warning": "yellow",
+    "Warning": "#FFD700",
     "Error": "red",
     "Info": "black", 
     "Normal":"black"
@@ -281,7 +281,7 @@ const RecentEvent = () => {
             </div>
 
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} >
                 <Card elevation={6}>
                   <TableContainer
                     component={Paper}
@@ -304,6 +304,7 @@ const RecentEvent = () => {
                               height: "30px",
                               backgroundColor: colors.primary[400],
                               color: "#FFF",
+                              
                               // padding: "10px",
                             }}
                           >
@@ -357,6 +358,7 @@ const RecentEvent = () => {
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
+                                  color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
                                 }}
                               >
                                 <Typography variant="h7">

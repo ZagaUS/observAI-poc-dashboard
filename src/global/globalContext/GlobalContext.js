@@ -56,9 +56,12 @@ const GlobalContextProvider = ({ children }) => {
   );
 
   const Clusters = JSON.parse(localStorage.getItem("clusterListData"));
-  const [selectedCluster, setSelectedCluster] = useState(
-    Clusters && Clusters.length > 0 ? [Clusters[0]] : []
-  );
+  // const [selectedCluster, setSelectedCluster] = useState(
+  //   Clusters && Clusters.length > 0 ? [Clusters[0]] : []
+  // );
+
+  const [selectedCluster, setSelectedCluster] = useState([]);
+  const [nodeDetails, setNodeDetails] = useState([]);
 
   const [selectedNode, setSelectedNode] = useState([]);
 
@@ -270,6 +273,8 @@ const GlobalContextProvider = ({ children }) => {
         setClusterName,
         AdminPageSelecteCluster,
         setAdminPageSelecteCluster,
+        nodeDetails,
+        setNodeDetails,
       }}
     >
       {children}

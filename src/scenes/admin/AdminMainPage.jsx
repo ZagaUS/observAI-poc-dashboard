@@ -52,8 +52,15 @@ const AdminTopBar = () => {
   const [clusterStatus, setClusterStatus] = useState("");
   const [checked, setChecked] = useState(false);
 
-  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
-    useContext(GlobalContext);
+  const {
+    AdminPageSelecteCluster,
+    setAdminPageSelecteCluster,
+    setSelectedNode,
+    selectedCluster,
+    setSelectedCluster,
+    nodeDetails,
+    setNodeDetails,
+  } = useContext(GlobalContext);
 
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
@@ -67,7 +74,11 @@ const AdminTopBar = () => {
   console.log("---------Cluster Data", ClusterData);
   console.log("-----editedRules", editableRowId);
 
-  const handleActiveInactiveBtn = async (clusterID, clusterStatus) => {
+  const handleActiveInactiveBtn = async (
+    clusterID,
+    clusterStatus,
+    clusterName
+  ) => {
     console.log("data", clusterID, clusterStatus);
     // setLoading(true);
 
@@ -81,9 +92,15 @@ const AdminTopBar = () => {
       Status,
       userDetails.username
     );
+
     if (response.status === 200) {
       // setLoading(false);
       setStatusCahnged(!statusChanged);
+      if (selectedCluster[0] === clusterName) {
+        setSelectedCluster([]);
+        setSelectedNode([]);
+        setNodeDetails([]);
+      }
     }
   };
 
@@ -227,6 +244,9 @@ const AdminTopBar = () => {
                   </TableCell>
                   <TableCell align="center" sx={{ color: "white" }}>
                     Action
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Cluster Status
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -447,19 +467,32 @@ const AdminTopBar = () => {
                               label="ClusterStatus"
                             />
                           </FormGroup> */}
-                          <Switch
+                          
+                        </>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                    <Switch
                             checked={
                               row.clusterStatus == "active" ? true : false
                             }
                             onChange={() =>
                               handleActiveInactiveBtn(
                                 row.clusterId,
-                                row.clusterStatus
+                                row.clusterStatus,
+                                row.clusterName
                               )
                             }
+                            sx={{
+                              "& .MuiSwitch-thumb": {
+                                color: row.clusterStatus === "active" ? "#00888C !important" : "#d80000 !important", // Green when active, red when inactive
+                              },
+                              "& .MuiSwitch-track": {
+                                backgroundColor: row.clusterStatus === "active" ? "#A5D6A7 !important" : "#FF5722 !important", // Light green when active, light red when inactive
+                              },
+                            }}
                           />
-                        </>
-                      )}
+                          <span>{row.clusterStatus == "active" ? "active" : "inactive"}</span>
                     </TableCell>
                   </TableRow>
                 ))}
