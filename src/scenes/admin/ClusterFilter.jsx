@@ -224,7 +224,7 @@ const ClusterFilter = () => {
 
         <ListItem>
           <Accordion
-            style={{ width: "500px", backgroundColor: colors.primary[400] }}
+            style={{ width: "500px", backgroundColor: colors.primary[400] }} defaultExpanded
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h5" color={"#fff"}>

@@ -92,6 +92,7 @@ const AdminTopBar = () => {
       Status,
       userDetails.username
     );
+
     if (response.status === 200) {
       // setLoading(false);
       setStatusCahnged(!statusChanged);
@@ -243,6 +244,9 @@ const AdminTopBar = () => {
                   </TableCell>
                   <TableCell align="center" sx={{ color: "white" }}>
                     Action
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Cluster Status
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -463,7 +467,12 @@ const AdminTopBar = () => {
                               label="ClusterStatus"
                             />
                           </FormGroup> */}
-                          <Switch
+                          
+                        </>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                    <Switch
                             checked={
                               row.clusterStatus == "active" ? true : false
                             }
@@ -474,9 +483,16 @@ const AdminTopBar = () => {
                                 row.clusterName
                               )
                             }
+                            sx={{
+                              "& .MuiSwitch-thumb": {
+                                color: row.clusterStatus === "active" ? "#00888C !important" : "#d80000 !important", // Green when active, red when inactive
+                              },
+                              "& .MuiSwitch-track": {
+                                backgroundColor: row.clusterStatus === "active" ? "#A5D6A7 !important" : "#FF5722 !important", // Light green when active, light red when inactive
+                              },
+                            }}
                           />
-                        </>
-                      )}
+                          <span>{row.clusterStatus == "active" ? "active" : "inactive"}</span>
                     </TableCell>
                   </TableRow>
                 ))}
