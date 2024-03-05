@@ -52,8 +52,15 @@ const AdminTopBar = () => {
   const [clusterStatus, setClusterStatus] = useState("");
   const [checked, setChecked] = useState(false);
 
-  const { AdminPageSelecteCluster, setAdminPageSelecteCluster } =
-    useContext(GlobalContext);
+  const {
+    AdminPageSelecteCluster,
+    setAdminPageSelecteCluster,
+    setSelectedNode,
+    selectedCluster,
+    setSelectedCluster,
+    nodeDetails,
+    setNodeDetails,
+  } = useContext(GlobalContext);
 
   const handleDeleteRow = async (clusterId) => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
@@ -67,7 +74,11 @@ const AdminTopBar = () => {
   console.log("---------Cluster Data", ClusterData);
   console.log("-----editedRules", editableRowId);
 
-  const handleActiveInactiveBtn = async (clusterID, clusterStatus) => {
+  const handleActiveInactiveBtn = async (
+    clusterID,
+    clusterStatus,
+    clusterName
+  ) => {
     console.log("data", clusterID, clusterStatus);
     // setLoading(true);
 
@@ -84,6 +95,11 @@ const AdminTopBar = () => {
     if (response.status === 200) {
       // setLoading(false);
       setStatusCahnged(!statusChanged);
+      if (selectedCluster[0] === clusterName) {
+        setSelectedCluster([]);
+        setSelectedNode([]);
+        setNodeDetails([]);
+      }
     }
   };
 
@@ -454,7 +470,8 @@ const AdminTopBar = () => {
                             onChange={() =>
                               handleActiveInactiveBtn(
                                 row.clusterId,
-                                row.clusterStatus
+                                row.clusterStatus,
+                                row.clusterName
                               )
                             }
                           />

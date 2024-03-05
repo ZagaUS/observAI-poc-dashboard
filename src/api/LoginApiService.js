@@ -225,6 +225,22 @@ export const getAllClustersAPI = async (username) => {
   }
 };
 
+export const getActiveClustersAPI = async (username) => {
+  try {
+    console.log("clusterUserName", username);
+    const response = await axios.get(
+      `${openshiftLoginURL}/getActiveClusters?username=${username}`
+    );
+
+    console.log("response", response);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error in get getAllClustersAPI ", error);
+    throw error;
+  }
+};
+
 export const openshiftClusterLogin = async (clusterUrl, password, username) => {
   try {
     console.log("clusterUserName", username);
