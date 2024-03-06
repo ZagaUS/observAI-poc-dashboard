@@ -28,7 +28,8 @@ import ClusterFilter from "../scenes/admin/ClusterFilter";
 
 const SideNavbar = () => {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  // const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmallScreen = false;
 
   const colors = tokens(theme.palette.mode);
   const isDarkMode = theme.palette.mode === "dark";
@@ -168,7 +169,8 @@ const SideNavbar = () => {
                   "/mainpage/infraInfo/clusterUtilization" ||
                 window.location.pathname === "/mainpage/infraInfo/alerts" ||
                 window.location.pathname === "/mainpage/infraInfo/events" ||
-                window.location.pathname === "/mainpage/infraInfo/events/allEvents" ? (
+                window.location.pathname ===
+                  "/mainpage/infraInfo/events/allEvents" ? (
                 <>
                   <ClusterFilter />
                 </>
