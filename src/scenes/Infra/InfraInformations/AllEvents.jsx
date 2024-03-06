@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
+
+
 import Events from "./Events";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getAllEvent, getAllEventByDate } from "../../../api/InfraApiService";
@@ -69,6 +71,7 @@ function createData(
     createdTime,
   };
 }
+
 
 const allEventDatas = [
   {
@@ -188,7 +191,9 @@ const AllEvents = () => {
             objectName: data.objectName,
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
-            severityText: logRecord.severityText,
+            // severityText: logRecord.severityText,
+            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText ,// Change "Normal" to "Inform"
+
             namespaceName: namespaceName,
           };
 
@@ -214,6 +219,13 @@ const AllEvents = () => {
     });
 
     return finalData;
+  };
+
+    const severityColors = {
+    "Warning": "#FF8C00",
+    "Error": "red",
+    "Info": "black", 
+    "Normal":"black"
   };
 
   // const handleGetAllEvents = useCallback(async () => {
@@ -427,6 +439,7 @@ const AllEvents = () => {
                               height: "30px",
                               backgroundColor: colors.primary[400],
                               color: "#FFF",
+                          
                             }}
                           >
                             <Typography
@@ -479,6 +492,9 @@ const AllEvents = () => {
                                   whiteSpace: "nowrap",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
+                                  color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
+                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
+                              
                                 }}
                               >
                                 <Typography variant="h7">
