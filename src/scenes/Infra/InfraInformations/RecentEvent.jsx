@@ -133,7 +133,8 @@ const RecentEvent = () => {
             objectName: data.objectName,
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
-            severityText: logRecord.severityText
+            // severityText: logRecord.severityText
+            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText // Change "Normal" to "Inform"
           };
 
           extractEventData.push(extractEventInfo);
@@ -159,7 +160,7 @@ const RecentEvent = () => {
     return finalData;
   };
   const severityColors = {
-    "Warning": "#FFD700",
+    "Warning": "#FF8C00",
     "Error": "red",
     "Info": "black", 
     "Normal":"black"
@@ -352,6 +353,7 @@ const RecentEvent = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
+                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
                                 }}
                               >
                                 <Typography variant="h7">
