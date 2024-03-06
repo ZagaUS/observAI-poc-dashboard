@@ -170,8 +170,8 @@ const RecentEvent = () => {
   const severityColors = {
     "Warning": "#FF8C00",
     "Error": "red",
-    "Info": "black", 
-    "Normal":"black"
+    "Info": theme.palette.mode === 'dark' ? "#FFFFFF" : "black", 
+    "Normal": theme.palette.mode === 'dark' ? "#FFFFFF" : "black"
   };
   
 
