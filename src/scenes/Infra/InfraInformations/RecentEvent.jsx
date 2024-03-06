@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Grid,
+  IconButton,
   Paper,
   Popover,
   Table,
@@ -15,6 +16,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getRecentEvent, getRecentEvents } from "../../../api/InfraApiService";
 import AllEvents from "./AllEvents";
@@ -350,7 +353,11 @@ const RecentEvent = () => {
                           ))} */}
                         {eventRowsData.map((row, rowIndex) => (
                           // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
-                          <TableRow key={rowIndex}>
+                          <TableRow key={rowIndex} 
+                          onClick={(event) =>
+                            handlePopoverOpen(row, event.currentTarget)
+                          }>
+
                             {tableHeader.map((column) => (
                               <TableCell
                                 key={column.id}
@@ -375,7 +382,7 @@ const RecentEvent = () => {
                     <Popover
                       open={Boolean(selectedEvent)}
                       anchorEl={anchorEl}
-                      onClose={handlePopoverClose}
+                      // onClose={handlePopoverClose}
                       // anchorOrigin={{
                       //   vertical: "bottom",
                       //   horizontal: "left",
@@ -394,7 +401,62 @@ const RecentEvent = () => {
                       }}
                     >
                       <Box p={2}>
-                        <Typography variant="body1">{selectedEvent}</Typography>
+                      <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <IconButton onClick={handlePopoverClose}>
+                            <CancelIcon />
+                          </IconButton>
+                        </div>
+                        {selectedEvent && (
+                          <div>
+                            <Typography>
+                              <span>
+                                Resource:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resource}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Resource Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resourceName}
+                                </span>
+                              </span>
+                            </Typography>
+                            {/* <Typography>
+                              <span>
+                                Namespace Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.namespaceName}
+                                </span>
+                              </span>
+                            </Typography> */}
+                            <Typography>
+                              <span>
+                                Event Message:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Created Time:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.createdTime}
+                                </span>
+                              </span>
+                            </Typography>
+                          </div>
+                        )}
+                        {/* <Typography variant="body1">{selectedEvent}</Typography> */}
                       </Box>
                     </Popover>
                   </TableContainer>
