@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Grid,
+  IconButton,
   Paper,
   Popover,
   Table,
@@ -15,6 +16,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getRecentEvent, getRecentEvents } from "../../../api/InfraApiService";
 import AllEvents from "./AllEvents";
@@ -22,6 +25,7 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+import { options } from "../../../global/MockData/MockTraces";
 
 const tableHeader = [
     {
@@ -80,7 +84,7 @@ const rows = [
 ];
 
 const RecentEvent = () => {
-  const { lookBackVal, selectedNode, selectedCluster } =
+  const { lookBackVal, selectedNode, selectedCluster, setLookBackVal, setSelectedStartDate } =
     useContext(GlobalContext);
   const [eventRowsData, setEventRowsData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
@@ -89,6 +93,10 @@ const RecentEvent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  
+  const EmptyformattedDate = format(new Date(), "yyyy-MM-dd");
+  const defaultValue = 30;
+  const defaultLabel = options.find((option) => option.value === defaultValue);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log(userInfo, "userDetails");
@@ -133,7 +141,8 @@ const RecentEvent = () => {
             objectName: data.objectName,
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
-            severityText: logRecord.severityText
+            // severityText: logRecord.severityText
+            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText // Change "Normal" to "Inform"
           };
 
           extractEventData.push(extractEventInfo);
@@ -159,10 +168,10 @@ const RecentEvent = () => {
     return finalData;
   };
   const severityColors = {
-    "Warning": "#FFD700",
+    "Warning": "#FF8C00",
     "Error": "red",
-    "Info": "black", 
-    "Normal":"black"
+    "Info": theme.palette.mode === 'dark' ? "#FFFFFF" : "black", 
+    "Normal": theme.palette.mode === 'dark' ? "#FFFFFF" : "black"
   };
   
 
@@ -205,6 +214,8 @@ const RecentEvent = () => {
 
   useEffect(() => {
     handleGetRecentEvent();
+    setLookBackVal(defaultLabel);
+    setSelectedStartDate(EmptyformattedDate);
     console.log("Use Effect Recent Event");
 
     return () => {
@@ -342,7 +353,11 @@ const RecentEvent = () => {
                           ))} */}
                         {eventRowsData.map((row, rowIndex) => (
                           // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
-                          <TableRow key={rowIndex}>
+                          <TableRow key={rowIndex} 
+                          onClick={(event) =>
+                            handlePopoverOpen(row, event.currentTarget)
+                          }>
+
                             {tableHeader.map((column) => (
                               <TableCell
                                 key={column.id}
@@ -352,6 +367,7 @@ const RecentEvent = () => {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                   color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
+                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
                                 }}
                               >
                                 <Typography variant="h7">
@@ -366,7 +382,7 @@ const RecentEvent = () => {
                     <Popover
                       open={Boolean(selectedEvent)}
                       anchorEl={anchorEl}
-                      onClose={handlePopoverClose}
+                      // onClose={handlePopoverClose}
                       // anchorOrigin={{
                       //   vertical: "bottom",
                       //   horizontal: "left",
@@ -385,7 +401,62 @@ const RecentEvent = () => {
                       }}
                     >
                       <Box p={2}>
-                        <Typography variant="body1">{selectedEvent}</Typography>
+                      <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <IconButton onClick={handlePopoverClose}>
+                            <CancelIcon />
+                          </IconButton>
+                        </div>
+                        {selectedEvent && (
+                          <div>
+                            <Typography>
+                              <span>
+                                Resource:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resource}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Resource Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resourceName}
+                                </span>
+                              </span>
+                            </Typography>
+                            {/* <Typography>
+                              <span>
+                                Namespace Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.namespaceName}
+                                </span>
+                              </span>
+                            </Typography> */}
+                            <Typography>
+                              <span>
+                                Event Message:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Created Time:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.createdTime}
+                                </span>
+                              </span>
+                            </Typography>
+                          </div>
+                        )}
+                        {/* <Typography variant="body1">{selectedEvent}</Typography> */}
                       </Box>
                     </Popover>
                   </TableContainer>

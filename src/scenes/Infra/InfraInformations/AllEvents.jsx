@@ -1,6 +1,24 @@
-import { Box, Card, CardContent, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Paper,
+  Popover,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
+
+
 import Events from "./Events";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getAllEvent, getAllEventByDate } from "../../../api/InfraApiService";
@@ -8,6 +26,52 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+
+const tableHeader = [
+  {
+    id: "severityText",
+    label: "Severity Text",
+  },
+  {
+    id: "resource",
+    label: "Resource",
+  },
+  {
+    id: "resourceName",
+    label: "Resource Name",
+  },
+  {
+    id: "namespaceName",
+    label: "Namespace Name",
+  },
+  {
+    id: "eventMessage",
+    label: "Event Message",
+  },
+  {
+    id: "createdTime",
+    label: "Created Time",
+  },
+];
+
+function createData(
+  severityText,
+  resource,
+  resourceName,
+  namespaceName,
+  eventMessage,
+  createdTime
+) {
+  return {
+    severityText,
+    resource,
+    resourceName,
+    namespaceName,
+    eventMessage,
+    createdTime,
+  };
+}
+
 
 const allEventDatas = [
   {
@@ -34,17 +98,28 @@ const allEventDatas = [
 ];
 
 const AllEvents = () => {
-  const { selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, selectedNode, selectedCluster } = useContext(GlobalContext);
+  const {
+    selectedStartDate,
+    selectedEndDate,
+    needHistoricalData,
+    lookBackVal,
+    selectedNode,
+    selectedCluster,
+  } = useContext(GlobalContext);
   const [allEventData, setAllEventData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  console.log("Selected Event", selectedEvent);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log(userInfo, "userDetails");
   const userName = userInfo.username;
-  console.log(userName)
+  console.log(userName);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -59,27 +134,98 @@ const AllEvents = () => {
     console.log("Closed");
   };
 
-  const mapAllEvents = (data) => {
-    return data.flatMap((item) => {
-      const createdTimeAndDate = new Date(item.createdTime);
-      const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy HH:mm:ss a");
-      
-      return item.scopeLogs.flatMap((scopeLog) => {
-        return scopeLog.logRecords.map((logRecord) => {
-          const namespaceAttribute = logRecord.attributes.find(attr => attr.key === "k8s.namespace.name");
-          const namespaceName = namespaceAttribute ? namespaceAttribute.value.stringValue : "Namespace not found";  
-          
-          return {
-            resource: item.objectKind,
-            resourceName: item.objectName,
-            eventMessage: logRecord.body.stringValue,
-            namespaceName: namespaceName,
-            severityText: logRecord.severityText,
+  const handlePopoverOpen = (rowData, anchorEl) => {
+    console.log("Popover Function", rowData);
+    console.log("Popover", anchorEl);
+    setSelectedEvent(rowData);
+    setAnchorEl(anchorEl);
+  };
+
+  const handlePopoverClose = () => {
+    setSelectedEvent(null);
+    setAnchorEl(null);
+  };
+
+  // const mapAllEvents = (data) => {
+  //   return data.flatMap((item) => {
+  //     const createdTimeAndDate = new Date(item.createdTime);
+  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy HH:mm:ss a");
+
+  //     return item.scopeLogs.flatMap((scopeLog) => {
+  //       return scopeLog.logRecords.map((logRecord) => {
+  //         const namespaceAttribute = logRecord.attributes.find(attr => attr.key === "k8s.namespace.name");
+  //         const namespaceName = namespaceAttribute ? namespaceAttribute.value.stringValue : "Namespace not found";
+
+  //         return {
+  //           resource: item.objectKind,
+  //           resourceName: item.objectName,
+  //           eventMessage: logRecord.body.stringValue,
+  //           namespaceName: namespaceName,
+  //           severityText: logRecord.severityText,
+  //           createdTime: formattedTime,
+  //         };
+  //       });
+  //     });
+  //   });
+  // };
+
+  const mapAllEvents = (eventData) => {
+    const extractEventData = [];
+
+    eventData.forEach((data) => {
+      data.scopeLogs.forEach((scopeLog) => {
+        scopeLog.logRecords.forEach((logRecord) => {
+          const createdTimeAndDate = new Date(data.createdTime);
+          const formattedTime = format(
+            createdTimeAndDate,
+            "MMMM dd, yyyy HH:mm:ss a"
+          );
+          const namespaceAttribute = logRecord.attributes.find(
+            (attr) => attr.key === "k8s.namespace.name"
+          );
+          const namespaceName = namespaceAttribute
+            ? namespaceAttribute.value.stringValue
+            : "Namespace not found";
+          const extractEventInfo = {
+            objectKind: data.objectKind,
+            objectName: data.objectName,
+            stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
+            // severityText: logRecord.severityText,
+            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText ,// Change "Normal" to "Inform"
+
+            namespaceName: namespaceName,
           };
+
+          extractEventData.push(extractEventInfo);
         });
       });
     });
+
+    const finalData = [];
+
+    extractEventData.forEach((eventField, index) => {
+      finalData.push(
+        createData(
+          eventField.severityText,
+          eventField.objectKind,
+          eventField.objectName,
+          eventField.namespaceName,
+          eventField.stringValue,
+          eventField.createdTime,
+          index
+        )
+      );
+    });
+
+    return finalData;
+  };
+
+    const severityColors = {
+    "Warning": "#FF8C00",
+    "Error": "red",
+    "Info": theme.palette.mode === 'dark' ? "#FFFFFF" : "black", 
+    "Normal": theme.palette.mode === 'dark' ? "#FFFFFF" : "black"
   };
 
   // const handleGetAllEvents = useCallback(async () => {
@@ -109,7 +255,14 @@ const AllEvents = () => {
     const selectedNodestring = selectedNode[0];
     try {
       setLoading(true);
-      const eventsData = await getAllEventByDate(selectedStartDate, selectedEndDate, lookBackVal.value, selectedCluster, selectedNodestring, userName);
+      const eventsData = await getAllEventByDate(
+        selectedStartDate,
+        selectedEndDate,
+        lookBackVal.value,
+        selectedCluster,
+        selectedNodestring,
+        userName
+      );
       if (eventsData.length !== 0) {
         console.log("All Events Data", eventsData);
         const finalData = mapAllEvents(eventsData);
@@ -127,12 +280,21 @@ const AllEvents = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, needHistoricalData, lookBackVal, selectedCluster, selectedNode, userName]);
+  }, [
+    selectedStartDate,
+    selectedEndDate,
+    needHistoricalData,
+    lookBackVal,
+    selectedCluster,
+    selectedNode,
+    userName,
+  ]);
 
   useEffect(() => {
     handleGetAllEvents();
-    
-    console.log("Use Effect All Event")
+    handlePopoverOpen();
+
+    console.log("Use Effect All Event");
 
     return () => {
       setErrorMessage("");
@@ -142,8 +304,7 @@ const AllEvents = () => {
 
   return (
     <div>
-      {
-      loading ? (
+      {loading ? (
         <Loading />
       ) : emptyMessage ? (
         <div
@@ -173,22 +334,16 @@ const AllEvents = () => {
             {errorMessage}
           </Typography>
         </div>
-      ) : 
-      (viewAllEvents ? (
+      ) : viewAllEvents ? (
         <Events />
-      ) : 
-      (
+      ) : (
         <div>
           <Box
             sx={{
               p: 2,
               margin: "auto",
               maxWidth: 1250,
-              // marginTop: '10px',
               flexGrow: 1,
-              // backgroundColor: (theme) =>
-              //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
-              // overflow: "auto",
             }}
           >
             <div
@@ -203,9 +358,9 @@ const AllEvents = () => {
                 <CancelIcon />
               </IconButton>
             </div>
-            <div>
-              <Box sx={{ maxHeight: "450px", overflow: "auto" }}>
-                {allEventData.map((eventData, index) => (
+            {/* <div>
+              <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
+            {/* {allEventData.map((eventData, index) => (
                   <Card
                     elevation={4}
                     key={index}
@@ -261,12 +416,174 @@ const AllEvents = () => {
                       </Box>
                     </CardContent>
                   </Card>
-                ))}
-              </Box>
-            </div>
+                ))} */}
+
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Card elevation={6}>
+                  <TableContainer
+                    component={Paper}
+                    sx={{ maxHeight: "450px", overflowY: "auto" }}
+                  >
+                    <Table
+                      sx={{ minWidth: 650 }}
+                      stickyHeader
+                      aria-label="sticky table"
+                    >
+                      <TableHead>
+                        {tableHeader.map((column, index) => (
+                          <TableCell
+                            key={index}
+                            align={column.align}
+                            sx={{
+                              height: "30px",
+                              backgroundColor: colors.primary[400],
+                              color: "#FFF",
+                          
+                            }}
+                          >
+                            <Typography
+                              variant="h5"
+                            >
+                              {column.label}
+                            </Typography>
+                          </TableCell>
+                        ))}
+                      </TableHead>
+
+                      <TableBody>
+                        {/* {rows.map((row, rowIndex) => (
+                                <TableRow
+                                  key={rowIndex}
+                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                  {Object.values(row).map((value, index) => (
+                                    <TableCell 
+                                      key={index} 
+                                      component="th"
+                                      scope="row"
+                                      sx={{ 
+                                        maxWidth: 120, 
+                                        // whiteSpace: "nowrap",
+                                        // overflow: "hidden",
+                                        // textOverflow: "ellipsis",
+                                      }}
+                                    >
+                                      <Typography variant="h7">
+                                        {value}
+                                      </Typography>
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              ))} */}
+                        {allEventData.map((row, rowIndex) => (
+                          <TableRow
+                            key={rowIndex}
+                            onClick={(event) =>
+                              handlePopoverOpen(row, event.currentTarget)
+                            }
+                          >
+                            {/* <TableRow key={rowIndex}> */}
+                            {tableHeader.map((column) => (
+                              <TableCell
+                                key={column.id}
+                                sx={{
+                                  maxWidth: 90,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
+                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
+                              
+                                }}
+                              >
+                                <Typography variant="h7">
+                                  {row[column.id]}
+                                </Typography>
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    <Popover
+                      open={Boolean(selectedEvent)}
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                    >
+                      <Box p={2}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <IconButton onClick={handlePopoverClose}>
+                            <CancelIcon />
+                          </IconButton>
+                        </div>
+                        {selectedEvent && (
+                          <div>
+                            <Typography>
+                              <span>
+                                Resource:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resource}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Resource Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.resourceName}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Namespace Name:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.namespaceName}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Event Message:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <span>
+                                Created Time:{" "}
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.createdTime}
+                                </span>
+                              </span>
+                            </Typography>
+                          </div>
+                        )}
+                      </Box>
+                    </Popover>
+                  </TableContainer>
+                </Card>
+              </Grid>
+            </Grid>
+            {/* </Box>
+            </div> */}
           </Box>
         </div>
-      )
       )}
     </div>
   );
