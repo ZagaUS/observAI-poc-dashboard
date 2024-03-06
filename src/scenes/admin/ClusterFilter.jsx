@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -125,12 +125,22 @@ const ClusterFilter = () => {
     }
   }, [selectedCluster]);
 
+  // useEffect(() => {
+  //   console.log("UseEffect FilterPage-->");
+  //   console.log("Selected Cluster" + selectedCluster);
+  //   console.log("userName Cluster Filter Page", username);
+  //   fetchNodes();
+  // }, [selectedCluster]);
+
+  const [inputValue, setInputValue] = useState(selectedCluster[0]);
+  const previousInputValue = useRef(selectedCluster[0]);
+
   useEffect(() => {
-    console.log("UseEffect FilterPage-->");
-    console.log("Selected Cluster" + selectedCluster);
-    console.log("userName Cluster Filter Page", username);
+    console.log("UseEffectCalled-->");
+    console.log("Selected_Cluster" + selectedCluster);
+    previousInputValue.current = inputValue;
     fetchNodes();
-  }, [selectedCluster]);
+  }, [inputValue, fetchNodes]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -153,6 +163,7 @@ const ClusterFilter = () => {
       setSelectedCluster(
         selectedCluster.filter((item) => item !== clusterName)
       );
+      setInputValue(clusterName);
     } else {
       setSelectedCluster([clusterName]);
     }
@@ -224,7 +235,8 @@ const ClusterFilter = () => {
 
         <ListItem>
           <Accordion
-            style={{ width: "500px", backgroundColor: colors.primary[400] }} defaultExpanded
+            style={{ width: "500px", backgroundColor: colors.primary[400] }}
+            defaultExpanded
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h5" color={"#fff"}>

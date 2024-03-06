@@ -127,7 +127,7 @@ const Status = () => {
     } else {
       getSelectedClusterData(selectedCluster);
     }
-  }, [selectedCluster, getSelectedNodeData]);
+  }, [getSelectedClusterData, getSelectedNodeData]);
   return (
     <div>
       {loading ? (
