@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const nodeMetricUrl = process.env.REACT_APP_APIURL_NODE;
 const podMetricUrl = process.env.REACT_APP_APIURL_POD;
-const eventUrl = process.env.REACT_APP_APIURL_EVENTS;
+// const eventUrl = process.env.REACT_APP_APIURL_EVENTS;
 
 export const getNodeMetricData = async (
     startDate,
@@ -56,29 +56,35 @@ export const getPodMetricDataPaginated = async (
     }
 };
 
-export const getRecentEvent = async (minutesAgo) => {
-    try {
-        console.log("Minutes Ago", minutesAgo);
-        const response = await axios.get(
-            `${eventUrl}/recentevent?minutesAgo=${minutesAgo}`
-        );
-        console.log("Recent Event Response", response);
-        return response.data;
-    } catch (error) {
-        console.error("Error Retrieving Recent Event Data:", error);
-        throw error;
-    }
-};
+// export const getRecentEvent = async (minutesAgo) => {
+//     try {
+//         console.log("Minutes Ago", minutesAgo);
+//         const response = await axios.get(
+//             `${eventUrl}/recentevent?minutesAgo=${minutesAgo}`
+//         );
+//         console.log("Recent Event Response", response);
+//         return response.data;
+//     } catch (error) {
+//         console.error("Error Retrieving Recent Event Data:", error);
+//         throw error;
+//     }
+// };
 
 export const getRecentEvents = async (minutesAgo, clusterName, nodeName, userName) => {
     try {
         let finalUrl;
+        let eventUrl;
         console.log("Minutes Ago", minutesAgo);
         // const response = await axios.get(
         //     `${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}`
         // );
 
         // clusterName=zagaus&minutesAgo=30&userName=admin
+        if(clusterName[0] === "zagaus") {
+            eventUrl = process.env.REACT_APP_APIURL_EVENTS
+        } else {
+            eventUrl = process.env.REACT_APP_APIURL_IND_EVENTS
+        }
         if (nodeName) {
             console.log(`History call + ${eventUrl}/get-recent-events?minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
 
@@ -98,19 +104,19 @@ export const getRecentEvents = async (minutesAgo, clusterName, nodeName, userNam
     }
 };
 
-export const getAllEvent = async (minutesAgo) => {
-    try {
-        console.log("Minutes Ago - allEvent", minutesAgo);
-        const response = await axios.get(
-            `${eventUrl}/getAllEvents?minutesAgo=${minutesAgo}`
-        );
-        console.log("All Event Response", response);
-        return response.data;
-    } catch (error) {
-        console.error("Error Retrieving All Events:", error);
-        throw error;
-    }
-};
+// export const getAllEvent = async (minutesAgo) => {
+//     try {
+//         console.log("Minutes Ago - allEvent", minutesAgo);
+//         const response = await axios.get(
+//             `${eventUrl}/getAllEvents?minutesAgo=${minutesAgo}`
+//         );
+//         console.log("All Event Response", response);
+//         return response.data;
+//     } catch (error) {
+//         console.error("Error Retrieving All Events:", error);
+//         throw error;
+//     }
+// };
 
 export const getAllEventByDate = async (startDate, endDate, minutesAgo, clusterName, nodeName, userName) => {
     try {
@@ -119,6 +125,7 @@ export const getAllEventByDate = async (startDate, endDate, minutesAgo, clusterN
         //     `${eventUrl}/getAllEvents?minutesAgo=${minutesAgo}`
         // );
         var finalUrl;
+        var eventUrl;
 
         // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
         //     console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}`);
@@ -129,6 +136,11 @@ export const getAllEventByDate = async (startDate, endDate, minutesAgo, clusterN
 
         //     finalUrl = `${eventUrl}/getall-Events-aggregation?from=${startDate}&minutesAgo=${minutesAgo}`
         // }
+        if(clusterName[0] === "zagaus") {
+            eventUrl = process.env.REACT_APP_APIURL_EVENTS
+        } else {
+            eventUrl = process.env.REACT_APP_APIURL_IND_EVENTS
+        }
         if (nodeName) {
             if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
                 console.log(`History Call + ${eventUrl}/getall-Events-aggregation?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
