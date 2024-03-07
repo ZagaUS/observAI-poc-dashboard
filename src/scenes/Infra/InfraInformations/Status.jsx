@@ -59,7 +59,7 @@ const Status = () => {
     async (selectedCluster) => {
       setEmptyMessage("");
       setErrorMessage("");
-      setLoading(true);
+      // setLoading(true);
 
       try {
         const userDetails = JSON.parse(localStorage.getItem("userInfo"));
@@ -91,7 +91,7 @@ const Status = () => {
   const getSelectedNodeData = useCallback(
     async (selectedNode) => {
       setClusterData([]);
-      setLoading(true);
+      // setLoading(true);
 
       try {
         const userDetails = JSON.parse(localStorage.getItem("userInfo"));
@@ -120,10 +120,21 @@ const Status = () => {
     console.log("useEffect StatusPage----->");
     console.log("Selected Node " + selectedNode);
     console.log("Selected Cluster" + selectedCluster);
-    setInfraActiveTab(0);
-    setInfraInfoActiveTab(0);
-    if (selectedNode.length > 0) {
+    // setInfraActiveTab(0);
+    // setInfraInfoActiveTab(0);
+    // if (selectedNode.length > 0 && selectedCluster.length > 0) {
+    //   // getSelectedNodeData(selectedNode);
+    //   console.log("Getting Nodes Data...");
+    // } else if (selectedCluster !== "") {
+    //   // getSelectedClusterData(selectedCluster);
+    //   console.log("Getting  Clusters Data...");
+    // } else {
+    //   console.log("Fetch cluster Details....");
+    // }
+    setLoading(true);
+    if (selectedCluster.length > 0 && selectedNode.length > 0) {
       getSelectedNodeData(selectedNode);
+      // setLoading(false);
     } else {
       getSelectedClusterData(selectedCluster);
     }
@@ -700,6 +711,72 @@ const Status = () => {
         </div>
       )}
     </div>
+    // <>
+    //   {loading ? (
+    //     <>loading plz wait</>
+    //   ) : (
+    //     <>
+    //       {ClusterData.length > 0 ? (
+    //         <Card
+    //           elevation={5}
+    //           sx={{
+    //             height: "70vh",
+    //             width: "75%",
+    //             display: "flex",
+    //             justifyContent: "space-between",
+    //             margin: "20px 5px 20px 20px",
+    //             padding: "10px",
+    //           }}
+    //         >
+    //           <div>
+    //             <Typography
+    //               variant="h3"
+    //               sx={{ fontWeight: "bold", paddingBottom: "10px" }}
+    //             >
+    //               Cluster Data
+    //             </Typography>
+
+    //             <Typography
+    //               variant="h5"
+    //               sx={{ fontWeight: "bold", marginTop: "10px" }}
+    //             >
+    //               Channel:
+    //               <br></br>{" "}
+    //               <Typography variant="h5">
+    //                 {ClusterData[0].clusterInfo[0].channel}
+    //                 {/* {ClusterData[0].clusterInfo[0]} */}
+    //               </Typography>
+    //             </Typography>
+    //             <Typography
+    //               variant="h5"
+    //               sx={{ fontWeight: "bold", marginTop: "10px" }}
+    //             >
+    //               Cluster ID: <br></br>{" "}
+    //               <Typography variant="h5">
+    //                 {ClusterData[0].clusterInfo[0].clusterID}
+    //               </Typography>
+    //             </Typography>
+    //             <Typography
+    //               variant="h5"
+    //               sx={{ fontWeight: "bold", marginTop: "10px" }}
+    //             >
+    //               Version:
+    //               <br></br>{" "}
+    //               <Typography variant="h5">
+    //                 {ClusterData[0].clusterInfo[0].version}
+    //               </Typography>
+    //             </Typography>
+    //           </div>
+    //         </Card>
+    //       ) : (
+    //         <h1>No data found</h1>
+    //       )}
+
+    //       {selectedCluster ? <h1>{selectedCluster}</h1> : <h1>no cluster</h1>}
+    //       {selectedNode ? <h1>{selectedNode}</h1> : <h1>no node</h1>}
+    //     </>
+    //   )}
+    // </>
   );
 };
 
