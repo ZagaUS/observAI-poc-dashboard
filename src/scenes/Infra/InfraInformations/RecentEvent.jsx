@@ -96,6 +96,7 @@ const RecentEvent = () => {
     selectedCluster,
     setLookBackVal,
     setSelectedStartDate,
+    setInfraActiveTab, setInfraInfoActiveTab
   } = useContext(GlobalContext);
   const [eventRowsData, setEventRowsData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
@@ -229,6 +230,8 @@ const RecentEvent = () => {
     handleGetRecentEvent();
     setLookBackVal(defaultLabel);
     setSelectedStartDate(EmptyformattedDate);
+    setInfraActiveTab(0);
+    setInfraInfoActiveTab(2);
     console.log("Use Effect Recent Event");
 
     return () => {
