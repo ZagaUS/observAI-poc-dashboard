@@ -509,6 +509,7 @@ const AllEvents = () => {
                     <Popover
                       open={Boolean(selectedEvent)}
                       anchorEl={anchorEl}
+                      onClose={handlePopoverClose}
                       anchorOrigin={{
                         vertical: "center",
                         horizontal: "center",
@@ -518,7 +519,7 @@ const AllEvents = () => {
                         horizontal: "center",
                       }}
                     >
-                      <Box p={2}>
+                      <Box p={2} sx={{ height: "150px", width: "500px" }}>
                         <div
                           style={{
                             display: "flex",
