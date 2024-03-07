@@ -79,7 +79,7 @@ const Status = () => {
       } catch (error) {
         console.log("ClusterStatusPage Error " + error);
         setErrorMessage(
-          "Network Error !!! Unable to fetch cluster details at this time."
+          "Something went wrong !!! Unable to fetch cluster details at this time."
         );
       } finally {
         setLoading(false);
@@ -135,8 +135,11 @@ const Status = () => {
     if (selectedCluster.length > 0 && selectedNode.length > 0) {
       getSelectedNodeData(selectedNode);
       // setLoading(false);
-    } else {
+    } else if (selectedCluster.length > 0) {
       getSelectedClusterData(selectedCluster);
+    } else {
+      setErrorMessage("There are no active clusters available.");
+      setLoading(false);
     }
   }, [getSelectedClusterData, getSelectedNodeData]);
   return (
