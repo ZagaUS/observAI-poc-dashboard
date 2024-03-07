@@ -133,7 +133,7 @@ const Status = () => {
     // }
     setLoading(true);
     if (selectedCluster.length > 0 && selectedNode.length > 0) {
-      getSelectedNodeData(selectedCluster);
+      getSelectedNodeData(selectedNode);
       // setLoading(false);
     } else {
       getSelectedClusterData(selectedCluster);
