@@ -52,6 +52,8 @@ const AdminTopBar = () => {
   const [clusterStatus, setClusterStatus] = useState("");
   const [checked, setChecked] = useState(false);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     AdminPageSelecteCluster,
     setAdminPageSelecteCluster,
@@ -80,7 +82,7 @@ const AdminTopBar = () => {
     clusterName
   ) => {
     console.log("data", clusterID, clusterStatus);
-    // setLoading(true);
+    setLoading(true);
 
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     const Status = clusterStatus === "inactive" ? "active" : "inactive";
@@ -95,12 +97,16 @@ const AdminTopBar = () => {
 
     if (response.status === 200) {
       // setLoading(false);
+      // setLoading(false);
+
       setStatusCahnged(!statusChanged);
       if (selectedCluster[0] === clusterName) {
         setSelectedCluster([]);
         setSelectedNode([]);
         setNodeDetails([]);
       }
+    } else {
+      setErrorMessage("Something went wrong please try again later!!!");
     }
   };
 
@@ -197,6 +203,20 @@ const AdminTopBar = () => {
     <div>
       {loading ? (
         <Loading />
+      ) : errorMessage ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "75vh",
+          }}
+        >
+          <Typography variant="h5" fontWeight={"600"}>
+            {errorMessage}
+          </Typography>
+        </div>
       ) : (
         <>
           <div
@@ -467,32 +487,37 @@ const AdminTopBar = () => {
                               label="ClusterStatus"
                             />
                           </FormGroup> */}
-                          
                         </>
                       )}
                     </TableCell>
                     <TableCell align="center">
-                    <Switch
-                            checked={
-                              row.clusterStatus == "active" ? true : false
-                            }
-                            onChange={() =>
-                              handleActiveInactiveBtn(
-                                row.clusterId,
-                                row.clusterStatus,
-                                row.clusterName
-                              )
-                            }
-                            sx={{
-                              "& .MuiSwitch-thumb": {
-                                color: row.clusterStatus === "active" ? "#00888C !important" : "#d80000 !important", // Green when active, red when inactive
-                              },
-                              "& .MuiSwitch-track": {
-                                backgroundColor: row.clusterStatus === "active" ? "#A5D6A7 !important" : "#FF5722 !important", // Light green when active, light red when inactive
-                              },
-                            }}
-                          />
-                          <span>{row.clusterStatus == "active" ? "active" : "inactive"}</span>
+                      <Switch
+                        checked={row.clusterStatus == "active" ? true : false}
+                        onChange={() =>
+                          handleActiveInactiveBtn(
+                            row.clusterId,
+                            row.clusterStatus,
+                            row.clusterName
+                          )
+                        }
+                        sx={{
+                          "& .MuiSwitch-thumb": {
+                            color:
+                              row.clusterStatus === "active"
+                                ? "#00888C !important"
+                                : "#d80000 !important", // Green when active, red when inactive
+                          },
+                          "& .MuiSwitch-track": {
+                            backgroundColor:
+                              row.clusterStatus === "active"
+                                ? "#A5D6A7 !important"
+                                : "#FF5722 !important", // Light green when active, light red when inactive
+                          },
+                        }}
+                      />
+                      <span>
+                        {row.clusterStatus == "active" ? "active" : "inactive"}
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))}
