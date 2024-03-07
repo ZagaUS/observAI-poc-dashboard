@@ -96,8 +96,11 @@ const ClusterUtilization = () => {
       if (clusterUtilData.length !== 0) {
         const mappedData = clusterUtilData.flatMap((item) => {
           // const cpuUsage = (item.cpuUsage / item.totalCpuCapacity) * 100;
+          console.log("CPU DATA+++----", item);
+          console.log("CPU CAPACITY++++-----------------", item.cpuCapacity)
           const cpuAvail = item.cpuCapacity - item.cpuUsage;
-          const memoryCpuCapacity = item.memoryUsage - item.memoryAvailable;
+          // const memoryCpuCapacity = item.memoryUsage + item.memoryAvailable;
+          const memoryCpuCapacity = item.memoryCapacity;
           return [
             {
               resources: "CPU",
@@ -112,7 +115,7 @@ const ClusterUtilization = () => {
               // availability: `${item.memoryAvailable} GB`,
               availability: `${parseFloat(item.memoryAvailable.toFixed(2))} GB`,
               // capacity: memoryCpuCapacity,
-              capacity: `${parseFloat(memoryCpuCapacity.toFixed(2))}`,
+              capacity: `${parseFloat(memoryCpuCapacity.toFixed(2))} GB`,
               // usage: `${item.memoryUsage} GB`,
               usage: `${parseFloat(item.memoryUsage.toFixed(2))} GB`,
             },

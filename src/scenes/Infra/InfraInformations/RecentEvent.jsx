@@ -382,7 +382,7 @@ const RecentEvent = () => {
                     <Popover
                       open={Boolean(selectedEvent)}
                       anchorEl={anchorEl}
-                      // onClose={handlePopoverClose}
+                      onClose={handlePopoverClose}
                       // anchorOrigin={{
                       //   vertical: "bottom",
                       //   horizontal: "left",
@@ -400,7 +400,7 @@ const RecentEvent = () => {
                         horizontal: "center",
                       }}
                     >
-                      <Box p={2}>
+                      <Box p={2} sx={{ height: "150px", width: "500px" }}>
                       <div
                           style={{
                             display: "flex",
@@ -430,14 +430,6 @@ const RecentEvent = () => {
                                 </span>
                               </span>
                             </Typography>
-                            {/* <Typography>
-                              <span>
-                                Namespace Name:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.namespaceName}
-                                </span>
-                              </span>
-                            </Typography> */}
                             <Typography>
                               <span>
                                 Event Message:{" "}
@@ -456,7 +448,6 @@ const RecentEvent = () => {
                             </Typography>
                           </div>
                         )}
-                        {/* <Typography variant="body1">{selectedEvent}</Typography> */}
                       </Box>
                     </Popover>
                   </TableContainer>
