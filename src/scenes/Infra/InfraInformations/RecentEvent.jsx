@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { options } from "../../../global/MockData/MockTraces";
 
 const tableHeader = [
-    {
+  {
     id: "severityText",
     label: "Severity Text",
   },
@@ -50,8 +50,14 @@ const tableHeader = [
   },
 ];
 
-function createData(severityText,resource, resourceName, eventMessage, createdTime) {
-  return {severityText, resource, resourceName, eventMessage, createdTime };
+function createData(
+  severityText,
+  resource,
+  resourceName,
+  eventMessage,
+  createdTime
+) {
+  return { severityText, resource, resourceName, eventMessage, createdTime };
 }
 
 const rows = [
@@ -84,8 +90,13 @@ const rows = [
 ];
 
 const RecentEvent = () => {
-  const { lookBackVal, selectedNode, selectedCluster, setLookBackVal, setSelectedStartDate } =
-    useContext(GlobalContext);
+  const {
+    lookBackVal,
+    selectedNode,
+    selectedCluster,
+    setLookBackVal,
+    setSelectedStartDate,
+  } = useContext(GlobalContext);
   const [eventRowsData, setEventRowsData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -93,7 +104,7 @@ const RecentEvent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   const EmptyformattedDate = format(new Date(), "yyyy-MM-dd");
   const defaultValue = 30;
   const defaultLabel = options.find((option) => option.value === defaultValue);
@@ -142,7 +153,10 @@ const RecentEvent = () => {
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
             // severityText: logRecord.severityText
-            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText // Change "Normal" to "Inform"
+            severityText:
+              logRecord.severityText === "Normal"
+                ? "Info"
+                : logRecord.severityText, // Change "Normal" to "Inform"
           };
 
           extractEventData.push(extractEventInfo);
@@ -168,12 +182,11 @@ const RecentEvent = () => {
     return finalData;
   };
   const severityColors = {
-    "Warning": "#FF8C00",
-    "Error": "red",
-    "Info": theme.palette.mode === 'dark' ? "#FFFFFF" : "black", 
-    "Normal": theme.palette.mode === 'dark' ? "#FFFFFF" : "black"
+    Warning: "#FF8C00",
+    Error: "red",
+    Info: theme.palette.mode === "dark" ? "#FFFFFF" : "black",
+    Normal: theme.palette.mode === "dark" ? "#FFFFFF" : "black",
   };
-  
 
   const handleGetRecentEvent = useCallback(async () => {
     const selectedNodestring = selectedNode[0];
@@ -226,108 +239,111 @@ const RecentEvent = () => {
 
   return (
     <div>
-      {loading ? (
-        <Loading />
-      ) : emptyMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "73vh",
-          }}
-        >
-          <Typography variant="h6" align="center">
-            {emptyMessage}
-          </Typography>
-        </div>
-      ) : errorMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "80vh",
-          }}
-        >
-          <Typography variant="h5" fontWeight={"600"}>
-            {errorMessage}
-          </Typography>
-        </div>
-      ) : viewAllEvents ? (
-        <AllEvents />
-      ) : (
-        <div>
-          <Box
-            sx={{
-              p: 2,
-              margin: "auto",
-              maxWidth: 1250,
-              // marginTop: '10px',
-              flexGrow: 1,
-              // backgroundColor: (theme) =>
-              //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
-            }}
-          >
+      <Grid container spacing={2}>
+        <Grid item xs={18} lg={30}>
+          {loading ? (
+            <Loading />
+          ) : emptyMessage ? (
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "flex-end",
-                marginBottom: "10px",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "73vh",
               }}
             >
-              <Button color="info" onClick={handleViewAllEvents}>
-                View All Events
-              </Button>
+              <Typography variant="h6" align="center">
+                {emptyMessage}
+              </Typography>
             </div>
+          ) : errorMessage ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "80vh",
+              }}
+            >
+              <Typography variant="h5" fontWeight={"600"}>
+                {errorMessage}
+              </Typography>
+            </div>
+          ) : viewAllEvents ? (
+            <AllEvents />
+          ) : (
+            <div>
+              <Grid
+                xs={12}
+                sx={{
+                  p: 2,
+                  margin: "auto",
+                  maxWidth: 1250,
+                  maxHeight: 1200,
+                  // marginTop: '10px',
+                  flexGrow: 1,
+                  // backgroundColor: (theme) =>
+                  //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <Button color="info" onClick={handleViewAllEvents}>
+                    View All Events
+                  </Button>
+                </div>
 
-            <Grid container spacing={2}>
-              <Grid item xs={12} >
-                <Card elevation={6}>
-                  <TableContainer
-                    component={Paper}
-                    sx={{ maxHeight: "450px", overflowY: "auto" }}
-                  >
-                    <Table
-                      sx={{ minWidth: 650 }}
-                      stickyHeader
-                      aria-label="sticky table"
+                <Grid item xs={12}>
+                  <Card elevation={6}>
+                    <TableContainer
+                      component={Paper}
+                      sx={{ maxHeight: "450px", overflowY: "auto" }}
                     >
-                      <TableHead>
-                        {tableHeader.map((column, index) => (
-                          <TableCell
-                            key={index}
-                            align={column.align}
-                            sx={{
-                              // display: "flex",
-                              // flexDirection: "row",
-                              // justifyContent: "space-between",
-                              height: "30px",
-                              backgroundColor: colors.primary[400],
-                              color: "#FFF",
-                              
-                              // padding: "10px",
-                            }}
-                          >
-                            <Typography
-                              variant="h5"
-                              sx={
-                                {
-                                  // padding: "10px"
-                                }
-                              }
-                            >
-                              {column.label}
-                            </Typography>
-                          </TableCell>
-                        ))}
-                      </TableHead>
+                      <Table
+                        sx={{ minWidth: 650 }}
+                        stickyHeader
+                        aria-label="sticky table"
+                      >
+                        <TableHead>
+                          {tableHeader.map((column, index) => (
+                            <TableCell
+                              key={index}
+                              align={column.align}
+                              sx={{
+                                // display: "flex",
+                                // flexDirection: "row",
+                                // justifyContent: "space-between",
+                                height: "30px",
+                                backgroundColor: colors.primary[400],
+                                color: "#FFF",
 
-                      <TableBody>
-                        {/* {rows.map((row, rowIndex) => (
+                                // padding: "10px",
+                              }}
+                            >
+                              <Typography
+                                variant="h5"
+                                sx={
+                                  {
+                                    // padding: "10px"
+                                  }
+                                }
+                              >
+                                {column.label}
+                              </Typography>
+                            </TableCell>
+                          ))}
+                        </TableHead>
+
+                        <TableBody>
+                          {/* {rows.map((row, rowIndex) => (
                             <TableRow
                               key={rowIndex}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -351,138 +367,130 @@ const RecentEvent = () => {
                               ))}
                             </TableRow>
                           ))} */}
-                        {eventRowsData.map((row, rowIndex) => (
-                          // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
-                          <TableRow key={rowIndex} 
-                          onClick={(event) =>
-                            handlePopoverOpen(row, event.currentTarget)
-                          }>
-
-                            {tableHeader.map((column) => (
-                              <TableCell
-                                key={column.id}
-                                sx={{
-                                  maxWidth: 90,
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
-                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
-                                }}
-                              >
-                                <Typography variant="h7">
-                                  {row[column.id]}
-                                </Typography>
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    <Popover
-                      open={Boolean(selectedEvent)}
-                      anchorEl={anchorEl}
-                      onClose={handlePopoverClose}
-                      // anchorOrigin={{
-                      //   vertical: "bottom",
-                      //   horizontal: "left",
-                      // }}
-                      // transformOrigin={{
-                      //   vertical: "top",
-                      //   horizontal: "left",
-                      // }}
-                      anchorOrigin={{
-                        vertical: "center",
-                        horizontal: "center",
-                      }}
-                      transformOrigin={{
-                        vertical: "center",
-                        horizontal: "center",
-                      }}
-                    >
-                      <Box p={2} sx={{ height: "150px", width: "500px" }}>
-                      <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          <IconButton onClick={handlePopoverClose}>
-                            <CancelIcon />
-                          </IconButton>
-                        </div>
-                        {selectedEvent && (
-                          <div>
-                            <Typography>
-                              <span>
-                                Resource:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.resource}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Resource Name:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.resourceName}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Event Message:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.eventMessage}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Created Time:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.createdTime}
-                                </span>
-                              </span>
-                            </Typography>
+                          {eventRowsData.map((row, rowIndex) => (
+                            // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
+                            <TableRow
+                              key={rowIndex}
+                              onClick={(event) =>
+                                handlePopoverOpen(row, event.currentTarget)
+                              }
+                            >
+                              {tableHeader.map((column) => (
+                                <TableCell
+                                  key={column.id}
+                                  sx={{
+                                    maxWidth: 90,
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    color:
+                                      column.id === "severityText"
+                                        ? severityColors[row.severityText] ||
+                                          "inherit"
+                                        : "inherit",
+                                    fontWeight:
+                                      column.id === "severityText" &&
+                                      row.severityText === "Warning"
+                                        ? "bold"
+                                        : "inherit",
+                                  }}
+                                >
+                                  <Typography variant="h7">
+                                    {row[column.id]}
+                                  </Typography>
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                      <Popover
+                        open={Boolean(selectedEvent)}
+                        anchorEl={anchorEl}
+                        onClose={handlePopoverClose}
+                        // anchorOrigin={{
+                        //   vertical: "bottom",
+                        //   horizontal: "left",
+                        // }}
+                        // transformOrigin={{
+                        //   vertical: "top",
+                        //   horizontal: "left",
+                        // }}
+                        anchorOrigin={{
+                          vertical: "center",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "center",
+                          horizontal: "center",
+                        }}
+                      >
+                        <Box p={2} sx={{ height: "150px", width: "500px" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <IconButton onClick={handlePopoverClose}>
+                              <CancelIcon />
+                            </IconButton>
                           </div>
-                        )}
-                      </Box>
-                    </Popover>
-                  </TableContainer>
-                </Card>
+                          {selectedEvent && (
+                            <div>
+                              <Typography>
+                                <span>
+                                  Severity Text:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.severityText}
+                                  </span>
+                                </span>
+                              </Typography>
+                              <Typography>
+                                <span>
+                                  Resource:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.resource}
+                                  </span>
+                                </span>
+                              </Typography>
+                              <Typography>
+                                <span>
+                                  Resource Name:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.resourceName}
+                                  </span>
+                                </span>
+                              </Typography>
+                              <Typography>
+                                <span>
+                                  Event Message:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.eventMessage}
+                                  </span>
+                                </span>
+                              </Typography>
+                              <Typography>
+                                <span>
+                                  Created Time:{" "}
+                                  <span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.createdTime}
+                                  </span>
+                                </span>
+                              </Typography>
+                            </div>
+                          )}
+                        </Box>
+                      </Popover>
+                    </TableContainer>
+                  </Card>
+                </Grid>
               </Grid>
-            </Grid>
-
-            {/* <Popover
-                open={Boolean(selectedEvent)}
-                anchorEl={anchorEl}
-                onClose={handlePopoverClose}
-                // anchorOrigin={{
-                //   vertical: "bottom",
-                //   horizontal: "left",
-                // }}
-                // transformOrigin={{
-                //   vertical: "top",
-                //   horizontal: "left",
-                // }}
-                anchorOrigin={{
-                  vertical: "center",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "center",
-                  horizontal: "center",
-                }}
-              >
-                <Box p={2}>
-                  <Typography variant="body1">{selectedEvent}</Typography>
-                </Box>
-              </Popover> */}
-          </Box>
-        </div>
-      )}
+            </div>
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };
