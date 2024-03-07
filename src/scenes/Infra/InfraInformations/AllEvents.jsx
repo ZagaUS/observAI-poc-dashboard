@@ -18,7 +18,6 @@ import {
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-
 import Events from "./Events";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getAllEvent, getAllEventByDate } from "../../../api/InfraApiService";
@@ -71,7 +70,6 @@ function createData(
     createdTime,
   };
 }
-
 
 const allEventDatas = [
   {
@@ -192,7 +190,10 @@ const AllEvents = () => {
             stringValue: logRecord.body.stringValue,
             createdTime: formattedTime,
             // severityText: logRecord.severityText,
-            severityText: logRecord.severityText === "Normal" ? "Info" : logRecord.severityText ,// Change "Normal" to "Inform"
+            severityText:
+              logRecord.severityText === "Normal"
+                ? "Info"
+                : logRecord.severityText, // Change "Normal" to "Inform"
 
             namespaceName: namespaceName,
           };
@@ -221,11 +222,11 @@ const AllEvents = () => {
     return finalData;
   };
 
-    const severityColors = {
-    "Warning": "#FF8C00",
-    "Error": "red",
-    "Info": theme.palette.mode === 'dark' ? "#FFFFFF" : "black", 
-    "Normal": theme.palette.mode === 'dark' ? "#FFFFFF" : "black"
+  const severityColors = {
+    Warning: "#FF8C00",
+    Error: "red",
+    Info: theme.palette.mode === "dark" ? "#FFFFFF" : "black",
+    Normal: theme.palette.mode === "dark" ? "#FFFFFF" : "black",
   };
 
   // const handleGetAllEvents = useCallback(async () => {
@@ -304,63 +305,67 @@ const AllEvents = () => {
 
   return (
     <div>
-      {loading ? (
-        <Loading />
-      ) : emptyMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "73vh",
-          }}
-        >
-          <Typography variant="h6" align="center">
-            {emptyMessage}
-          </Typography>
-        </div>
-      ) : errorMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "80vh",
-          }}
-        >
-          <Typography variant="h5" fontWeight={"600"}>
-            {errorMessage}
-          </Typography>
-        </div>
-      ) : viewAllEvents ? (
-        <Events />
-      ) : (
-        <div>
-          <Box
-            sx={{
-              p: 2,
-              margin: "auto",
-              maxWidth: 1250,
-              flexGrow: 1,
-            }}
-          >
+      <Grid container spacing={2}>
+        <Grid item xs={18} lg={30}>
+          {loading ? (
+            <Loading />
+          ) : emptyMessage ? (
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "flex-end",
-                marginBottom: "10px",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "73vh",
               }}
             >
-              <IconButton onClick={handleCancel}>
-                <CancelIcon />
-              </IconButton>
+              <Typography variant="h6" align="center">
+                {emptyMessage}
+              </Typography>
             </div>
-            {/* <div>
-              <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
-            {/* {allEventData.map((eventData, index) => (
+          ) : errorMessage ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "80vh",
+              }}
+            >
+              <Typography variant="h5" fontWeight={"600"}>
+                {errorMessage}
+              </Typography>
+            </div>
+          ) : viewAllEvents ? (
+            <Events />
+          ) : (
+            <div>
+              <Grid
+                xs={12}
+                sx={{
+                  p: 2,
+                  margin: "auto",
+                  maxWidth: 1250,
+                  maxHeight: 1200,
+                  flexGrow: 1,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <IconButton onClick={handleCancel}>
+                    <CancelIcon />
+                  </IconButton>
+                </div>
+                {/* <div>
+                <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
+                {/* {allEventData.map((eventData, index) => (
                   <Card
                     elevation={4}
                     key={index}
@@ -418,41 +423,38 @@ const AllEvents = () => {
                   </Card>
                 ))} */}
 
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Card elevation={6}>
-                  <TableContainer
-                    component={Paper}
-                    sx={{ maxHeight: "450px", overflowY: "auto" }}
-                  >
-                    <Table
-                      sx={{ minWidth: 650 }}
-                      stickyHeader
-                      aria-label="sticky table"
-                    >
-                      <TableHead>
-                        {tableHeader.map((column, index) => (
-                          <TableCell
-                            key={index}
-                            align={column.align}
-                            sx={{
-                              height: "30px",
-                              backgroundColor: colors.primary[400],
-                              color: "#FFF",
-                          
-                            }}
-                          >
-                            <Typography
-                              variant="h5"
-                            >
-                              {column.label}
-                            </Typography>
-                          </TableCell>
-                        ))}
-                      </TableHead>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Card elevation={6}>
+                      <TableContainer
+                        component={Paper}
+                        sx={{ maxHeight: "490px", overflowY: "auto" }}
+                      >
+                        <Table
+                          sx={{ minWidth: 650 }}
+                          stickyHeader
+                          aria-label="sticky table"
+                        >
+                          <TableHead>
+                            {tableHeader.map((column, index) => (
+                              <TableCell
+                                key={index}
+                                align={column.align}
+                                sx={{
+                                  height: "30px",
+                                  backgroundColor: colors.primary[400],
+                                  color: "#FFF",
+                                }}
+                              >
+                                <Typography variant="h5">
+                                  {column.label}
+                                </Typography>
+                              </TableCell>
+                            ))}
+                          </TableHead>
 
-                      <TableBody>
-                        {/* {rows.map((row, rowIndex) => (
+                          <TableBody>
+                            {/* {rows.map((row, rowIndex) => (
                                 <TableRow
                                   key={rowIndex}
                                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -476,116 +478,125 @@ const AllEvents = () => {
                                   ))}
                                 </TableRow>
                               ))} */}
-                        {allEventData.map((row, rowIndex) => (
-                          <TableRow
-                            key={rowIndex}
-                            onClick={(event) =>
-                              handlePopoverOpen(row, event.currentTarget)
-                            }
-                          >
-                            {/* <TableRow key={rowIndex}> */}
-                            {tableHeader.map((column) => (
-                              <TableCell
-                                key={column.id}
-                                sx={{
-                                  maxWidth: 90,
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  color: column.id === 'severityText' ? severityColors[row.severityText] || "inherit" : "inherit",
-                                  fontWeight: column.id === 'severityText' && row.severityText === 'Warning' ? 'bold' : 'inherit',
-                              
-                                }}
+                            {allEventData.map((row, rowIndex) => (
+                              <TableRow
+                                key={rowIndex}
+                                onClick={(event) =>
+                                  handlePopoverOpen(row, event.currentTarget)
+                                }
                               >
-                                <Typography variant="h7">
-                                  {row[column.id]}
-                                </Typography>
-                              </TableCell>
+                                {/* <TableRow key={rowIndex}> */}
+                                {tableHeader.map((column) => (
+                                  <TableCell
+                                    key={column.id}
+                                    sx={{
+                                      maxWidth: 90,
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      color:
+                                        column.id === "severityText"
+                                          ? severityColors[row.severityText] ||
+                                            "inherit"
+                                          : "inherit",
+                                      fontWeight:
+                                        column.id === "severityText" &&
+                                        row.severityText === "Warning"
+                                          ? "bold"
+                                          : "inherit",
+                                    }}
+                                  >
+                                    <Typography variant="h7">
+                                      {row[column.id]}
+                                    </Typography>
+                                  </TableCell>
+                                ))}
+                              </TableRow>
                             ))}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    <Popover
-                      open={Boolean(selectedEvent)}
-                      anchorEl={anchorEl}
-                      onClose={handlePopoverClose}
-                      anchorOrigin={{
-                        vertical: "center",
-                        horizontal: "center",
-                      }}
-                      transformOrigin={{
-                        vertical: "center",
-                        horizontal: "center",
-                      }}
-                    >
-                      <Box p={2} sx={{ height: "150px", width: "500px" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            alignItems: "flex-end",
+                          </TableBody>
+                        </Table>
+                        <Popover
+                          open={Boolean(selectedEvent)}
+                          anchorEl={anchorEl}
+                          onClose={handlePopoverClose}
+                          anchorOrigin={{
+                            vertical: "center",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "center",
+                            horizontal: "center",
                           }}
                         >
-                          <IconButton onClick={handlePopoverClose}>
-                            <CancelIcon />
-                          </IconButton>
-                        </div>
-                        {selectedEvent && (
-                          <div>
-                            <Typography>
-                              <span>
-                                Resource:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.resource}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Resource Name:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.resourceName}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Namespace Name:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.namespaceName}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Event Message:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.eventMessage}
-                                </span>
-                              </span>
-                            </Typography>
-                            <Typography>
-                              <span>
-                                Created Time:{" "}
-                                <span style={{ fontWeight: "500" }}>
-                                  {selectedEvent.createdTime}
-                                </span>
-                              </span>
-                            </Typography>
-                          </div>
-                        )}
-                      </Box>
-                    </Popover>
-                  </TableContainer>
-                </Card>
+                          <Box p={2} sx={{ height: "150px", width: "500px" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              <IconButton onClick={handlePopoverClose}>
+                                <CancelIcon />
+                              </IconButton>
+                            </div>
+                            {selectedEvent && (
+                              <div>
+                                <Typography>
+                                  <span>
+                                    Resource:{" "}
+                                    <span style={{ fontWeight: "500" }}>
+                                      {selectedEvent.resource}
+                                    </span>
+                                  </span>
+                                </Typography>
+                                <Typography>
+                                  <span>
+                                    Resource Name:{" "}
+                                    <span style={{ fontWeight: "500" }}>
+                                      {selectedEvent.resourceName}
+                                    </span>
+                                  </span>
+                                </Typography>
+                                <Typography>
+                                  <span>
+                                    Namespace Name:{" "}
+                                    <span style={{ fontWeight: "500" }}>
+                                      {selectedEvent.namespaceName}
+                                    </span>
+                                  </span>
+                                </Typography>
+                                <Typography>
+                                  <span>
+                                    Event Message:{" "}
+                                    <span style={{ fontWeight: "500" }}>
+                                      {selectedEvent.eventMessage}
+                                    </span>
+                                  </span>
+                                </Typography>
+                                <Typography>
+                                  <span>
+                                    Created Time:{" "}
+                                    <span style={{ fontWeight: "500" }}>
+                                      {selectedEvent.createdTime}
+                                    </span>
+                                  </span>
+                                </Typography>
+                              </div>
+                            )}
+                          </Box>
+                        </Popover>
+                      </TableContainer>
+                    </Card>
+                  </Grid>
+                </Grid>
+                {/* </Box>
+                </div> */}
               </Grid>
-            </Grid>
-            {/* </Box>
-            </div> */}
-          </Box>
-        </div>
-      )}
+            </div>
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };
