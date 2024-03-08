@@ -14,9 +14,16 @@ import {
   TableRow,
   Typography,
   useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getRecentEvent, getRecentEvents } from "../../../api/InfraApiService";
@@ -26,6 +33,33 @@ import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
 import { options } from "../../../global/MockData/MockTraces";
+import { red } from "@mui/material/colors";
+import { makeStyles } from '@mui/styles';
+
+
+  
+
+const useStyles = makeStyles({
+  hover: {
+    '&:hover': {
+      // backgroundColor: '#f5f5f5', // Set your desired hover color
+      backgroundColor: "darkgray"
+    },
+  },
+});
+
+// const { title , children , openPopup , setOpenPopup} = useState(false);
+
+
+  //Popup
+  // const useStyles = (theme => ({
+  //   dialogWrapper : {
+  //     padding : theme.spacing(2),
+  //     position : 'absolute',
+  //     top : theme.spacing(20),
+  
+  //   }
+  // }))
 
 const tableHeader = [
   {
@@ -120,6 +154,11 @@ const RecentEvent = () => {
 
   const navigate = useNavigate();
 
+  const[ openPopup , setOpenPopup] = useState(false);
+
+
+
+
   console.log("recent-------", eventRowsData);
 
   const handleViewAllEvents = () => {
@@ -137,8 +176,12 @@ const RecentEvent = () => {
     setAnchorEl(null);
   };
 
+  
+
   const mapEventData = (eventData) => {
     const extractEventData = [];
+
+
 
     eventData.forEach((data) => {
       data.scopeLogs.forEach((scopeLog) => {
@@ -240,6 +283,10 @@ const RecentEvent = () => {
     };
   }, [handleGetRecentEvent, setErrorMessage, setEmptyMessage]);
 
+  
+  const classes = useStyles();
+
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -285,7 +332,6 @@ const RecentEvent = () => {
                   margin: "auto",
                   maxWidth: 1250,
                   maxHeight: 1200,
-                  // marginTop: '10px',
                   flexGrow: 1,
                   // backgroundColor: (theme) =>
                   //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
@@ -299,7 +345,14 @@ const RecentEvent = () => {
                     marginBottom: "10px",
                   }}
                 >
-                  <Button color="info" onClick={handleViewAllEvents}>
+                  <Button color="info" onClick={handleViewAllEvents}
+                  variant="contained"
+                  sx={{ backgroundColor: colors.primary[400], color: '#fff',
+                    fontSize: '16px', 
+                    fontWeight: 'bold', 
+                    fontFamily: 'Arial, sans-serif', // Set your desired font family
+                  }}
+                  >
                     View All Events
                   </Button>
                 </div>
@@ -308,7 +361,7 @@ const RecentEvent = () => {
                   <Card elevation={6}>
                     <TableContainer
                       component={Paper}
-                      sx={{ maxHeight: "450px", overflowY: "auto" }}
+                      sx={{ maxHeight: "810px", overflowY: "auto" }}
                     >
                       <Table
                         sx={{ minWidth: 650 }}
@@ -372,7 +425,7 @@ const RecentEvent = () => {
                           ))} */}
                           {eventRowsData.map((row, rowIndex) => (
                             // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
-                            <TableRow
+                            <TableRow className={classes.hover} 
                               key={rowIndex}
                               onClick={(event) =>
                                 handlePopoverOpen(row, event.currentTarget)
@@ -398,6 +451,7 @@ const RecentEvent = () => {
                                         : "inherit",
                                   }}
                                 >
+                                  
                                   <Typography variant="h7">
                                     {row[column.id]}
                                   </Typography>
@@ -407,7 +461,49 @@ const RecentEvent = () => {
                           ))}
                         </TableBody>
                       </Table>
-                      <Popover
+                      
+                      {selectedEvent && (
+                      
+                      <Dialog open={Boolean(selectedEvent)} 
+                      
+                      maxWidth="md" // Standard width
+                      fullWidth
+                                            
+                      >
+                       
+                        <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
+                          <div> {selectedEvent.resourceName} </div>
+                        </DialogTitle>
+                          <IconButton
+                            aria-label="close"
+                            onClick={handlePopoverClose}
+                            sx={{
+                              position: 'absolute',
+                              right: 8,
+                              top: 8,
+                              // color: (theme) => theme.palette.grey[500],
+                              color: red,
+                            }}
+                          >
+                          <CloseIcon />
+                        </IconButton>
+                        <DialogContent dividers >
+                          <div><span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.eventMessage}
+                                  </span>
+                          </div>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={handlePopoverClose} color="primary" variant="contained" style={{backgroundColor: colors.primary[400], color: '#fff'}} >Close</Button>
+                      </DialogActions>
+                                      
+                      </Dialog>
+                  
+
+                      )}
+
+                      
+                      {/* <Popover
                         open={Boolean(selectedEvent)}
                         anchorEl={anchorEl}
                         onClose={handlePopoverClose}
@@ -485,7 +581,7 @@ const RecentEvent = () => {
                             </div>
                           )}
                         </Box>
-                      </Popover>
+                      </Popover> */}
                     </TableContainer>
                   </Card>
                 </Grid>
