@@ -127,8 +127,8 @@ const Status = () => {
     console.log("useEffect StatusPage----->");
     console.log("Selected Node " + selectedNode);
     console.log("Selected Cluster" + selectedCluster);
-    // setInfraActiveTab(0);
-    // setInfraInfoActiveTab(0);
+    setInfraActiveTab(0);
+    setInfraInfoActiveTab(0);
     // if (selectedNode.length > 0 && selectedCluster.length > 0) {
     //   // getSelectedNodeData(selectedNode);
     //   console.log("Getting Nodes Data...");
