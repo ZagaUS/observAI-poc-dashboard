@@ -331,7 +331,7 @@ const RecentEvent = () => {
                   p: 2,
                   margin: "auto",
                   maxWidth: 1250,
-                  maxHeight: 1200,
+                  // maxHeight: 1200,
                   flexGrow: 1,
                   // backgroundColor: (theme) =>
                   //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
@@ -348,12 +348,18 @@ const RecentEvent = () => {
                   <Button color="info" onClick={handleViewAllEvents}
                   variant="contained"
                   sx={{ backgroundColor: colors.primary[400], color: '#fff',
-                    fontSize: '16px', 
-                    fontWeight: 'bold', 
-                    fontFamily: 'Arial, sans-serif', // Set your desired font family
+                  "&:hover": {
+                    backgroundColor: "#ffffff",
+                    color: colors.primary[600],
+                  }
+                    // fontSize: '16px', 
+                    // fontWeight: 'bold', 
+                    // fontFamily: 'Arial, sans-serif', // Set your desired font family
                   }}
                   >
-                    View All Events
+                    <Typography variant="h6">
+                      View All Events
+                    </Typography>
                   </Button>
                 </div>
 
@@ -361,7 +367,7 @@ const RecentEvent = () => {
                   <Card elevation={6}>
                     <TableContainer
                       component={Paper}
-                      sx={{ maxHeight: "810px", overflowY: "auto" }}
+                      sx={{ maxHeight: "445px", overflowY: "auto" }}
                     >
                       <Table
                         sx={{ minWidth: 650 }}
@@ -474,7 +480,7 @@ const RecentEvent = () => {
                         <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
                           <div> {selectedEvent.resourceName} </div>
                         </DialogTitle>
-                          <IconButton
+                          {/* <IconButton
                             aria-label="close"
                             onClick={handlePopoverClose}
                             sx={{
@@ -486,7 +492,7 @@ const RecentEvent = () => {
                             }}
                           >
                           <CloseIcon />
-                        </IconButton>
+                        </IconButton> */}
                         <DialogContent dividers >
                           <div><span style={{ fontWeight: "500" }}>
                                     {selectedEvent.eventMessage}

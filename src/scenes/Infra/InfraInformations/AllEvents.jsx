@@ -1,7 +1,12 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   Paper,
@@ -25,6 +30,18 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+import CloseIcon from '@mui/icons-material/Close';
+import { red } from "@mui/material/colors";
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  hover: {
+    '&:hover': {
+      // backgroundColor: '#f5f5f5', // Set your desired hover color
+      backgroundColor: "darkgray"
+    },
+  },
+});
 
 const tableHeader = [
   {
@@ -303,6 +320,8 @@ const AllEvents = () => {
     };
   }, [handleGetAllEvents, setErrorMessage, setEmptyMessage]);
 
+  const classes = useStyles();
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -347,7 +366,7 @@ const AllEvents = () => {
                   p: 2,
                   margin: "auto",
                   maxWidth: 1250,
-                  maxHeight: 1200,
+                  // maxHeight: 1200,
                   flexGrow: 1,
                 }}
               >
@@ -479,7 +498,7 @@ const AllEvents = () => {
                                 </TableRow>
                               ))} */}
                             {allEventData.map((row, rowIndex) => (
-                              <TableRow
+                              <TableRow className={classes.hover}
                                 key={rowIndex}
                                 onClick={(event) =>
                                   handlePopoverOpen(row, event.currentTarget)
@@ -515,7 +534,47 @@ const AllEvents = () => {
                             ))}
                           </TableBody>
                         </Table>
-                        <Popover
+
+                        {selectedEvent && (
+                      
+                      <Dialog open={Boolean(selectedEvent)} 
+                      
+                      maxWidth="md" // Standard width
+                      fullWidth
+                                            
+                      >
+                       
+                        <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
+                          <div> {selectedEvent.resourceName} </div>
+                        </DialogTitle>
+                          {/* <IconButton
+                            aria-label="close"
+                            onClick={handlePopoverClose}
+                            sx={{
+                              position: 'absolute',
+                              right: 8,
+                              top: 8,
+                              // color: (theme) => theme.palette.grey[500],
+                              color: red,
+                            }}
+                          >
+                          <CloseIcon />
+                        </IconButton> */}
+                        <DialogContent dividers >
+                          <div><span style={{ fontWeight: "500" }}>
+                                    {selectedEvent.eventMessage}
+                                  </span>
+                          </div>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={handlePopoverClose} color="primary" variant="contained" style={{backgroundColor: colors.primary[400], color: '#fff'}} >Close</Button>
+                      </DialogActions>
+                                      
+                      </Dialog>
+                  
+
+                      )}
+                        {/* <Popover
                           open={Boolean(selectedEvent)}
                           anchorEl={anchorEl}
                           onClose={handlePopoverClose}
@@ -585,7 +644,7 @@ const AllEvents = () => {
                               </div>
                             )}
                           </Box>
-                        </Popover>
+                        </Popover> */}
                       </TableContainer>
                     </Card>
                   </Grid>
