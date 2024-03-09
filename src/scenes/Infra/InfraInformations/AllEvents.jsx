@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   Grid,
+  Button,
   IconButton,
   Paper,
   Popover,
@@ -341,8 +342,8 @@ const AllEvents = () => {
             <Events />
           ) : (
             <div>
-              <Grid
-                xs={12}
+              <Grid levation={6}
+                xs={12} 
                 sx={{
                   p: 2,
                   margin: "auto",
@@ -350,7 +351,9 @@ const AllEvents = () => {
                   maxHeight: 1200,
                   flexGrow: 1,
                 }}
+                
               >
+                
                 <div
                   style={{
                     display: "flex",
@@ -359,9 +362,20 @@ const AllEvents = () => {
                     marginBottom: "10px",
                   }}
                 >
-                  <IconButton onClick={handleCancel}>
+                 
+                <Button color="info" onClick={handleCancel}
+                  variant="contained"
+                  sx={{ backgroundColor: colors.primary[400], color: '#fff',
+                    fontSize: '16px', 
+                    fontWeight: 'bold', 
+                    fontFamily: 'Arial, sans-serif', // Set your desired font family
+                  }}
+                  >
+                    Back to current events
+                  </Button>
+                  {/* <IconButton onClick={handleCancel}>
                     <CancelIcon />
-                  </IconButton>
+                  </IconButton> */}
                 </div>
                 {/* <div>
                 <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}

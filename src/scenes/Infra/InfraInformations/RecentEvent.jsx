@@ -36,7 +36,8 @@ import { options } from "../../../global/MockData/MockTraces";
 import { red } from "@mui/material/colors";
 import { makeStyles } from '@mui/styles';
 
-
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
   
 
 const useStyles = makeStyles({
@@ -361,7 +362,7 @@ const RecentEvent = () => {
                   <Card elevation={6}>
                     <TableContainer
                       component={Paper}
-                      sx={{ maxHeight: "810px", overflowY: "auto" }}
+                      sx={{ maxHeight: "510px", overflowY: "auto" }}
                     >
                       <Table
                         sx={{ minWidth: 650 }}
@@ -472,7 +473,40 @@ const RecentEvent = () => {
                       >
                        
                         <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
-                          <div> {selectedEvent.resourceName} </div>
+                         
+                         
+                          <div> 
+                          {selectedEvent.severityText === "Info" ? (
+                               <Alert severity="info"  sx={{ backgroundColor: "white", color: 'black',
+                                fontSize: '16px', 
+                                fontWeight: 'bold', 
+                                fontFamily: 'Arial, sans-serif', // Set your desired font family
+                              }}>
+                            
+                               <AlertTitle> {selectedEvent.resource} - {selectedEvent.resourceName}</AlertTitle>
+                               
+                             </Alert>
+                            ): selectedEvent.severityText === "Warning" ? (
+                              <Alert severity="warning" sx={{ backgroundColor: "white", color: 'black',
+                              fontSize: '16px', 
+                              fontWeight: 'bold', 
+                              fontFamily: 'Arial, sans-serif', // Set your desired font family
+                            }}>
+                           
+                              <AlertTitle>{selectedEvent.resource} - {selectedEvent.resourceName}</AlertTitle>
+                              
+                            </Alert>
+                           )
+                             : (
+                              <Alert severity="success">
+                            
+                                <AlertTitle>{selectedEvent.resourceName}</AlertTitle>
+                              
+                              </Alert>
+                            )}
+                         
+                        
+                          </div>
                         </DialogTitle>
                           <IconButton
                             aria-label="close"
@@ -485,7 +519,7 @@ const RecentEvent = () => {
                               color: red,
                             }}
                           >
-                          <CloseIcon />
+                          {/* <CloseIcon /> */}
                         </IconButton>
                         <DialogContent dividers >
                           <div><span style={{ fontWeight: "500" }}>
