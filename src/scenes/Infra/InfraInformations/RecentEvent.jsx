@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -154,10 +155,9 @@ const RecentEvent = () => {
 
   const navigate = useNavigate();
 
+  const isSize1280 = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+
   const[ openPopup , setOpenPopup] = useState(false);
-
-
-
 
   console.log("recent-------", eventRowsData);
 
@@ -337,7 +337,7 @@ const RecentEvent = () => {
                   //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
                 }}
               >
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "flex-end",
@@ -361,13 +361,14 @@ const RecentEvent = () => {
                       View All Events
                     </Typography>
                   </Button>
-                </div>
+                </div> */}
 
                 <Grid item xs={12}>
                   <Card elevation={6}>
                     <TableContainer
                       component={Paper}
-                      sx={{ maxHeight: "445px", overflowY: "auto" }}
+                      sx={{ maxHeight: "490px",
+                      overflowY: "auto" }}
                     >
                       <Table
                         sx={{ minWidth: 650 }}

@@ -370,7 +370,7 @@ const AllEvents = () => {
                   flexGrow: 1,
                 }}
               >
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "flex-end",
@@ -381,7 +381,7 @@ const AllEvents = () => {
                   <IconButton onClick={handleCancel}>
                     <CancelIcon />
                   </IconButton>
-                </div>
+                </div> */}
                 {/* <div>
                 <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
                 {/* {allEventData.map((eventData, index) => (
