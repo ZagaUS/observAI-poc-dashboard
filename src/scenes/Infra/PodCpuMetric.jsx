@@ -37,6 +37,7 @@ const PodCpuMetric = () => {
     needHistoricalData,
     podCurrentPage,
     setInfraActiveTab,
+    selectedCluster,
   } = useContext(GlobalContext);
 
   const theme = useTheme();
@@ -114,7 +115,8 @@ const PodCpuMetric = () => {
         selectedEndDate,
         lookBackVal.value,
         podCurrentPage,
-        10
+        10,
+        selectedCluster
       );
       console.log("POD REESPONSE I GOT", podResponse);
       if (podResponse.length !== 0) {
@@ -136,6 +138,7 @@ const PodCpuMetric = () => {
     lookBackVal,
     needHistoricalData,
     podCurrentPage,
+    selectedCluster
   ]);
 
   // getPodMetricDataPaginated

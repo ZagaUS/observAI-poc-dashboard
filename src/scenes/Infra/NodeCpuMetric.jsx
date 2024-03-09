@@ -29,6 +29,7 @@ const NodeCpuMetric = () => {
     selectedEndDate,
     needHistoricalData,
     lookBackVal,
+    selectedCluster
   } = useContext(GlobalContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -131,7 +132,8 @@ const NodeCpuMetric = () => {
       const data = await getNodeMetricData(
         selectedStartDate,
         selectedEndDate,
-        lookBackVal.value
+        lookBackVal.value,
+        selectedCluster
       );
       if (data.length !== 0) {
         setNodeMetric(data);
@@ -146,7 +148,7 @@ const NodeCpuMetric = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData]);
+  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData, selectedCluster]);
 
   const handleNodeClick = (clickedNodeName) => {
     console.log("NODE Name" + clickedNodeName);
@@ -276,6 +278,24 @@ const NodeCpuMetric = () => {
                         <TableBody>
                           <Typography>{selectedNodeName}</Typography>
                         </TableBody>
+
+                        {/* <TableBody>
+                          {nodeDisplayName.map((node, index) => (
+                            <TableRow key={index}>
+                              <TableCell
+                                style={{
+                                  height: "20px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleNodeClick(node.nodeName)}
+                              >
+                                <Typography variant="body1">
+
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody> */}
                       </Table>
                     </div>
                   </Box>
