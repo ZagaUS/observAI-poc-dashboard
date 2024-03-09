@@ -34,6 +34,7 @@ import Alerts from "./scenes/Infra/InfraInformations/Alerts";
 import Events from "./scenes/Infra/InfraInformations/Events";
 import ClusterUtilization from "./scenes/Infra/InfraInformations/ClusterUtilization";
 import AllEvents from "./scenes/Infra/InfraInformations/AllEvents";
+import RecentEvent from "./scenes/Infra/InfraInformations/RecentEvent";
 // import { useTokenExpirationCheck } from "./global/TokenExpiry";
 
 function App() {
@@ -137,9 +138,10 @@ function App() {
       <Routes>
         <Route index element={<Events />} />
         <Route path="allEvents" element={<AllEvents />} />
+        {/* <Route path="recentEvents" element={<RecentEvent />} /> */}
       </Routes>
-    )
-  }
+    );
+  };
 
   const InfrastructureInformations = () => {
     return (

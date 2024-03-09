@@ -240,7 +240,12 @@ const DashboardTopBar = () => {
     // }
     else if (newValue === 2) {
       navigate("/mainpage/infraInfo/events");
+    } else if (newValue === 3) {
+      navigate("/mainpage/infraInfo/events/allEvents");
     }
+    // else if (newValue === 4) {
+    //   navigate("/mainpage/infraInfo/events/recentEvents");
+    // }
     setInfraInfoActiveTab(newValue);
   };
 
@@ -584,7 +589,11 @@ const DashboardTopBar = () => {
                       window.location.pathname ===
                         "/mainpage/infraInfo/alerts" ||
                       window.location.pathname ===
-                        "/mainpage/infraInfo/events" ? (
+                        "/mainpage/infraInfo/events" ||
+                      window.location.pathname ===
+                        "/mainpage/infraInfo/events/allEvents" ||
+                      window.location.pathname ===
+                        "/mainpage/infraInfo/events/recentEvents" ? (
                         <Tabs
                           value={InfraActiveTab}
                           onChange={handleInfraTabChange}
@@ -1121,7 +1130,9 @@ const DashboardTopBar = () => {
             window.location.pathname ===
               "/mainpage/infraInfo/clusterUtilization" ||
             // window.location.pathname === "/mainpage/infraInfo/alerts" ||
-            window.location.pathname === "/mainpage/infraInfo/events" ? (
+            window.location.pathname === "/mainpage/infraInfo/events" ||
+            window.location.pathname ===
+              "/mainpage/infraInfo/events/allEvents" ? (
             <Tabs
               value={InfraInfoActiveTab}
               onChange={handleInformationTabChange}
@@ -1138,7 +1149,9 @@ const DashboardTopBar = () => {
               <Tab label="Status" sx={{ color: "#FFF" }} />
               <Tab label="Resource Utilization" sx={{ color: "#FFF" }} />
               {/* <Tab label="Alerts" sx={{ color: "#FFF" }} /> */}
-              <Tab label="Events" sx={{ color: "#FFF" }} />
+              <Tab label="Recent Events" sx={{ color: "#FFF" }} />
+              <Tab label="All Events" sx={{ color: "#FFF" }} />
+              {/* <Tab label="Recent Events" sx={{ color: "#FFF" }} /> */}
             </Tabs>
           ) : null}
 
