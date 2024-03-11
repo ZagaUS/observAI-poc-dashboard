@@ -169,6 +169,10 @@ const ClusterFilter = () => {
     }
   };
 
+  const handleclear = () => {
+    setSelectedNode("");
+  };
+
   return (
     <div
       className="custom-drawer"
@@ -181,13 +185,10 @@ const ClusterFilter = () => {
         ...(isiphone && {
           height: "calc(450vh - 32px)",
         }),
-
-        // height: (isLandscape && isSmallScreen) ? "calc(90vh - 24px)" :"calc(850vh - 40px)",
         ...(isipadpro && {
           height: "calc(850vh - 32px)",
         }),
 
-        // height: (isLandscape && isSmallScreen) ? "calc(90vh - 24px)" :"calc(850vh - 40px)",
         ...(largem && {
           height: "calc(1200vh - 32px)",
         }),
@@ -239,7 +240,11 @@ const ClusterFilter = () => {
             defaultExpanded
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h5" color={"#fff"}>
+              <Typography
+                variant="h5"
+                color={"#fff"}
+                sx={{ fontWeight: "bold" }}
+              >
                 Clusters
               </Typography>
             </AccordionSummary>
@@ -297,50 +302,123 @@ const ClusterFilter = () => {
         </ListItem>
 
         {loading ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "20vh",
-            }}
-          >
-            <CircularProgress
-              style={{ color: colors.blueAccent[400] }}
-              size={40}
-              thickness={4}
-            />
-            <Typography variant="h5" fontWeight={"600"} mt={2}>
-              LOADING.....
-            </Typography>
-          </div>
+          window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !==
+            "/mainpage/infraInfo/events/allEvents" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "20vh",
+              }}
+            >
+              <CircularProgress
+                style={{ color: colors.blueAccent[400] }}
+                size={40}
+                thickness={4}
+              />
+              <Typography variant="h5" fontWeight={"600"} mt={2}>
+                LOADING.....
+              </Typography>
+            </div>
+
+            // <div
+            //   style={{
+            //     display: "flex",
+            //     flexDirection: "column",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //     width: "100%",
+            //     height: "20vh",
+            //   }}
+            // >
+            //   {window.location.pathname !== "/mainpage/infraInfo/events" ? (
+            //     <>
+            //       {" "}
+            //       <CircularProgress
+            //         style={{ color: colors.blueAccent[400] }}
+            //         size={40}
+            //         thickness={4}
+            //       />
+            //       <Typography variant="h5" fontWeight={"600"} mt={2}>
+            //         LOADING.....
+            //       </Typography>
+            //     </>
+            //   ) : null}
+            // </div>
+          )
         ) : emptyMessage ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "20vh",
-            }}
-          >
-            <Typography variant="h5" fontWeight={"600"} mt={2}>
-              {emptyMessage}
-            </Typography>
-          </div>
-        ) : (
+          window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !==
+            "/mainpage/infraInfo/events/allEvents" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "20vh",
+              }}
+            >
+              <Typography variant="h5" fontWeight={"600"} mt={2}>
+                {emptyMessage}
+              </Typography>
+            </div>
+            // <div
+            //   style={{
+            //     display: "flex",
+            //     flexDirection: "column",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //     width: "100%",
+            //     height: "20vh",
+            //   }}
+            // >
+            //   {window.location.pathname !== "/mainpage/infraInfo/events" ? (
+            //     <Typography variant="h5" fontWeight={"600"} mt={2}>
+            //       {emptyMessage}
+            //     </Typography>
+            //   ) : null}
+            // </div>
+          )
+        ) : window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !==
+            "/mainpage/infraInfo/events/allEvents" ? (
           <ListItem>
             <Accordion
               style={{ width: "500px", backgroundColor: colors.primary[400] }}
             >
               {nodeDetails.length > 0 ? (
                 <AccordionDetails>
-                  <Typography variant="h5" color={"#fff"}>
-                    Nodes
-                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {" "}
+                    <Typography
+                      variant="h5"
+                      color={"#fff"}
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      Nodes
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      // sx={{ backgroundColor: "white", color: "black" }}
+                      onClick={selectedNode !== "" ? handleclear : null}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+
                   <FormControl component="fieldset">
                     <RadioGroup
                       value={selectedNode}
@@ -423,7 +501,7 @@ const ClusterFilter = () => {
               )}
             </Accordion>
           </ListItem>
-        )}
+        ) : null}
 
         <Divider />
       </List>

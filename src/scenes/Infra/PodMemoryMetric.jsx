@@ -36,6 +36,7 @@ export const PodMemoryMetric = () => {
     needHistoricalData,
     podCurrentPage,
     setPodCurrentPage,
+    selectedCluster,
   } = useContext(GlobalContext);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -120,6 +121,7 @@ export const PodMemoryMetric = () => {
 
   const fetchPodMetrics = useCallback(async () => {
     // setPowerMetrics(keplerContainerInfo);
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     try {
       setLoading(true);
       const podResponse = await getPodMetricDataPaginated(
@@ -127,7 +129,9 @@ export const PodMemoryMetric = () => {
         selectedEndDate,
         lookBackVal.value,
         podCurrentPage,
-        10
+        10,
+        selectedCluster,
+        userDetails.username
       );
       console.log("POD REESPONSE I GOT", podResponse);
       if (podResponse.length !== 0) {
@@ -150,6 +154,7 @@ export const PodMemoryMetric = () => {
     lookBackVal,
     needHistoricalData,
     podCurrentPage,
+    selectedCluster,
   ]);
 
   useEffect(() => {

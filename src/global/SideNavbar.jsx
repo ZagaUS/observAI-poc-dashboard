@@ -170,7 +170,9 @@ const SideNavbar = () => {
                 window.location.pathname === "/mainpage/infraInfo/alerts" ||
                 window.location.pathname === "/mainpage/infraInfo/events" ||
                 window.location.pathname ===
-                  "/mainpage/infraInfo/events/allEvents" ? (
+                  "/mainpage/infraInfo/events/allEvents" ||
+                window.location.pathname ===
+                  "/mainpage/infraInfo/events/recentEvents" ? (
                 <>
                   <ClusterFilter />
                 </>

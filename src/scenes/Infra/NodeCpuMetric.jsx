@@ -29,6 +29,9 @@ const NodeCpuMetric = () => {
     selectedEndDate,
     needHistoricalData,
     lookBackVal,
+    selectedCluster,
+    selectedNode,
+    setSelectedNode
   } = useContext(GlobalContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -37,6 +40,11 @@ const NodeCpuMetric = () => {
   const [nodeDisplayName, setNodeDisplayName] = useState([]);
   const [selectedNodeName, setSelectedNodeName] = useState();
   const [containerPowerUsage, setContainerPowerUsage] = useState([]);
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  console.log(userInfo, "userDetails");
+  const userName = userInfo.username;
+  console.log(userName);
 
   const processNodeData = (nodeMetricData, nodeName) => {
     // var lastValue = nodeName;
@@ -109,7 +117,8 @@ const NodeCpuMetric = () => {
   const nodeCpuMetricsData = [
     {
       data: containerPowerUsage,
-      title: `Node CPU Container Data - ${selectedNodeName}`,
+      // title: `Node CPU Container Data - ${selectedNodeName}`,
+      title: `Node CPU Container Data - ${selectedNode}`,
       yaxis: "CPU USAGE",
     },
   ];
@@ -117,6 +126,7 @@ const NodeCpuMetric = () => {
   console.log("Node Data-------", containerPowerUsage);
   console.log("node metric", nodeMetric);
   console.log("Node Names", selectedNodeName);
+  console.log("SELECTED NODE NAME", selectedNode);
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
@@ -126,12 +136,16 @@ const NodeCpuMetric = () => {
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
 
   const getNodeCpuMetrics = useCallback(async () => {
+    const selectedNodestring = selectedNode[0];
     try {
       setLoading(true);
       const data = await getNodeMetricData(
         selectedStartDate,
         selectedEndDate,
-        lookBackVal.value
+        lookBackVal.value,
+        selectedCluster,
+        selectedNodestring,
+        userName
       );
       if (data.length !== 0) {
         setNodeMetric(data);
@@ -146,10 +160,11 @@ const NodeCpuMetric = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData]);
+  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData, selectedCluster, selectedNode, userName]);
 
   const handleNodeClick = (clickedNodeName) => {
     console.log("NODE Name" + clickedNodeName);
+    // setSelectedNode(clickedNodeName);
     setSelectedNodeName(clickedNodeName);
     processNodeData(nodeMetric, clickedNodeName);
   };
@@ -276,6 +291,24 @@ const NodeCpuMetric = () => {
                         <TableBody>
                           <Typography>{selectedNodeName}</Typography>
                         </TableBody>
+
+                        {/* <TableBody>
+                          {nodeDisplayName.map((node, index) => (
+                            <TableRow key={index}>
+                              <TableCell
+                                style={{
+                                  height: "20px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleNodeClick(node.nodeName)}
+                              >
+                                <Typography variant="body1">
+                                  {selectedNode}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody> */}
                       </Table>
                     </div>
                   </Box>
