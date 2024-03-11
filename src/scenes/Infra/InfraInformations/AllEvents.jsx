@@ -32,6 +32,16 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles({
+  hover: {
+    "&:hover": {
+      // backgroundColor: '#f5f5f5', // Set your desired hover color
+      backgroundColor: "darkgray",
+    },
+  },
+});
 
 const tableHeader = [
   {
@@ -310,6 +320,8 @@ const AllEvents = () => {
     };
   }, [handleGetAllEvents, setErrorMessage, setEmptyMessage]);
 
+  const classes = useStyles();
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -500,6 +512,7 @@ const AllEvents = () => {
                               ))} */}
                             {allEventData.map((row, rowIndex) => (
                               <TableRow
+                                className={classes.hover}
                                 key={rowIndex}
                                 onClick={(event) =>
                                   handlePopoverOpen(row, event.currentTarget)
