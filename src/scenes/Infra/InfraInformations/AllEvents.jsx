@@ -15,10 +15,16 @@ import {
   TableRow,
   Typography,
   useTheme,
+  Alert,
+  Dialog,
+  DialogTitle,
+  AlertTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-
+import { red } from "@mui/material/colors";
 import Events from "./Events";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getAllEvent, getAllEventByDate } from "../../../api/InfraApiService";
@@ -342,7 +348,7 @@ const AllEvents = () => {
             <Events />
           ) : (
             <div>
-              <Grid levation={6}
+              <Grid
                 xs={12} 
                 sx={{
                   p: 2,
@@ -354,7 +360,7 @@ const AllEvents = () => {
                 
               >
                 
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "flex-end",
@@ -372,11 +378,11 @@ const AllEvents = () => {
                   }}
                   >
                     Back to current events
-                  </Button>
+                  </Button> */}
                   {/* <IconButton onClick={handleCancel}>
                     <CancelIcon />
                   </IconButton> */}
-                </div>
+                {/* </div> */}
                 {/* <div>
                 <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
                 {/* {allEventData.map((eventData, index) => (
@@ -529,7 +535,98 @@ const AllEvents = () => {
                             ))}
                           </TableBody>
                         </Table>
-                        <Popover
+
+                        {selectedEvent && (
+                          <Dialog
+                            open={Boolean(selectedEvent)}
+                            maxWidth="md" // Standard width
+                            fullWidth
+                          >
+                            <DialogTitle
+                              sx={{
+                                backgroundColor: colors.primary[400],
+                                color: "#fff",
+                              }}
+                            >
+                              <div>
+                                {selectedEvent.severityText === "Info" ? (
+                                  <Alert
+                                    severity="info"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {" "}
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : selectedEvent.severityText === "Warning" ? (
+                                  <Alert
+                                    severity="warning"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : (
+                                  <Alert severity="success">
+                                    <AlertTitle>
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                )}
+                              </div>
+                            </DialogTitle>
+                            <IconButton
+                              aria-label="close"
+                              onClick={handlePopoverClose}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                // color: (theme) => theme.palette.grey[500],
+                                color: red,
+                              }}
+                            >
+                              {/* <CloseIcon /> */}
+                            </IconButton>
+                            <DialogContent dividers>
+                              <div>
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={handlePopoverClose}
+                                color="primary"
+                                variant="contained"
+                                style={{
+                                  backgroundColor: colors.primary[400],
+                                  color: "#fff",
+                                }}
+                              >
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        )}
+                        {/* <Popover
                           open={Boolean(selectedEvent)}
                           anchorEl={anchorEl}
                           onClose={handlePopoverClose}
@@ -599,7 +696,7 @@ const AllEvents = () => {
                               </div>
                             )}
                           </Box>
-                        </Popover>
+                        </Popover> */}
                       </TableContainer>
                     </Card>
                   </Grid>
