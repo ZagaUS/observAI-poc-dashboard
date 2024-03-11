@@ -36,6 +36,7 @@ export const PodMemoryMetric = () => {
     needHistoricalData,
     podCurrentPage,
     setPodCurrentPage,
+    selectedCluster,
   } = useContext(GlobalContext);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -127,7 +128,8 @@ export const PodMemoryMetric = () => {
         selectedEndDate,
         lookBackVal.value,
         podCurrentPage,
-        10
+        10,
+        selectedCluster
       );
       console.log("POD REESPONSE I GOT", podResponse);
       if (podResponse.length !== 0) {
@@ -150,6 +152,7 @@ export const PodMemoryMetric = () => {
     lookBackVal,
     needHistoricalData,
     podCurrentPage,
+    selectedCluster,
   ]);
 
   useEffect(() => {

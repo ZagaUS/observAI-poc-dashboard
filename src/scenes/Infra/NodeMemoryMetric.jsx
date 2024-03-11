@@ -29,6 +29,7 @@ const NodeMemoryMetric = () => {
     selectedEndDate,
     needHistoricalData,
     lookBackVal,
+    selectedCluster,
   } = useContext(GlobalContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -95,7 +96,8 @@ const NodeMemoryMetric = () => {
       const data = await getNodeMetricData(
         selectedStartDate,
         selectedEndDate,
-        lookBackVal.value
+        lookBackVal.value,
+        selectedCluster
       );
       if (data.length !== 0) {
         setNodeMetric(data);
@@ -110,7 +112,7 @@ const NodeMemoryMetric = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData]);
+  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData, selectedCluster]);
 
   const handleNodeClick = (clickedNodeName) => {
     console.log("NODE Name" + clickedNodeName);

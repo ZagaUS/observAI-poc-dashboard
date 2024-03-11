@@ -97,7 +97,7 @@ const ClusterUtilization = () => {
         const mappedData = clusterUtilData.flatMap((item) => {
           // const cpuUsage = (item.cpuUsage / item.totalCpuCapacity) * 100;
           console.log("CPU DATA+++----", item);
-          console.log("CPU CAPACITY++++-----------------", item.cpuCapacity)
+          console.log("CPU CAPACITY++++-----------------", item.cpuCapacity);
           const cpuAvail = item.cpuCapacity - item.cpuUsage;
           // const memoryCpuCapacity = item.memoryUsage + item.memoryAvailable;
           const memoryCpuCapacity = item.memoryCapacity;
@@ -178,67 +178,74 @@ const ClusterUtilization = () => {
 
   return (
     <div>
-      {loading ? (
-        <Loading />
-      ) : emptyMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "73vh",
-          }}
-        >
-          <Typography variant="h6" align="center">
-            {emptyMessage}
-          </Typography>
-        </div>
-      ) : errorMessage ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "80vh",
-          }}
-        >
-          <Typography variant="h6" fontWeight={"600"}>
-            {errorMessage}
-          </Typography>
-        </div>
-      ) : (
-        <Box sx={{ p: 2, margin: "auto", maxWidth: 1250, flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Card elevation={6}>
-                <TableContainer component={Paper} sx={{ maxHeight: "350px" }}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                      {/* <TableRow sx={{ backgroundColor: colors.primary[400] }}>
+      <Grid container spacing={2}>
+        <Grid item xs={18} lg={30}>
+          {loading ? (
+            <Loading />
+          ) : emptyMessage ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "73vh",
+              }}
+            >
+              <Typography variant="h6" align="center">
+                {emptyMessage}
+              </Typography>
+            </div>
+          ) : errorMessage ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "80vh",
+              }}
+            >
+              <Typography variant="h6" fontWeight={"600"}>
+                {errorMessage}
+              </Typography>
+            </div>
+          ) : (
+            <Box sx={{ p: 2, margin: "auto", maxWidth: 1250, flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Card elevation={6}>
+                    <TableContainer
+                      component={Paper}
+                      sx={{ maxHeight: "350px" }}
+                    >
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          {/* <TableRow sx={{ backgroundColor: colors.primary[400] }}>
                         <TableCell>Resource Name</TableCell>
                         <TableCell>Availability</TableCell>
                         <TableCell>Capacity</TableCell>
                         <TableCell>Usage</TableCell>
                       </TableRow> */}
-                      {tableHeader.map((column, index) => (
-                        <TableCell
-                          key={index}
-                          align={column.align}
-                          sx={{
-                            height: "30px",
-                            backgroundColor: colors.primary[400],
-                            color: "#FFF",
-                          }}
-                        >
-                          <Typography variant="h5">{column.label}</Typography>
-                        </TableCell>
-                      ))}
-                    </TableHead>
+                          {tableHeader.map((column, index) => (
+                            <TableCell
+                              key={index}
+                              align={column.align}
+                              sx={{
+                                height: "30px",
+                                backgroundColor: colors.primary[400],
+                                color: "#FFF",
+                              }}
+                            >
+                              <Typography variant="h5">
+                                {column.label}
+                              </Typography>
+                            </TableCell>
+                          ))}
+                        </TableHead>
 
-                    <TableBody>
-                      {/* {rows.map((row) => (
+                        <TableBody>
+                          {/* {rows.map((row) => (
                       <TableRow
                         key={row.resources}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -249,39 +256,47 @@ const ClusterUtilization = () => {
                         <TableCell component="th" scope="row">{row.usage}</TableCell>
                       </TableRow>
                     ))} */}
-                      {clusterUtilization.map((row) => (
-                        <TableRow
-                          key={row.resources}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            <Typography variant="h7">
-                              {row.resources}
-                            </Typography>
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            <Typography variant="h7">
-                              {row.availability}
-                            </Typography>
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            <Typography variant="h7">{row.capacity}</Typography>
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            <Typography variant="h7">{row.usage}</Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Card>
-            </Grid>
-          </Grid>
-        </Box>
-      )}
+                          {clusterUtilization.map((row) => (
+                            <TableRow
+                              key={row.resources}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Typography variant="h7">
+                                  {row.resources}
+                                </Typography>
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                <Typography variant="h7">
+                                  {row.availability}
+                                </Typography>
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                <Typography variant="h7">
+                                  {row.capacity}
+                                </Typography>
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                <Typography variant="h7">
+                                  {row.usage}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Card>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };

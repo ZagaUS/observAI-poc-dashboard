@@ -1,16 +1,27 @@
 import axios from 'axios';
 
-const nodeMetricUrl = process.env.REACT_APP_APIURL_NODE;
-const podMetricUrl = process.env.REACT_APP_APIURL_POD;
+// const nodeMetricUrl = process.env.REACT_APP_APIURL_NODE;
+// const podMetricUrl = process.env.REACT_APP_APIURL_POD;
 // const eventUrl = process.env.REACT_APP_APIURL_EVENTS;
 
 export const getNodeMetricData = async (
     startDate,
     endDate,
-    minutesAgo
+    minutesAgo,
+    clusterName
 ) => {
     try {
         var finalUrl;
+        let nodeMetricUrl;
+
+        if(clusterName[0] === "zagaus"){
+            console.log('---hey u are in zaga us')
+            nodeMetricUrl = process.env.REACT_APP_APIURL_NODE
+        }
+        else{
+            console.log('----hey u r in india')
+            nodeMetricUrl = process.env.REACT_APP_APIURL_IND_NODE
+        }
 
         if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
             console.log(`History Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`);
@@ -35,14 +46,29 @@ export const getPodMetricDataPaginated = async (
     endDate,
     minutesAgo,
     page,
-    pageSize
+    pageSize,
+    clusterName
 ) => {
     try {
         let finalUrl;
+        let podMetricUrl;
+
+        if(clusterName[0] === "zagaus"){
+            console.log('---hey u are in zaga us')
+            podMetricUrl = process.env.REACT_APP_APIURL_POD
+        }
+        else{
+            console.log('----hey u r in india')
+            podMetricUrl = process.env.REACT_APP_APIURL_IND_POD
+        }
 
         if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+            console.log(`History Call + ${podMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`);
+
             finalUrl = `${podMetricUrl}/getAllPodMetrics?from=${startDate}&page=${page}&pageSize=${pageSize}&to=${endDate}`;
         } else {
+            console.log(`History Call + ${podMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}`);
+
             finalUrl = `${podMetricUrl}/getAllPodMetrics?from=${startDate}&minutesAgo=${minutesAgo}&page=${page}&pageSize=${pageSize}`;
         }
 
