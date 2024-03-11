@@ -108,6 +108,7 @@ const PodCpuMetric = () => {
 
   const fetchPodMetrics = useCallback(async () => {
     // setPowerMetrics(keplerContainerInfo);
+    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
     try {
       setLoading(true);
       const podResponse = await getPodMetricDataPaginated(
@@ -116,9 +117,10 @@ const PodCpuMetric = () => {
         lookBackVal.value,
         podCurrentPage,
         10,
-        selectedCluster
+        selectedCluster,
+        userDetails.username
       );
-      console.log("POD REESPONSE I GOT", podResponse);
+      console.log("POD CPU METRIX RESPONSE I GOT", podResponse);
       if (podResponse.length !== 0) {
         setPowerMetrics(podResponse);
         createPodMetricData(podResponse);
@@ -138,7 +140,7 @@ const PodCpuMetric = () => {
     lookBackVal,
     needHistoricalData,
     podCurrentPage,
-    selectedCluster
+    selectedCluster,
   ]);
 
   // getPodMetricDataPaginated

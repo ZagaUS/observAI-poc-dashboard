@@ -169,6 +169,10 @@ const ClusterFilter = () => {
     }
   };
 
+  const handleclear = () => {
+    setSelectedNode("");
+  };
+
   return (
     <div
       className="custom-drawer"
@@ -236,7 +240,11 @@ const ClusterFilter = () => {
             defaultExpanded
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h5" color={"#fff"}>
+              <Typography
+                variant="h5"
+                color={"#fff"}
+                sx={{ fontWeight: "bold" }}
+              >
                 Clusters
               </Typography>
             </AccordionSummary>
@@ -386,9 +394,31 @@ const ClusterFilter = () => {
             >
               {nodeDetails.length > 0 ? (
                 <AccordionDetails>
-                  <Typography variant="h5" color={"#fff"}>
-                    Nodes
-                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {" "}
+                    <Typography
+                      variant="h5"
+                      color={"#fff"}
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      Nodes
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      // sx={{ backgroundColor: "white", color: "black" }}
+                      onClick={selectedNode !== "" ? handleclear : null}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+
                   <FormControl component="fieldset">
                     <RadioGroup
                       value={selectedNode}
