@@ -8,7 +8,9 @@ export const getNodeMetricData = async (
     startDate,
     endDate,
     minutesAgo,
-    clusterName
+    clusterName,
+    nodeName,
+    userName
 ) => {
     try {
         var finalUrl;
@@ -23,14 +25,36 @@ export const getNodeMetricData = async (
             nodeMetricUrl = process.env.REACT_APP_APIURL_IND_NODE
         }
 
-        if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-            console.log(`History Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`);
+        // if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+        //     console.log(`History Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`);
 
-            finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`;
+        //     finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}`;
+        // } else {
+        //     console.log(`Minutes Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}`);
+
+        //     finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}`;
+        // }
+
+        if(nodeName) {
+            if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+                console.log(`History Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+    
+                finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
+            } else {
+                console.log(`Minutes Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+    
+                finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
+            }
         } else {
-            console.log(`Minutes Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}`);
-
-            finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}`;
+            if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+                console.log(`History Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`);
+    
+                finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&to=${endDate}&clusterName=${clusterName}&userName=${userName}`;
+            } else {
+                console.log(`Minutes Call + ${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`);
+    
+                finalUrl = `${nodeMetricUrl}/getAllNodeMetricData?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}&userName=${userName}`;
+            }
         }
         
         const response = await axios.get(finalUrl);

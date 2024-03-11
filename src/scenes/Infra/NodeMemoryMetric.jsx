@@ -30,6 +30,8 @@ const NodeMemoryMetric = () => {
     needHistoricalData,
     lookBackVal,
     selectedCluster,
+    selectedNode,
+    setSelectedNode
   } = useContext(GlobalContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [emptyMessage, setEmptyMessage] = useState("");
@@ -38,6 +40,11 @@ const NodeMemoryMetric = () => {
   const [nodeDisplayName, setNodeDisplayName] = useState([]);
   const [selectedNodeName, setSelectedNodeName] = useState();
   const [containerPowerUsage, setContainerPowerUsage] = useState([]);
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  console.log(userInfo, "userDetails");
+  const userName = userInfo.username;
+  console.log(userName);
 
   const processNodeData = (nodeMetricData, nodeName) => {
     console.log("NODE MEMORY METRIC DATA", nodeMetricData);
@@ -91,13 +98,16 @@ const NodeMemoryMetric = () => {
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
 
   const getNodeCpuMetrics = useCallback(async () => {
+    const selectedNodestring = selectedNode[0];
     try {
       setLoading(true);
       const data = await getNodeMetricData(
         selectedStartDate,
         selectedEndDate,
         lookBackVal.value,
-        selectedCluster
+        selectedCluster,
+        selectedNodestring,
+        userName
       );
       if (data.length !== 0) {
         setNodeMetric(data);
@@ -112,7 +122,7 @@ const NodeMemoryMetric = () => {
       setErrorMessage("An Error Occurred!");
       setLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData, selectedCluster]);
+  }, [selectedStartDate, selectedEndDate, lookBackVal, needHistoricalData, selectedCluster, selectedNode, userName]);
 
   const handleNodeClick = (clickedNodeName) => {
     console.log("NODE Name" + clickedNodeName);
@@ -236,6 +246,24 @@ const NodeMemoryMetric = () => {
                         <TableBody>
                           <Typography>{selectedNodeName}</Typography>
                         </TableBody>
+
+                        {/* <TableBody>
+                          {nodeDisplayName.map((node, index) => (
+                            <TableRow key={index}>
+                              <TableCell
+                                style={{
+                                  height: "20px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleNodeClick(node.nodeName)}
+                              >
+                                <Typography variant="body1">
+                                  {selectedNode}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody> */}
                       </Table>
                     </div>
                   </Box>
