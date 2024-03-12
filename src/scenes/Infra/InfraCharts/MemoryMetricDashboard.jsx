@@ -5,12 +5,12 @@ import ReactApexChart from "react-apexcharts";
 import { tokens } from "../../../theme";
 
 const MemoryMetricDashboard = ({ podData }) => {
-  // console.log("podData------------", podData);
+  console.log("podData------------", podData);
   const [filteredData, setFilteredData] = useState([]);
   const { isCollapsed, podCurrentPage, setPodCurrentPage } =
     useContext(GlobalContext);
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const isLandscape = useMediaQuery(
     "(max-width: 1000px) and (orientation: landscape)"
@@ -18,14 +18,12 @@ const MemoryMetricDashboard = ({ podData }) => {
   const isiphone = useMediaQuery((theme) => theme.breakpoints.down("iphone"));
   const totalPages = podData.totalCount;
 
-
-  console.log("totalPages",totalPages);
-  console.log("podCurrentPage",podCurrentPage);
+  console.log("totalPages", totalPages);
+  console.log("podCurrentPage", podCurrentPage);
 
   useEffect(() => {
-
     console.log("memory metric useeffect caleed ----->>>");
-    console.log(podData.data,"podData");
+    console.log(podData.data, "podData");
     if (podData) {
       setFilteredData(podData.data); // Set filtered data to the metrics of selected pod
     }
@@ -183,11 +181,23 @@ const MemoryMetricDashboard = ({ podData }) => {
           Next
         </Button>
         {podData.title ? (
-          <p style={{ marginTop: "0px", color: theme.palette.mode === "dark" ? "#FFF" : "#000" }} className="chart-title">
+          <p
+            style={{
+              marginTop: "0px",
+              color: theme.palette.mode === "dark" ? "#FFF" : "#000",
+            }}
+            className="chart-title"
+          >
             {podData.title}
           </p>
         ) : (
-          <p style={{ marginTop: "0px", color: theme.palette.mode === "dark" ? "#FFF" : "#000" }} className="chart-title">
+          <p
+            style={{
+              marginTop: "0px",
+              color: theme.palette.mode === "dark" ? "#FFF" : "#000",
+            }}
+            className="chart-title"
+          >
             {podData.title}
           </p>
         )}

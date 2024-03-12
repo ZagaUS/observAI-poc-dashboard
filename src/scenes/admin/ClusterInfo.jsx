@@ -552,10 +552,11 @@ const ClusterInfo = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
+                  height: "60vh",
                 }}
               >
                 <Typography variant="h5" fontWeight={"600"}>
-                  Sorry, no data found for this filter option!!!
+                  Sorry, No data found for this filter option!!!
                 </Typography>
               </div>
             )}

@@ -91,8 +91,8 @@ export const PodMemoryMetric = () => {
       };
       podNames.push(podObject);
     });
-    console.log("lenpodNames", podNames.length);
-    console.log("PODNAMES " + JSON.stringify(podNames));
+    // console.log("lenpodNames", podNames.length);
+    // console.log("PODNAMES " + JSON.stringify(podNames));
     setPodDisplayName(podNames);
 
     // let podNames = podMetrics.map((item) => ({
@@ -137,7 +137,7 @@ export const PodMemoryMetric = () => {
       if (podResponse.length !== 0) {
         setPowerMetrics(podResponse);
         createPodMetricData(podResponse);
-        console.log("Response metric " + JSON.stringify(podResponse));
+        // console.log("Response metric " + JSON.stringify(podResponse));
         // console.log("powerMetrix", powerMetrics);
       } else {
         setEmptyMessage("No Data to show");
@@ -178,6 +178,7 @@ export const PodMemoryMetric = () => {
   }, [setErrorMessage, setEmptyMessage, setPodCurrentPage, fetchPodMetrics]);
 
   const handlePodClick = (clickedPodName) => {
+    setPodCurrentPage(1);
     setSelectedPodName(clickedPodName);
     // console.log("Clicked pod name:", clickedPodName);
     // const clickedPodData = PodMetricData.find(pod => pod.pods && `${pod.namespaceName}/${pod.pods[0]?.podName}` === clickedPodName);
@@ -195,6 +196,8 @@ export const PodMemoryMetric = () => {
   const hasContainerPowerMetrics = powerMetrics.some(
     (item) => item.length !== 0
   );
+
+  // const hasContainerPowerMetrics = powerMetrics.length > 0;
 
   return (
     <div>

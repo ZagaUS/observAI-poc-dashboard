@@ -48,6 +48,7 @@ const ClusterFilter = () => {
     setUsername,
     nodeDetails,
     setNodeDetails,
+    setPodCurrentPage,
   } = useContext(GlobalContext);
 
   // const [clusters, setClusters] = useState(
@@ -158,6 +159,7 @@ const ClusterFilter = () => {
   };
 
   const handleServiceToggle = (clusterName) => () => {
+    setPodCurrentPage(1);
     setSelectedNode([]);
     if (selectedCluster.includes(clusterName)) {
       setSelectedCluster(
@@ -303,6 +305,8 @@ const ClusterFilter = () => {
 
         {loading ? (
           window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !== "/mainpage/infraPod" &&
+          window.location.pathname !== "/mainpage/infraPod/podMemory" &&
           window.location.pathname !==
             "/mainpage/infraInfo/events/allEvents" && (
             <div
@@ -352,6 +356,8 @@ const ClusterFilter = () => {
           )
         ) : emptyMessage ? (
           window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !== "/mainpage/infraPod" &&
+          window.location.pathname !== "/mainpage/infraPod/podMemory" &&
           window.location.pathname !==
             "/mainpage/infraInfo/events/allEvents" && (
             <div
@@ -386,6 +392,8 @@ const ClusterFilter = () => {
             // </div>
           )
         ) : window.location.pathname !== "/mainpage/infraInfo/events" &&
+          window.location.pathname !== "/mainpage/infraPod" &&
+          window.location.pathname !== "/mainpage/infraPod/podMemory" &&
           window.location.pathname !==
             "/mainpage/infraInfo/events/allEvents" ? (
           <ListItem>

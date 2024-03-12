@@ -38,6 +38,7 @@ const PodCpuMetric = () => {
     podCurrentPage,
     setInfraActiveTab,
     selectedCluster,
+    setPodCurrentPage,
   } = useContext(GlobalContext);
 
   const theme = useTheme();
@@ -176,6 +177,7 @@ const PodCpuMetric = () => {
   }, [setErrorMessage, setEmptyMessage, podCurrentPage, fetchPodMetrics]);
 
   const handlePodClick = (clickedPodName) => {
+    setPodCurrentPage(1);
     setSelectedPodName(clickedPodName);
     // console.log("Clicked pod name:", clickedPodName);
     // const clickedPodData = PodMetricData.find(pod => pod.pods && `${pod.namespaceName}/${pod.pods[0]?.podName}` === clickedPodName);

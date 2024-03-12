@@ -98,6 +98,7 @@ const DashboardTopBar = () => {
     setInfraNodeActiveTab,
     InfraInfoActiveTab,
     setInfraInfoActiveTab,
+    setPodCurrentPage,
   } = useContext(GlobalContext);
 
   const [logFilterDialogOpen, setLogFilterDialogOpen] = useState(false);
@@ -256,6 +257,7 @@ const DashboardTopBar = () => {
       navigate("/mainpage/infraPod/podMemory");
     }
     setInfraPodActiveTab(newValue);
+    setPodCurrentPage(1);
   };
 
   const handleNodeTabChange = (event, newValue) => {
