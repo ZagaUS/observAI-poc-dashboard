@@ -164,7 +164,7 @@ const AllEvents = () => {
   // const mapAllEvents = (data) => {
   //   return data.flatMap((item) => {
   //     const createdTimeAndDate = new Date(item.createdTime);
-  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy HH:mm:ss a");
+  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy hh:mm:ss a");
 
   //     return item.scopeLogs.flatMap((scopeLog) => {
   //       return scopeLog.logRecords.map((logRecord) => {
@@ -193,7 +193,7 @@ const AllEvents = () => {
           const createdTimeAndDate = new Date(data.createdTime);
           const formattedTime = format(
             createdTimeAndDate,
-            "MMMM dd, yyyy HH:mm:ss a"
+            "MMMM dd, yyyy hh:mm:ss a"
           );
           const namespaceAttribute = logRecord.attributes.find(
             (attr) => attr.key === "k8s.namespace.name"

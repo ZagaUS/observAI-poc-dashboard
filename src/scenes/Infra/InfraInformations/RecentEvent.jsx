@@ -181,7 +181,7 @@ const RecentEvent = () => {
           const createdTimeAndDate = new Date(data.createdTime);
           const formattedTime = format(
             createdTimeAndDate,
-            "MMMM dd, yyyy HH:mm:ss a"
+            "MMMM dd, yyyy hh:mm:ss a"
           );
           const extractEventInfo = {
             objectKind: data.objectKind,
