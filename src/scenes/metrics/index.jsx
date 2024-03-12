@@ -127,7 +127,7 @@ const Metrics = () => {
     {
       data: memoryUsageData,
       title: "Memory Utilization",
-      yaxis: "Memory Usage (mib)",
+      yaxis: "Memory Usage (MiB)",
     },
   ];
 
