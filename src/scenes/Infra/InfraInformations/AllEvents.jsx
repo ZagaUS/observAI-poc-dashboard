@@ -32,6 +32,16 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles({
+  hover: {
+    "&:hover": {
+      // backgroundColor: '#f5f5f5', // Set your desired hover color
+      backgroundColor: "darkgray",
+    },
+  },
+});
 
 const tableHeader = [
   {
@@ -154,7 +164,7 @@ const AllEvents = () => {
   // const mapAllEvents = (data) => {
   //   return data.flatMap((item) => {
   //     const createdTimeAndDate = new Date(item.createdTime);
-  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy HH:mm:ss a");
+  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy hh:mm:ss a");
 
   //     return item.scopeLogs.flatMap((scopeLog) => {
   //       return scopeLog.logRecords.map((logRecord) => {
@@ -183,7 +193,7 @@ const AllEvents = () => {
           const createdTimeAndDate = new Date(data.createdTime);
           const formattedTime = format(
             createdTimeAndDate,
-            "MMMM dd, yyyy HH:mm:ss a"
+            "MMMM dd, yyyy hh:mm:ss a"
           );
           const namespaceAttribute = logRecord.attributes.find(
             (attr) => attr.key === "k8s.namespace.name"
@@ -309,6 +319,8 @@ const AllEvents = () => {
       setEmptyMessage("");
     };
   }, [handleGetAllEvents, setErrorMessage, setEmptyMessage]);
+
+  const classes = useStyles();
 
   return (
     <div>
@@ -500,6 +512,7 @@ const AllEvents = () => {
                               ))} */}
                             {allEventData.map((row, rowIndex) => (
                               <TableRow
+                                className={classes.hover}
                                 key={rowIndex}
                                 onClick={(event) =>
                                   handlePopoverOpen(row, event.currentTarget)
