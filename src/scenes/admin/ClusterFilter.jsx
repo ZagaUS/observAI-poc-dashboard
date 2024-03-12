@@ -395,7 +395,8 @@ const ClusterFilter = () => {
           window.location.pathname !== "/mainpage/infraPod" &&
           window.location.pathname !== "/mainpage/infraPod/podMemory" &&
           window.location.pathname !==
-            "/mainpage/infraInfo/events/allEvents" ? (
+            "/mainpage/infraInfo/events/allEvents" &&
+            nodeDetails.length !== 1 ? (
           <ListItem>
             <Accordion
               style={{ width: "500px", backgroundColor: colors.primary[400] }}

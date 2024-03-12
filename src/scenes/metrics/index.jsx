@@ -122,12 +122,12 @@ const Metrics = () => {
     {
       data: cpuUsageData,
       title: "CPU Usage",
-      yaxis: "Cpu Usage",
+      yaxis: "Cpu Usage(core)",
     },
     {
       data: memoryUsageData,
       title: "Memory Utilization",
-      yaxis: "Memory Usage (MB)",
+      yaxis: "Memory Usage (MiB)",
     },
   ];
 

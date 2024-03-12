@@ -102,7 +102,7 @@ const PodCpuMetric = () => {
     {
       data: containerPowerUsage,
       title: `${selectedPodName}`,
-      yaxis: "CPU  USAGE",
+      yaxis: "CPU  USAGE (core)",
       totalCount: totalPages,
     },
   ];

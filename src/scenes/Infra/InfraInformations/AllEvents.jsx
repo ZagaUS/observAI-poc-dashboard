@@ -1,13 +1,9 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
+  Button,
   IconButton,
   Paper,
   Popover,
@@ -19,10 +15,16 @@ import {
   TableRow,
   Typography,
   useTheme,
+  Alert,
+  Dialog,
+  DialogTitle,
+  AlertTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-
+import { red } from "@mui/material/colors";
 import Events from "./Events";
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getAllEvent, getAllEventByDate } from "../../../api/InfraApiService";
@@ -30,15 +32,13 @@ import Loading from "../../../global/Loading/Loading";
 import { format } from "date-fns";
 import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
-import CloseIcon from '@mui/icons-material/Close';
-import { red } from "@mui/material/colors";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   hover: {
-    '&:hover': {
+    "&:hover": {
       // backgroundColor: '#f5f5f5', // Set your desired hover color
-      backgroundColor: "darkgray"
+      backgroundColor: "darkgray",
     },
   },
 });
@@ -164,7 +164,7 @@ const AllEvents = () => {
   // const mapAllEvents = (data) => {
   //   return data.flatMap((item) => {
   //     const createdTimeAndDate = new Date(item.createdTime);
-  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy HH:mm:ss a");
+  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy hh:mm:ss a");
 
   //     return item.scopeLogs.flatMap((scopeLog) => {
   //       return scopeLog.logRecords.map((logRecord) => {
@@ -193,7 +193,7 @@ const AllEvents = () => {
           const createdTimeAndDate = new Date(data.createdTime);
           const formattedTime = format(
             createdTimeAndDate,
-            "MMMM dd, yyyy HH:mm:ss a"
+            "MMMM dd, yyyy hh:mm:ss a"
           );
           const namespaceAttribute = logRecord.attributes.find(
             (attr) => attr.key === "k8s.namespace.name"
@@ -361,15 +361,17 @@ const AllEvents = () => {
           ) : (
             <div>
               <Grid
-                xs={12}
+                xs={12} 
                 sx={{
                   p: 2,
                   margin: "auto",
                   maxWidth: 1250,
-                  // maxHeight: 1200,
+                  maxHeight: 1200,
                   flexGrow: 1,
                 }}
+                
               >
+                
                 {/* <div
                   style={{
                     display: "flex",
@@ -378,10 +380,21 @@ const AllEvents = () => {
                     marginBottom: "10px",
                   }}
                 >
-                  <IconButton onClick={handleCancel}>
+                 
+                <Button color="info" onClick={handleCancel}
+                  variant="contained"
+                  sx={{ backgroundColor: colors.primary[400], color: '#fff',
+                    fontSize: '16px', 
+                    fontWeight: 'bold', 
+                    fontFamily: 'Arial, sans-serif', // Set your desired font family
+                  }}
+                  >
+                    Back to current events
+                  </Button> */}
+                  {/* <IconButton onClick={handleCancel}>
                     <CancelIcon />
-                  </IconButton>
-                </div> */}
+                  </IconButton> */}
+                {/* </div> */}
                 {/* <div>
                 <Box sx={{ maxHeight: "450px", overflow: "auto" }}> */}
                 {/* {allEventData.map((eventData, index) => (
@@ -498,7 +511,8 @@ const AllEvents = () => {
                                 </TableRow>
                               ))} */}
                             {allEventData.map((row, rowIndex) => (
-                              <TableRow className={classes.hover}
+                              <TableRow
+                                className={classes.hover}
                                 key={rowIndex}
                                 onClick={(event) =>
                                   handlePopoverOpen(row, event.currentTarget)
@@ -536,44 +550,95 @@ const AllEvents = () => {
                         </Table>
 
                         {selectedEvent && (
-                      
-                      <Dialog open={Boolean(selectedEvent)} 
-                      
-                      maxWidth="md" // Standard width
-                      fullWidth
-                                            
-                      >
-                       
-                        <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
-                          <div> {selectedEvent.resourceName} </div>
-                        </DialogTitle>
-                          {/* <IconButton
-                            aria-label="close"
-                            onClick={handlePopoverClose}
-                            sx={{
-                              position: 'absolute',
-                              right: 8,
-                              top: 8,
-                              // color: (theme) => theme.palette.grey[500],
-                              color: red,
-                            }}
+                          <Dialog
+                            open={Boolean(selectedEvent)}
+                            maxWidth="md" // Standard width
+                            fullWidth
                           >
-                          <CloseIcon />
-                        </IconButton> */}
-                        <DialogContent dividers >
-                          <div><span style={{ fontWeight: "500" }}>
-                                    {selectedEvent.eventMessage}
-                                  </span>
-                          </div>
-                        </DialogContent>
-                        <DialogActions>
-                        <Button onClick={handlePopoverClose} color="primary" variant="contained" style={{backgroundColor: colors.primary[400], color: '#fff'}} >Close</Button>
-                      </DialogActions>
-                                      
-                      </Dialog>
-                  
-
-                      )}
+                            <DialogTitle
+                              sx={{
+                                backgroundColor: colors.primary[400],
+                                color: "#fff",
+                              }}
+                            >
+                              <div>
+                                {selectedEvent.severityText === "Info" ? (
+                                  <Alert
+                                    severity="info"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {" "}
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : selectedEvent.severityText === "Warning" ? (
+                                  <Alert
+                                    severity="warning"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : (
+                                  <Alert severity="success">
+                                    <AlertTitle>
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                )}
+                              </div>
+                            </DialogTitle>
+                            <IconButton
+                              aria-label="close"
+                              onClick={handlePopoverClose}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                // color: (theme) => theme.palette.grey[500],
+                                color: red,
+                              }}
+                            >
+                              {/* <CloseIcon /> */}
+                            </IconButton>
+                            <DialogContent dividers>
+                              <div>
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={handlePopoverClose}
+                                color="primary"
+                                variant="contained"
+                                style={{
+                                  backgroundColor: colors.primary[400],
+                                  color: "#fff",
+                                }}
+                              >
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        )}
                         {/* <Popover
                           open={Boolean(selectedEvent)}
                           anchorEl={anchorEl}

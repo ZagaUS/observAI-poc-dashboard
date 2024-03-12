@@ -18,13 +18,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  useMediaQuery,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { styled } from '@mui/material/styles';
-import CloseIcon from '@mui/icons-material/Close';
-
+import { styled } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { GlobalContext } from "../../../global/globalContext/GlobalContext";
 import { getRecentEvent, getRecentEvents } from "../../../api/InfraApiService";
@@ -35,32 +33,31 @@ import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
 import { options } from "../../../global/MockData/MockTraces";
 import { red } from "@mui/material/colors";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
-
-  
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 const useStyles = makeStyles({
   hover: {
-    '&:hover': {
+    "&:hover": {
       // backgroundColor: '#f5f5f5', // Set your desired hover color
-      backgroundColor: "darkgray"
+      backgroundColor: "darkgray",
     },
   },
 });
 
 // const { title , children , openPopup , setOpenPopup} = useState(false);
 
+//Popup
+// const useStyles = (theme => ({
+//   dialogWrapper : {
+//     padding : theme.spacing(2),
+//     position : 'absolute',
+//     top : theme.spacing(20),
 
-  //Popup
-  // const useStyles = (theme => ({
-  //   dialogWrapper : {
-  //     padding : theme.spacing(2),
-  //     position : 'absolute',
-  //     top : theme.spacing(20),
-  
-  //   }
-  // }))
+//   }
+// }))
 
 const tableHeader = [
   {
@@ -131,7 +128,8 @@ const RecentEvent = () => {
     selectedCluster,
     setLookBackVal,
     setSelectedStartDate,
-    setInfraActiveTab, setInfraInfoActiveTab
+    setInfraActiveTab,
+    setInfraInfoActiveTab,
   } = useContext(GlobalContext);
   const [eventRowsData, setEventRowsData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
@@ -155,9 +153,7 @@ const RecentEvent = () => {
 
   const navigate = useNavigate();
 
-  const isSize1280 = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-
-  const[ openPopup , setOpenPopup] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
 
   console.log("recent-------", eventRowsData);
 
@@ -176,12 +172,8 @@ const RecentEvent = () => {
     setAnchorEl(null);
   };
 
-  
-
   const mapEventData = (eventData) => {
     const extractEventData = [];
-
-
 
     eventData.forEach((data) => {
       data.scopeLogs.forEach((scopeLog) => {
@@ -189,7 +181,7 @@ const RecentEvent = () => {
           const createdTimeAndDate = new Date(data.createdTime);
           const formattedTime = format(
             createdTimeAndDate,
-            "MMMM dd, yyyy HH:mm:ss a"
+            "MMMM dd, yyyy hh:mm:ss a"
           );
           const extractEventInfo = {
             objectKind: data.objectKind,
@@ -283,9 +275,7 @@ const RecentEvent = () => {
     };
   }, [handleGetRecentEvent, setErrorMessage, setEmptyMessage]);
 
-  
   const classes = useStyles();
-
 
   return (
     <div>
@@ -331,7 +321,7 @@ const RecentEvent = () => {
                   p: 2,
                   margin: "auto",
                   maxWidth: 1250,
-                  // maxHeight: 1200,
+                  maxHeight: 1200,
                   flexGrow: 1,
                   // backgroundColor: (theme) =>
                   //   theme.palette.mode === 'dark' ? '#000000' : 'grey',
@@ -348,65 +338,59 @@ const RecentEvent = () => {
                   <Button color="info" onClick={handleViewAllEvents}
                   variant="contained"
                   sx={{ backgroundColor: colors.primary[400], color: '#fff',
-                  "&:hover": {
-                    backgroundColor: "#ffffff",
-                    color: colors.primary[600],
-                  }
-                    // fontSize: '16px', 
-                    // fontWeight: 'bold', 
-                    // fontFamily: 'Arial, sans-serif', // Set your desired font family
+                    fontSize: '16px', 
+                    fontWeight: 'bold', 
+                    fontFamily: 'Arial, sans-serif', // Set your desired font family
                   }}
                   >
-                    <Typography variant="h6">
-                      View All Events
-                    </Typography>
+                    View All Events
                   </Button>
                 </div> */}
 
-                <Grid item xs={12}>
-                  <Card elevation={6}>
-                    <TableContainer
-                      component={Paper}
-                      sx={{ maxHeight: "490px",
-                      overflowY: "auto" }}
-                    >
-                      <Table
-                        sx={{ minWidth: 650 }}
-                        stickyHeader
-                        aria-label="sticky table"
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Card elevation={6}>
+                      <TableContainer
+                        component={Paper}
+                        sx={{ maxHeight: "490px", overflowY: "auto" }}
                       >
-                        <TableHead>
-                          {tableHeader.map((column, index) => (
-                            <TableCell
-                              key={index}
-                              align={column.align}
-                              sx={{
-                                // display: "flex",
-                                // flexDirection: "row",
-                                // justifyContent: "space-between",
-                                height: "30px",
-                                backgroundColor: colors.primary[400],
-                                color: "#FFF",
+                        <Table
+                          sx={{ minWidth: 650 }}
+                          stickyHeader
+                          aria-label="sticky table"
+                        >
+                          <TableHead>
+                            {tableHeader.map((column, index) => (
+                              <TableCell
+                                key={index}
+                                align={column.align}
+                                sx={{
+                                  // display: "flex",
+                                  // flexDirection: "row",
+                                  // justifyContent: "space-between",
+                                  height: "30px",
+                                  backgroundColor: colors.primary[400],
+                                  color: "#FFF",
 
-                                // padding: "10px",
-                              }}
-                            >
-                              <Typography
-                                variant="h5"
-                                sx={
-                                  {
-                                    // padding: "10px"
-                                  }
-                                }
+                                  // padding: "10px",
+                                }}
                               >
-                                {column.label}
-                              </Typography>
-                            </TableCell>
-                          ))}
-                        </TableHead>
+                                <Typography
+                                  variant="h5"
+                                  sx={
+                                    {
+                                      // padding: "10px"
+                                    }
+                                  }
+                                >
+                                  {column.label}
+                                </Typography>
+                              </TableCell>
+                            ))}
+                          </TableHead>
 
-                        <TableBody>
-                          {/* {rows.map((row, rowIndex) => (
+                          <TableBody>
+                            {/* {rows.map((row, rowIndex) => (
                             <TableRow
                               key={rowIndex}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -430,87 +414,137 @@ const RecentEvent = () => {
                               ))}
                             </TableRow>
                           ))} */}
-                          {eventRowsData.map((row, rowIndex) => (
-                            // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
-                            <TableRow className={classes.hover} 
-                              key={rowIndex}
-                              onClick={(event) =>
-                                handlePopoverOpen(row, event.currentTarget)
-                              }
-                            >
-                              {tableHeader.map((column) => (
-                                <TableCell
-                                  key={column.id}
-                                  sx={{
-                                    maxWidth: 90,
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    color:
-                                      column.id === "severityText"
-                                        ? severityColors[row.severityText] ||
-                                          "inherit"
-                                        : "inherit",
-                                    fontWeight:
-                                      column.id === "severityText" &&
-                                      row.severityText === "Warning"
-                                        ? "bold"
-                                        : "inherit",
-                                  }}
-                                >
-                                  
-                                  <Typography variant="h7">
-                                    {row[column.id]}
-                                  </Typography>
-                                </TableCell>
-                              ))}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                      
-                      {selectedEvent && (
-                      
-                      <Dialog open={Boolean(selectedEvent)} 
-                      
-                      maxWidth="md" // Standard width
-                      fullWidth
-                                            
-                      >
-                       
-                        <DialogTitle sx={{ backgroundColor: colors.primary[400], color: '#fff' }}>
-                          <div> {selectedEvent.resourceName} </div>
-                        </DialogTitle>
-                          {/* <IconButton
-                            aria-label="close"
-                            onClick={handlePopoverClose}
-                            sx={{
-                              position: 'absolute',
-                              right: 8,
-                              top: 8,
-                              // color: (theme) => theme.palette.grey[500],
-                              color: red,
-                            }}
+                            {eventRowsData.map((row, rowIndex) => (
+                              // <TableRow key={rowIndex} onClick={(event) => handlePopoverOpen(row, event.currentTarget)}>
+                              <TableRow
+                                className={classes.hover}
+                                key={rowIndex}
+                                onClick={(event) =>
+                                  handlePopoverOpen(row, event.currentTarget)
+                                }
+                              >
+                                {tableHeader.map((column) => (
+                                  <TableCell
+                                    key={column.id}
+                                    sx={{
+                                      maxWidth: 90,
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      color:
+                                        column.id === "severityText"
+                                          ? severityColors[row.severityText] ||
+                                            "inherit"
+                                          : "inherit",
+                                      fontWeight:
+                                        column.id === "severityText" &&
+                                        row.severityText === "Warning"
+                                          ? "bold"
+                                          : "inherit",
+                                    }}
+                                  >
+                                    <Typography variant="h7">
+                                      {row[column.id]}
+                                    </Typography>
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+
+                        {selectedEvent && (
+                          <Dialog
+                            open={Boolean(selectedEvent)}
+                            maxWidth="md" // Standard width
+                            fullWidth
                           >
-                          <CloseIcon />
-                        </IconButton> */}
-                        <DialogContent dividers >
-                          <div><span style={{ fontWeight: "500" }}>
-                                    {selectedEvent.eventMessage}
-                                  </span>
-                          </div>
-                        </DialogContent>
-                        <DialogActions>
-                        <Button onClick={handlePopoverClose} color="primary" variant="contained" style={{backgroundColor: colors.primary[400], color: '#fff'}} >Close</Button>
-                      </DialogActions>
-                                      
-                      </Dialog>
-                  
+                            <DialogTitle
+                              sx={{
+                                backgroundColor: colors.primary[400],
+                                color: "#fff",
+                              }}
+                            >
+                              <div>
+                                {selectedEvent.severityText === "Info" ? (
+                                  <Alert
+                                    severity="info"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {" "}
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : selectedEvent.severityText === "Warning" ? (
+                                  <Alert
+                                    severity="warning"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      fontSize: "16px",
+                                      fontWeight: "bold",
+                                      fontFamily: "Arial, sans-serif", // Set your desired font family
+                                    }}
+                                  >
+                                    <AlertTitle>
+                                      {selectedEvent.resource} -{" "}
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                ) : (
+                                  <Alert severity="success">
+                                    <AlertTitle>
+                                      {selectedEvent.resourceName}
+                                    </AlertTitle>
+                                  </Alert>
+                                )}
+                              </div>
+                            </DialogTitle>
+                            <IconButton
+                              aria-label="close"
+                              onClick={handlePopoverClose}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                // color: (theme) => theme.palette.grey[500],
+                                color: red,
+                              }}
+                            >
+                              {/* <CloseIcon /> */}
+                            </IconButton>
+                            <DialogContent dividers>
+                              <div>
+                                <span style={{ fontWeight: "500" }}>
+                                  {selectedEvent.eventMessage}
+                                </span>
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={handlePopoverClose}
+                                color="primary"
+                                variant="contained"
+                                style={{
+                                  backgroundColor: colors.primary[400],
+                                  color: "#fff",
+                                }}
+                              >
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        )}
 
-                      )}
-
-                      
-                      {/* <Popover
+                        {/* <Popover
                         open={Boolean(selectedEvent)}
                         anchorEl={anchorEl}
                         onClose={handlePopoverClose}
@@ -589,8 +623,9 @@ const RecentEvent = () => {
                           )}
                         </Box>
                       </Popover> */}
-                    </TableContainer>
-                  </Card>
+                      </TableContainer>
+                    </Card>
+                  </Grid>
                 </Grid>
               </Grid>
             </div>
