@@ -119,7 +119,7 @@ const NodeCpuMetric = () => {
       data: containerPowerUsage,
       // title: `Node CPU Container Data - ${selectedNodeName}`,
       title: `Node CPU Container Data - ${selectedNode}`,
-      yaxis: "CPU USAGE",
+      yaxis: "CPU USAGE  (core)",
     },
   ];
 

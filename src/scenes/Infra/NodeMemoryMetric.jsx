@@ -82,7 +82,7 @@ const NodeMemoryMetric = () => {
     {
       data: containerPowerUsage,
       title: `Node Memory Container Data - ${selectedNodeName}`,
-      yaxis: "MEMORY USAGE",
+      yaxis: "MEMORY USAGE (mib)",
     },
   ];
 

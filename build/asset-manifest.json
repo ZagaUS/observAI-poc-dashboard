@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.0e6cbb54.css",
-    "main.js": "/static/js/main.010c0377.js",
+    "main.css": "/static/css/main.a9652b93.css",
+    "main.js": "/static/js/main.20684eb5.js",
     "static/media/sustainability.jpeg": "/static/media/sustainability.49b665b2ffaf2e2a3799.jpeg",
     "static/media/observai.png": "/static/media/observai.ce90f42f2fbb2ce26aee.png",
+    "static/media/zaga-logedit.jpg": "/static/media/zaga-logedit.2d5c7147c313e0b31161.jpg",
     "static/media/Infra.jpeg": "/static/media/Infra.2f4f563ab588e158f6cb.jpeg",
-    "static/media/zaga-logedit.jpg": "/static/media/zaga-logedit.242683575116b6343771.jpg",
     "static/media/admin.jpeg": "/static/media/admin.4333adc46b1d6bca1ddb.jpeg",
     "index.html": "/index.html",
-    "main.0e6cbb54.css.map": "/static/css/main.0e6cbb54.css.map",
-    "main.010c0377.js.map": "/static/js/main.010c0377.js.map"
+    "main.a9652b93.css.map": "/static/css/main.a9652b93.css.map",
+    "main.20684eb5.js.map": "/static/js/main.20684eb5.js.map"
   },
   "entrypoints": [
-    "static/css/main.0e6cbb54.css",
-    "static/js/main.010c0377.js"
+    "static/css/main.a9652b93.css",
+    "static/js/main.20684eb5.js"
   ]
 }
