@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../global/Loading/Loading";
 import { GlobalContext } from "../../global/globalContext/GlobalContext";
 import RuleDetailsPopup from "./RulesDetailsPopup";
+import { format } from "date-fns";
 
 function createData(serviceName, rules) {
   return {
@@ -90,7 +91,7 @@ function Row({ row }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h4">Rules</Typography>
-              {row.rules ? (
+              {row.rules && row.length !== 0 ? (
                 <Box sx={{ marginTop: 2 }}>
                   <TableContainer component={Paper} sx={{ marginTop: 2 }}>
                     <Table size="small" aria-label="rule-details">
@@ -107,10 +108,12 @@ function Row({ row }) {
                           <TableRow key={index}>
                             <StyledTableCell>{rule.ruleType}</StyledTableCell>
                             <StyledTableCell>
-                              {rule.startDateTime}
+                              {/* {rule.startDateTime} */}
+                              {format(new Date(rule.startDateTime), "MMMM dd, yyyy hh:mm:ss a")}
                             </StyledTableCell>
                             <StyledTableCell>
-                              {rule.expiryDateTime}
+                              {/* {rule.expiryDateTime} */}
+                              {format(new Date(rule.expiryDateTime), "MMMM dd, yyyy hh:mm:ss a")}
                             </StyledTableCell>
                             <StyledTableCell>
                               <Button
