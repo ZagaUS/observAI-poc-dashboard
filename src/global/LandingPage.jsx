@@ -175,7 +175,7 @@ const LandingPage = () => {
               component="img"
               sx={{
                 height: 60,
-                width: 200,
+                width: 230,
                 maxHeight: { xs: 233, md: 167 },
                 maxWidth: { xs: 350, md: 250 },
               }}

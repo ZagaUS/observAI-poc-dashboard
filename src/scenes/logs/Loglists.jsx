@@ -366,7 +366,7 @@ const Loglists = () => {
     async (newpage) => {
       setLoading(true);
       try {
-        setLogData([]);
+        // setLogData([]);
         let serviceListData = [];
         if (logSummaryService.length === 0) {
           serviceListData = JSON.parse(localStorage.getItem("serviceListData"));
@@ -504,23 +504,27 @@ const Loglists = () => {
     setSearchQuery(searchQuery);
     const inputValueLength = searchQuery.length;
     console.log(inputValueLength);
-    if (inputValueLength === 0) {
+    if (inputValueLength == 0) {
+      console.log("inputValueLength Length condition");
+      setLogRender(!logRender);
       setSearchResults([]);
       setLogCurrentPage(1);
-      handleGetAllLogData(logCurrentPage);
+      // handleGetAllLogData(logCurrentPage);
     }
   };
 
   const handleSearchKeyDown = (event) => {
+    // console.log();
     if (event.key === "Enter") {
       // handleSearchChange(event);
-      setLogRender(true);
+      setLogRender(!logRender);
       setNeedLogFilterCall(false);
+      setLogCurrentPage(1);
       setLogSelectedService([]);
       setSelectedSeverity([]);
       setSelectedLogService([]);
-      setLogCurrentPage(1);
-      handleSearch();
+
+      // handleSearch();
     }
   };
 
@@ -567,11 +571,12 @@ const Loglists = () => {
       // setIsCollapsed(false);
       handleSearch();
     } else {
+      setSearchQuery("");
       setClearLogFilter(false);
       console.log("From get ALL");
       setIsCardVisible(false);
       // console.log("SEARCH --------------- " + searchQuery);
-      setSearchQuery("");
+
       setSearchResults([]);
       // setIsCollapsed(false);
       handleGetAllLogData(logCurrentPage);

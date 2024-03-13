@@ -107,7 +107,7 @@ const SideNavbar = () => {
               },
             }}
           >
-            {!isCollapsed ? (
+            {/* {!isCollapsed ? (
               <Box style={{ margin: "8px 10px -8px 33px" }}>
                 <img
                   src={logo}
@@ -120,31 +120,42 @@ const SideNavbar = () => {
                   }}
                 />
               </Box>
-            ) : null}
+              <></>
+            ) : null} */}
 
-            <MenuItem
-              onClick={handleclose}
-              icon={isCollapsed ? <MenuOutlined /> : undefined}
-              style={{ margin: "5px 10px 5px 13px", padding: "10px" }}
+            <div
+              style={{
+                // backgroundColor: "yellow",
+                height: "150px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                // ml="1px"
-                // mt="5px"
+              <MenuItem
+                onClick={handleclose}
+                icon={isCollapsed ? <MenuOutlined /> : undefined}
+                style={{ margin: "5px 10px 5px 13px", padding: "10px" }}
               >
-                <Typography variant="h4" fontWeight="500" marginLeft={1}>
-                  OBSERVABILITY
-                </Typography>
-                <IconButton
-                  onClick={() => setIsCollapsed(!isCollapsed)}
-                  icon={isCollapsed ? <MenuOutlined /> : undefined}
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  // height="200px"
+                  // backgroundColor="red"
                 >
-                  <MenuOutlined style={{ color: colors.tabColor[500] }} />
-                </IconButton>
-              </Box>
-            </MenuItem>
+                  <Typography variant="h4" fontWeight="bold" marginLeft={1}>
+                    OBSERVABILITY
+                  </Typography>
+                  <IconButton
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    icon={isCollapsed ? <MenuOutlined /> : undefined}
+                  >
+                    <MenuOutlined style={{ color: colors.tabColor[500] }} />
+                  </IconButton>
+                </Box>
+              </MenuItem>
+            </div>
 
             {!isCollapsed ? (
               window.location.pathname === "/mainpage/dashboard" ||
@@ -178,8 +189,17 @@ const SideNavbar = () => {
                 </>
               ) : null
             ) : null}
+          </Menu>
+        </Sidebar>
+      )}
+    </Box>
+  );
+};
 
-            {/* (<MenuItem style={{marginTop:"20%"}} >
+export default SideNavbar;
+
+{
+  /* (<MenuItem style={{marginTop:"20%"}} >
                 <Tooltip title="Filter">
                   <IconButton
                   // onClick={
@@ -194,9 +214,11 @@ const SideNavbar = () => {
                     <FilterListOutlined style={{color:"#FFF"}} />
                   </IconButton>
                 </Tooltip>
-              </MenuItem>) */}
+              </MenuItem>) */
+}
 
-            {/* <MenuItem
+{
+  /* <MenuItem
             component={<Link to="/mainpage/dashboard" />}
             style={{ margin: "10px 10px 10px 14px", padding: "10px" }}
             active={selected === "Dashboard"}
@@ -245,12 +267,5 @@ const SideNavbar = () => {
             }}
           >
             <Typography variant="h6">LOGS</Typography>
-          </MenuItem> */}
-          </Menu>
-        </Sidebar>
-      )}
-    </Box>
-  );
-};
-
-export default SideNavbar;
+          </MenuItem> */
+}
