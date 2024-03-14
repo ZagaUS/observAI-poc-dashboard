@@ -112,6 +112,7 @@ const AdminTopBar = () => {
 
   const handleClusterOpen = (clusterDetails) => {
     console.log("clusterName", clusterDetails);
+    localStorage.setItem("Cluster", clusterDetails);
     // setSelectedClusterDetails(clusterDetails);
     setAdminPageSelecteCluster(clusterDetails);
     navigate("/admin/clusterDashboard");

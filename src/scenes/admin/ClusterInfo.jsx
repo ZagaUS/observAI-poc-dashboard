@@ -49,44 +49,57 @@ const ClusterInfo = () => {
 
   // const UserName = JSON.parse(localStorage.getItem("userInfo"));
 
-  const ServiceListsApiCall = useCallback(async () => {
-    console.log("ServiceListsApiCall Called");
-    setErrorMessage("");
-    const userDetails = JSON.parse(localStorage.getItem("userInfo"));
-    // console.log("-------[USER DETAILS]------------ ", userDetails.username);
-    // console.log(
-    //   "-------[CLUSTER DETAILS]------------ ",
-    //   AdminPageSelecteCluster
-    // );
-    try {
+  const ServiceListsApiCall = useCallback(
+    async (clusterName) => {
       setLoading(true);
-      var response = await getClusterListAllProjects(
-        AdminPageSelecteCluster,
-        userDetails.username
-      );
-      if (response.length !== 0) {
-        setData(response);
-        const uniqueNamespaces = [
-          ...new Set(response.map((item) => item.namespaceName)),
-        ];
-        setNamespaceOptions(uniqueNamespaces);
-      } else {
-        setEmptyMessage("No Data to show");
-      }
+      console.log("ServiceListsApiCall Called");
+      setErrorMessage("");
+      const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+      // const clusterName = localStorage.getItem("Cluster");
+      // console.log("-------[USER DETAILS]------------ ", userDetails.username);
+      // console.log(
+      //   "-------[CLUSTER DETAILS]------------ ",
+      //   AdminPageSelecteCluster
+      // );
+      console.log("AdminPageSelecteCluster", clusterName);
+      console.log("username", userDetails.username);
+      try {
+        var response = await getClusterListAllProjects(
+          clusterName,
+          userDetails.username
+        );
 
-      setLoading(false);
-      setInstrumentLoadig(false);
-    } catch (error) {
-      console.log("error in getallproject api", error);
-      setErrorMessage(
-        "Network Error !!! Unable to fetch cluster details at this time."
-      );
-      setLoading(false);
-    }
-  }, [AdminPageSelecteCluster]);
+        console.log("Cluster informations res", response);
+        if (response.length !== 0) {
+          setData(response);
+          const uniqueNamespaces = [
+            ...new Set(response.map((item) => item.namespaceName)),
+          ];
+          setNamespaceOptions(uniqueNamespaces);
+        } else {
+          setEmptyMessage("No Data to show");
+        }
+
+        // setLoading(false);
+        setInstrumentLoadig(false);
+      } catch (error) {
+        console.log("error in getallproject api", error);
+        setErrorMessage(
+          "Network Error !!! Unable to fetch cluster details at this time."
+        );
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [AdminPageSelecteCluster]
+  );
 
   useEffect(() => {
-    ServiceListsApiCall();
+    // localStorage.setItem("Cluster", AdminPageSelecteCluster);
+    const clusterName = localStorage.getItem("Cluster");
+    console.log("clusterName", clusterName);
+    ServiceListsApiCall(clusterName);
   }, [ServiceListsApiCall, changeInstrument]);
 
   // const ServiceListsApiCall = useCallback(async () => {
@@ -204,13 +217,22 @@ const ClusterInfo = () => {
       "Instrumentation in Progress: Please wait for a few minutes ..."
     );
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    const clusterName = localStorage.getItem("Cluster");
+    console.log(
+      "payloads",
+      deploymentName,
+      namespace,
+      userDetails.username,
+      clusterName
+    );
     const instrumentresponse = await changeToInstrument(
       deploymentName,
       namespace,
-      AdminPageSelecteCluster,
+      clusterName,
       userDetails.username
     );
 
+    console.log("instrumentresponse", instrumentresponse);
     if (instrumentresponse.status === 200) {
       setChangeInstrument(!changeInstrument);
       // setMessage(
@@ -232,11 +254,20 @@ const ClusterInfo = () => {
       "Uninstrumentation in Progress: Please wait for a few minutes ..."
     );
     const userDetails = JSON.parse(localStorage.getItem("userInfo"));
+    const clusterName = localStorage.getItem("Cluster");
+
+    console.log(
+      "payloads",
+      deploymentName,
+      namespace,
+      userDetails.username,
+      clusterName
+    );
     const instrumentresponse = await changeToUninstrument(
       deploymentName,
       namespace,
 
-      AdminPageSelecteCluster,
+      clusterName,
       userDetails.username
     );
     if (instrumentresponse.status === 200) {
