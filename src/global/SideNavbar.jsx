@@ -107,31 +107,20 @@ const SideNavbar = () => {
               },
             }}
           >
-            {/* {!isCollapsed ? (
-              <Box style={{ margin: "8px 10px -8px 33px" }}>
-                <img
-                  src={logo}
-                  alt="Logo"
-                  style={{
-                    // width: "180px",x
-                    // height: "60px",
-                    width: "180px",
-                    height: "60px",
-                  }}
-                />
-              </Box>
-              <></>
-            ) : null} */}
-
-            <div
-              style={{
-                // backgroundColor: "yellow",
-                height: "150px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <div style={{ paddingTop: "5px" }}>
+              {" "}
+              {!isCollapsed ? (
+                <Box sx={{ margin: "10px 10px -15px 33px" }}>
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{
+                      width: "180px",
+                      height: "60px",
+                    }}
+                  />
+                </Box>
+              ) : null}
               <MenuItem
                 onClick={handleclose}
                 icon={isCollapsed ? <MenuOutlined /> : undefined}
@@ -141,10 +130,8 @@ const SideNavbar = () => {
                   display="flex"
                   justifyContent="space-between"
                   alignItems="center"
-                  // height="200px"
-                  // backgroundColor="red"
                 >
-                  <Typography variant="h4" fontWeight="bold" marginLeft={1}>
+                  <Typography variant="h4" fontWeight="500" marginLeft={1}>
                     OBSERVABILITY
                   </Typography>
                   <IconButton
@@ -184,22 +171,13 @@ const SideNavbar = () => {
                   "/mainpage/infraInfo/events/allEvents" ||
                 window.location.pathname ===
                   "/mainpage/infraInfo/events/recentEvents" ? (
-                <>
-                  <ClusterFilter />
-                </>
-              ) : null
+                // <div style={{ paddingTop: "100px", backgroundColor: "red" }}>
+                <ClusterFilter />
+              ) : // </div>
+              null
             ) : null}
-          </Menu>
-        </Sidebar>
-      )}
-    </Box>
-  );
-};
 
-export default SideNavbar;
-
-{
-  /* (<MenuItem style={{marginTop:"20%"}} >
+            {/* (<MenuItem style={{marginTop:"20%"}} >
                 <Tooltip title="Filter">
                   <IconButton
                   // onClick={
@@ -214,11 +192,9 @@ export default SideNavbar;
                     <FilterListOutlined style={{color:"#FFF"}} />
                   </IconButton>
                 </Tooltip>
-              </MenuItem>) */
-}
+              </MenuItem>) */}
 
-{
-  /* <MenuItem
+            {/* <MenuItem
             component={<Link to="/mainpage/dashboard" />}
             style={{ margin: "10px 10px 10px 14px", padding: "10px" }}
             active={selected === "Dashboard"}
@@ -267,5 +243,12 @@ export default SideNavbar;
             }}
           >
             <Typography variant="h6">LOGS</Typography>
-          </MenuItem> */
-}
+          </MenuItem> */}
+          </Menu>
+        </Sidebar>
+      )}
+    </Box>
+  );
+};
+
+export default SideNavbar;

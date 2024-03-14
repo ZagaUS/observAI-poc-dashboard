@@ -217,12 +217,14 @@ const ClusterFilter = () => {
             alignItems: "center",
           }}
         >
+          {/* mainpage/infraInfo/clusterUtilization */}
           {window.location.pathname === "/mainpage/infraPod" ||
           window.location.pathname === "/mainpage/infraPod/podMemory" ||
           window.location.pathname === "/mainpage/infraNode" ||
           window.location.pathname === "/mainpage/infraNode/nodeMemory" ||
           window.location.pathname === "/mainpage/infraInfo" ||
-          window.location.pathname === "/mainpage/infraInfo/cpuUtilization" ||
+          window.location.pathname ===
+            "/mainpage/infraInfo/clusterUtilization" ||
           window.location.pathname === "/mainpage/infraInfo/alerts" ||
           window.location.pathname === "/mainpage/infraInfo/events" ? (
             <Typography variant="h5" fontWeight="500" color={"#fff"}>
@@ -394,9 +396,8 @@ const ClusterFilter = () => {
         ) : window.location.pathname !== "/mainpage/infraInfo/events" &&
           window.location.pathname !== "/mainpage/infraPod" &&
           window.location.pathname !== "/mainpage/infraPod/podMemory" &&
-          window.location.pathname !==
-            "/mainpage/infraInfo/events/allEvents" &&
-            nodeDetails.length !== 1 ? (
+          window.location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
+          nodeDetails.length !== 1 ? (
           <ListItem>
             <Accordion
               style={{ width: "500px", backgroundColor: colors.primary[400] }}
