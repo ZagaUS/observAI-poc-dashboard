@@ -715,6 +715,27 @@ function Topbar() {
             </span>
             {/* allEvents */}
             <>
+              {/* {location.pathname !== "/mainpage/sustainability" &&
+                location.pathname !== "/mainpage/sustainability/node" &&
+                location.pathname !== "/mainpage/infraPod" &&
+                location.pathname !== "/mainpage/infraInfo" &&
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
+                location.pathname !== "/mainpage/infraInfo/alerts" &&
+                location.pathname !== "/mainpage/infraInfo/events" &&
+                location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
+                location.pathname !== "/mainpage/infraPod/podMemory" &&
+                location.pathname !== "/mainpage/infraNode" &&
+                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                  <IconButton onClick={handleIconClick}>
+                    <Badge badgeContent={notificationCount} color="error">
+                      <NotificationImportantIcon
+                        style={{ fontSize: "20px", color: "#FFF" }}
+                      />
+                    </Badge>
+                  </IconButton>
+                )} */}
+
               {location.pathname !== "/mainpage/sustainability" &&
                 location.pathname !== "/mainpage/sustainability/node" &&
                 location.pathname !== "/mainpage/infraPod" &&
@@ -726,15 +747,7 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
-                location.pathname !== "/mainpage/infraNode/nodeMemory" &&
-                location.pathname === "/mainpage/infraInfo" &&
-                location.pathname ===
-                  "/mainpage/infraInfo/clusterUtilization" &&
-                location.pathname === "/mainpage/infraInfo/alerts" &&
-                location.pathname === "/mainpage/infraInfo/events" &&
-                location.pathname === "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname ===
-                  "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
                   <IconButton onClick={handleIconClick}>
                     <Badge badgeContent={notificationCount} color="error">
                       <NotificationImportantIcon
@@ -750,14 +763,15 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
-                location.pathname === "/mainpage/infraInfo" &&
-                location.pathname ===
+                location.pathname !== "/mainpage/infraInfo" &&
+                location.pathname !==
                   "/mainpage/infraInfo/clusterUtilization" &&
-                location.pathname === "/mainpage/infraInfo/alerts" &&
-                location.pathname === "/mainpage/infraInfo/events" &&
-                location.pathname === "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname ===
-                  "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !== "/mainpage/infraInfo/alerts" &&
+                location.pathname !== "/mainpage/infraInfo/events" &&
+                location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
+                location.pathname !== "/mainpage/infraPod/podMemory" &&
+                location.pathname !== "/mainpage/infraNode" &&
+                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
                   <Popover
                     id={id}
                     open={open}
