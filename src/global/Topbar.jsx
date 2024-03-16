@@ -346,7 +346,16 @@ function Topbar() {
                   location.pathname !== "/mainpage/infraPod" &&
                   location.pathname !== "/mainpage/infraPod/podMemory" &&
                   location.pathname !== "/mainpage/infraNode" &&
-                  location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                  location.pathname !== "/mainpage/infraNode/nodeMemory" &&
+                  location.pathname === "/mainpage/infraInfo" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/clusterUtilization" &&
+                  location.pathname === "/mainpage/infraInfo/alerts" &&
+                  location.pathname === "/mainpage/infraInfo/events" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/events/allEvents" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/events/recentEvents" && (
                     <IconButton onClick={handleIconClick}>
                       <Badge badgeContent={notificationCount} color="error">
                         <NotificationImportantIcon
@@ -361,7 +370,16 @@ function Topbar() {
                   location.pathname !== "/mainpage/infraPod" &&
                   location.pathname !== "/mainpage/infraPod/podMemory" &&
                   location.pathname !== "/mainpage/infraNode" &&
-                  location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                  location.pathname !== "/mainpage/infraNode/nodeMemory" &&
+                  location.pathname === "/mainpage/infraInfo" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/clusterUtilization" &&
+                  location.pathname === "/mainpage/infraInfo/alerts" &&
+                  location.pathname === "/mainpage/infraInfo/events" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/events/allEvents" &&
+                  location.pathname ===
+                    "/mainpage/infraInfo/events/recentEvents" && (
                     <Popover
                       id={id}
                       open={open}
@@ -708,7 +726,15 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
-                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                location.pathname !== "/mainpage/infraNode/nodeMemory" &&
+                location.pathname === "/mainpage/infraInfo" &&
+                location.pathname ===
+                  "/mainpage/infraInfo/clusterUtilization" &&
+                location.pathname === "/mainpage/infraInfo/alerts" &&
+                location.pathname === "/mainpage/infraInfo/events" &&
+                location.pathname === "/mainpage/infraInfo/events/allEvents" &&
+                location.pathname ===
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <IconButton onClick={handleIconClick}>
                     <Badge badgeContent={notificationCount} color="error">
                       <NotificationImportantIcon
@@ -724,13 +750,14 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
-                location.pathname !== "/mainpage/infraInfo" &&
-                location.pathname !==
+                location.pathname === "/mainpage/infraInfo" &&
+                location.pathname ===
                   "/mainpage/infraInfo/clusterUtilization" &&
-                location.pathname !== "/mainpage/infraInfo/alerts" &&
-                location.pathname !== "/mainpage/infraInfo/events" &&
-                location.pathname !==
-                  "/mainpage/infraInfo/events/allEvents" && (
+                location.pathname === "/mainpage/infraInfo/alerts" &&
+                location.pathname === "/mainpage/infraInfo/events" &&
+                location.pathname === "/mainpage/infraInfo/events/allEvents" &&
+                location.pathname ===
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <Popover
                     id={id}
                     open={open}
