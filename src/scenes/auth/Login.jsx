@@ -209,6 +209,7 @@ const Login = () => {
 
       socket.onclose = () => {
         console.log("WebSocket connection closed.");
+        // setTimeout(fetchAlerts, 1000);
         // setLoading(true);
       };
     } catch (error) {
@@ -242,7 +243,7 @@ const Login = () => {
       if (serviceData.length !== 0) {
         setServiceList(serviceData);
         servicePayload(serviceData);
-        fetchAlerts();
+        // fetchAlerts();
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
         // setUserDetails(userInfo);
         navigate("/");
@@ -351,7 +352,7 @@ const Login = () => {
 
         //call database login api
 
-        console.log("checkGlobalUsername", username);
+        // console.log("checkGlobalUsername", username);
         // await fetchClusterData(username);
         // const ClusterApiResponse = await getAllClustersAPI(username);
         // if (ClusterApiResponse.length !== 0) {

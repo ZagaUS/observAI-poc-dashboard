@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import {
   AppBar,
   Toolbar,
@@ -38,6 +38,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import { GiPortal } from "react-icons/gi";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import WindowIcon from "@mui/icons-material/Window";
+// import { useTokenExpirationCheck } from "./TokenExpiry";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -53,6 +54,8 @@ function Topbar() {
     alertResponse,
     setNotificationCount,
     notificationCount,
+    authenticated,
+    setAuthenticated,
   } = useContext(GlobalContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -113,6 +116,157 @@ function Topbar() {
     // Navigate to the home page
     navigate("/");
   };
+
+  // const [authenticated, setAuthenticated] = useState(false);
+  // const checkTokenExpiration = useTokenExpirationCheck();
+  // const memoizedCheckTokenExpiration = useMemo(() => checkTokenExpiration, []);
+
+  // useEffect(() => {
+  //   console.log("useeefct topbar called--->");
+  //   const userDetails = localStorage.getItem("userInfo");
+  //   // checkTokenExpiration();
+  //   memoizedCheckTokenExpiration();
+
+  //   if (userDetails) {
+  //     const user = JSON.parse(userDetails);
+  //     const checkRole = user.roles;
+  //     console.log("check role", checkRole);
+  //     setAuthenticated(!!checkRole);
+  //     // setUserRole(user.roles);
+  //   }
+  //   if (authenticated) {
+  //     console.log("Topbar authencation function success");
+  //   }
+  // }, [memoizedCheckTokenExpiration]);
+
+  const processWsData = (wsData) => {
+    const { alertType, alertMessage } = wsData; // Destructure properties from wsData
+
+    // Create an object to represent the alert
+    const alert = {
+      alertType,
+      alertData: alertMessage, // Assuming the alert message is in wsData.alertMessage
+    };
+
+    // Push the alert to the respective array based on alertType
+    alertResponse[alertType].push(alert);
+
+    // Now alertResponse object contains alerts categorized by type
+    console.log("Alerts:", alertResponse);
+  };
+
+  // const processWsData = (wsData) => {
+  //   const { alertType, alertMessage } = wsData; // Destructure properties from wsData
+
+  //   // Create an object to represent the alert
+  //   const alert = {
+  //     alertType,
+  //     alertData: alertMessage, // Assuming the alert message is in wsData.alertMessage
+  //   };
+
+  //   // Update state
+  //   setAlertResponse(prevState => {
+  //     // Clone the previous state to avoid mutating it
+  //     const newState = { ...prevState };
+
+  //     // Push the alert to the respective array based on alertType
+  //     newState[alertType] = [...prevState[alertType], alert];
+
+  //     // Now newState object contains alerts categorized by type
+  //     console.log("Alerts:", newState);
+
+  //     // Update localStorage
+  //     localStorage.setItem('alertResponse', JSON.stringify(newState));
+
+  //     // Return the new state
+  //     return newState;
+  //   });
+  // };
+
+  const fetchAlerts = async () => {
+    try {
+      const socket = await getRealtimeAlertData();
+
+      socket.onopen = () => {
+        console.log("Websocket connection opened");
+      };
+
+      socket.onmessage = (event) => {
+        if (event.data !== "[]") {
+          console.log("Realtime data " + event.data);
+          setNotificationCount((prevCount) => prevCount + 1);
+          // localStorage.setItem("notificationCount", 0);
+          // const prevCount = localStorage.getItem("notificationCount");
+          // localStorage.setItem("notificationCount", prevCount + 1);
+          // const currentCount = localStorage.getItem("notificationCount");
+          // setNotificationCount(currentCount);
+          // const NotificationCount = localStorage.setItem("notificationCount", notificationCount);
+
+          processWsData(JSON.parse(event.data));
+          // alertResponse.push(JSON.parse(event.data));
+        }
+      };
+
+      socket.onclose = () => {
+        console.log("WebSocket connection closed.");
+        setTimeout(fetchAlerts, 1000);
+        // setLoading(true);
+      };
+    } catch (error) {
+      // Handle error
+      console.log("Error occured " + error);
+    }
+  };
+
+  useEffect(() => {
+    // const accessToken = localStorage.getItem("accessToken");
+    // console.log("-----[USE EFFECT TOPBAR]-------");
+    // // console.log("accesstoken", accessToken);
+    // const tokencheck = isTokenExpired(accessToken);
+    // console.log("token expiry status: ", tokencheck);
+    // console.log("authin topbat", authenticated);
+    localStorage.getItem("authendicate");
+    if (localStorage.getItem("authendicate")) {
+      console.log("------------[ALERT API CALLED]----------");
+      fetchAlerts();
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // Open WebSocket connection when component mounts
+  //   const newSocket = new WebSocket("ws://example.com");
+  //   setSocket(newSocket);
+
+  //   // Close WebSocket connection when component unmounts
+  //   return () => {
+  //     newSocket.close();
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!socket) return;
+
+  //   // Listen for WebSocket messages
+  //   socket.onmessage = (event) => {
+  //     const newData = JSON.parse(event.data);
+  //     setData(newData);
+  //   };
+
+  //   // Reconnect to WebSocket on page refresh
+  //   window.addEventListener("beforeunload", () => {
+  //     socket.close();
+  //   });
+
+  //   // Reopen WebSocket connection when component mounts again
+  //   window.addEventListener("load", () => {
+  //     const newSocket = new WebSocket("ws://example.com");
+  //     setSocket(newSocket);
+  //   });
+
+  //   return () => {
+  //     socket.onmessage = null;
+  //   };
+  // }, [socket]);
 
   const appBarStyles = {
     height: "50px",
@@ -541,11 +695,17 @@ function Topbar() {
             >
               User: {user}
             </span>
-
+            {/* allEvents */}
             <>
               {location.pathname !== "/mainpage/sustainability" &&
                 location.pathname !== "/mainpage/sustainability/node" &&
                 location.pathname !== "/mainpage/infraPod" &&
+                location.pathname !== "/mainpage/infraInfo" &&
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
+                location.pathname !== "/mainpage/infraInfo/alerts" &&
+                location.pathname !== "/mainpage/infraInfo/events" &&
+                location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" && (
@@ -563,7 +723,14 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraPod" &&
                 location.pathname !== "/mainpage/infraPod/podMemory" &&
                 location.pathname !== "/mainpage/infraNode" &&
-                location.pathname !== "/mainpage/infraNode/nodeMemory" && (
+                location.pathname !== "/mainpage/infraNode/nodeMemory" &&
+                location.pathname !== "/mainpage/infraInfo" &&
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
+                location.pathname !== "/mainpage/infraInfo/alerts" &&
+                location.pathname !== "/mainpage/infraInfo/events" &&
+                location.pathname !==
+                  "/mainpage/infraInfo/events/allEvents" && (
                   <Popover
                     id={id}
                     open={open}
