@@ -114,6 +114,7 @@ const GlobalContextProvider = ({ children }) => {
   const [nodeName, setNodeName] = useState("zagaocp-us-sno");
   const [clusterName, setClusterName] = useState("zagaobservability-tztcb");
   const [globalLoading, setGlobalLoading] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
   return (
     <GlobalContext.Provider
@@ -278,6 +279,8 @@ const GlobalContextProvider = ({ children }) => {
         setNodeDetails,
         setGlobalLoading,
         globalLoading,
+        authenticated,
+        setAuthenticated,
       }}
     >
       {children}

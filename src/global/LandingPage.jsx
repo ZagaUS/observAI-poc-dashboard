@@ -25,12 +25,13 @@ import { GlobalContext } from "./globalContext/GlobalContext";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [authenticated, setAuthenticated] = useState(false);
+  // const [authenticated, setAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState("");
 
-  console.log("authenticated", authenticated);
+  // console.log("authenticated", authenticated);
 
-  const { setSelectedCluster } = useContext(GlobalContext);
+  const { setSelectedCluster, authenticated, setAuthenticated } =
+    useContext(GlobalContext);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   console.log("userInfo", userInfo);
@@ -50,7 +51,9 @@ const LandingPage = () => {
     if (userDetails) {
       const user = JSON.parse(userDetails);
       const checkRole = user.roles;
+      console.log("----[AUTHCHECK IN LANDING PAGE]------", !!checkRole);
       setAuthenticated(!!checkRole);
+      localStorage.setItem("authendicate", !!checkRole);
       setUserRole(user.roles);
     }
   }, [memoizedCheckTokenExpiration]);
@@ -92,6 +95,7 @@ const LandingPage = () => {
 
     // Navigate to the home page
     navigate("/");
+    localStorage.setItem("authendicate", false);
     setAuthenticated(false);
   };
 
