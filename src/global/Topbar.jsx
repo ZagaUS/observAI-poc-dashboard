@@ -245,6 +245,8 @@ function Topbar() {
     const newSocket = new WebSocket(`${WS_URL}`);
     setSocket(newSocket);
 
+    console.log("Websocket connection opened");
+
     // Close WebSocket connection when component unmounts
     // return () => {
     //   newSocket.close();
@@ -279,11 +281,14 @@ function Topbar() {
     // Reconnect to WebSocket on page refresh
     window.addEventListener("beforeunload", () => {
       socket.close();
+      console.log("WebSocket connection closed.");
     });
 
     // Reopen WebSocket connection when component mounts again
     window.addEventListener("load", () => {
       const newSocket = new WebSocket(`${WS_URL}`);
+
+      console.log("Websocket connection opened");
       setSocket(newSocket);
     });
 
@@ -749,7 +754,7 @@ function Topbar() {
             </span>
             {/* allEvents */}
             <>
-              {/* {location.pathname !== "/mainpage/sustainability" &&
+              {location.pathname !== "/mainpage/sustainability" &&
                 location.pathname !== "/mainpage/sustainability/node" &&
                 location.pathname !== "/mainpage/infraPod" &&
                 location.pathname !== "/mainpage/infraInfo" &&
@@ -762,11 +767,13 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
                 location.pathname !== "/mainpage/infraInfo" &&
-                location.pathname !== "/mainpage/infraInfo/clusterUtilization" && 
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
                 location.pathname !== "/mainpage/infraInfo/alerts" &&
                 location.pathname !== "/mainpage/infraInfo/events" &&
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname !== "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !==
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <IconButton onClick={handleIconClick}>
                     <Badge badgeContent={notificationCount} color="error">
                       <NotificationImportantIcon
@@ -783,11 +790,13 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
                 location.pathname !== "/mainpage/infraInfo" &&
-                location.pathname !== "/mainpage/infraInfo/clusterUtilization" && 
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
                 location.pathname !== "/mainpage/infraInfo/alerts" &&
                 location.pathname !== "/mainpage/infraInfo/events" &&
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname !== "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !==
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <Popover
                     id={id}
                     open={open}
@@ -969,8 +978,11 @@ function Topbar() {
                         </AccordionDetails>
                       </Accordion>
                     </ListItem>
+                  </Popover>
+                )}
+            </>
 
-                    {/* <div
+            {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "space-around",
@@ -1006,7 +1018,7 @@ function Topbar() {
                     </div>
                   ))}
                 </>
-              )} */}
+              )}
                   </Popover>
                 )}
             </>
