@@ -22,6 +22,7 @@ import { useTokenExpirationCheck } from "./TokenExpiry";
 import { isTokenExpired, logout } from "./AuthMechanism";
 import "./LandingPage.css";
 import { GlobalContext } from "./globalContext/GlobalContext";
+import { getRealtimeAlertData } from "../api/AlertApiService";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -30,11 +31,16 @@ const LandingPage = () => {
 
   // console.log("authenticated", authenticated);
 
-  const { setSelectedCluster, authenticated, setAuthenticated } =
-    useContext(GlobalContext);
+  const {
+    setSelectedCluster,
+    authenticated,
+    setAuthenticated,
+    socketInstance,
+    setSocketInstance,
+  } = useContext(GlobalContext);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log("userInfo", userInfo);
+  // console.log("userInfo", userInfo);
 
   // const checkTokenExpiration = useTokenExpirationCheck();
 
@@ -42,6 +48,30 @@ const LandingPage = () => {
 
   // Memoize the function to prevent unnecessary re-renders
   const memoizedCheckTokenExpiration = useMemo(() => checkTokenExpiration, []);
+
+  // let socketInstance = null;
+
+  const closeWebSocket = async () => {
+    // if (socketInstance) {
+    //   socketInstance.close();
+    //   console.log("WebSocket connection closed.");
+    //   setSocketInstance(null);
+    // }
+    // try {
+    // Initialize WebSocket connection
+    // const socketInstance = await getRealtimeAlertData();
+    // socketInstance.close();
+  };
+
+  // Function to close the WebSocket connection
+  // const closeWebSocket = () => {
+  //   const socket = await getRealtimeAlertData();
+  //   if (!!socket && socket.readyState === socket.OPEN) {
+  //     socket.close();
+  //   } else {
+  //     console.log("Unable to close websocket as it is not open");
+  //   }
+  // };
 
   useEffect(() => {
     const userDetails = localStorage.getItem("userInfo");
@@ -63,8 +93,11 @@ const LandingPage = () => {
   };
 
   const handleLogout = async () => {
+    console.log("logout---->");
     // Check if the token is expired
     // setSelectedCluster([]);
+    // localStorage.getItem("authendicate");
+    closeWebSocket();
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken && isTokenExpired(accessToken)) {
       // Token is expired, clear local storage and navigate to the home page
@@ -95,7 +128,7 @@ const LandingPage = () => {
 
     // Navigate to the home page
     navigate("/");
-    localStorage.setItem("authendicate", false);
+    // localStorage.setItem("authendicate", false);
     setAuthenticated(false);
   };
 

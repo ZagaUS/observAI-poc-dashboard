@@ -38,7 +38,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import { GiPortal } from "react-icons/gi";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import WindowIcon from "@mui/icons-material/Window";
-// import { useTokenExpirationCheck } from "./TokenExpiry";
+import { MdDangerous } from "react-icons/md";
+import { IoWarning } from "react-icons/io5";
+import { IoIosInformationCircle } from "react-icons/io";
+// import { BsInfoCircleFill } from "react-icons/bs";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -56,8 +59,16 @@ function Topbar() {
     notificationCount,
     authenticated,
     setAuthenticated,
+    // socketInstance,
+    // setSocketInstance,
   } = useContext(GlobalContext);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [socketInstance, setSocketInstance] = useState(null);
+
+  const [socket, setSocket] = useState(null);
+
+  // const [socketClose,setSocketClose] = useState(false);
 
   // const checkTokenExpiration = useTokenExpirationCheck();
 
@@ -76,12 +87,6 @@ function Topbar() {
 
   const open = Boolean(anchorEl);
   const id = open ? "notification-popover" : undefined;
-
-  // const handleLogout = () => {
-  //   localStorage.setItem("loggedOut",true);
-  //   logout();
-  //   navigate("/");
-  // };
 
   const handleLogout = async () => {
     // Check if the token is expired
@@ -182,10 +187,13 @@ function Topbar() {
   //     return newState;
   //   });
   // };
-
+  // let socketInstance = null;
   const fetchAlerts = async () => {
     try {
       const socket = await getRealtimeAlertData();
+      localStorage.setItem("socketDetails", socket);
+      // socketInstance = socket;
+      setSocketInstance(socket);
 
       socket.onopen = () => {
         console.log("Websocket connection opened");
@@ -209,7 +217,8 @@ function Topbar() {
 
       socket.onclose = () => {
         console.log("WebSocket connection closed.");
-        setTimeout(fetchAlerts, 1000);
+        // setSocketClose(true);
+        // setTimeout(fetchAlerts, 1000);
         // setLoading(true);
       };
     } catch (error) {
@@ -218,55 +227,78 @@ function Topbar() {
     }
   };
 
-  useEffect(() => {
-    // const accessToken = localStorage.getItem("accessToken");
-    // console.log("-----[USE EFFECT TOPBAR]-------");
-    // // console.log("accesstoken", accessToken);
-    // const tokencheck = isTokenExpired(accessToken);
-    // console.log("token expiry status: ", tokencheck);
-    // console.log("authin topbat", authenticated);
-    localStorage.getItem("authendicate");
-    if (localStorage.getItem("authendicate")) {
-      console.log("------------[ALERT API CALLED]----------");
-      fetchAlerts();
-    }
-  }, []);
-
   // useEffect(() => {
-  //   // Open WebSocket connection when component mounts
-  //   const newSocket = new WebSocket("ws://example.com");
-  //   setSocket(newSocket);
-
-  //   // Close WebSocket connection when component unmounts
-  //   return () => {
-  //     newSocket.close();
-  //   };
+  //   // const accessToken = localStorage.getItem("accessToken");
+  //   // console.log("-----[USE EFFECT TOPBAR]-------");
+  //   // // console.log("accesstoken", accessToken);
+  //   // const tokencheck = isTokenExpired(accessToken);
+  //   // console.log("token expiry status: ", tokencheck);
+  //   // console.log("authin topbat", authenticated);
+  //   localStorage.getItem("authendicate");
+  //   if (localStorage.getItem("authendicate")) {
+  //     console.log("------------[ALERT API CALLED]----------");
+  //     fetchAlerts();
+  //   }
   // }, []);
 
-  // useEffect(() => {
-  //   if (!socket) return;
+  const WS_URL = process.env.REACT_APP_APIURL_ALERT_WS;
 
-  //   // Listen for WebSocket messages
-  //   socket.onmessage = (event) => {
-  //     const newData = JSON.parse(event.data);
-  //     setData(newData);
-  //   };
+  useEffect(() => {
+    // Open WebSocket connection when component mounts
+    const newSocket = new WebSocket(`${WS_URL}`);
+    setSocket(newSocket);
 
-  //   // Reconnect to WebSocket on page refresh
-  //   window.addEventListener("beforeunload", () => {
-  //     socket.close();
-  //   });
+    console.log("Websocket connection opened");
 
-  //   // Reopen WebSocket connection when component mounts again
-  //   window.addEventListener("load", () => {
-  //     const newSocket = new WebSocket("ws://example.com");
-  //     setSocket(newSocket);
-  //   });
+    // Close WebSocket connection when component unmounts
+    // return () => {
+    //   newSocket.close();
+    // };
+  }, []);
 
-  //   return () => {
-  //     socket.onmessage = null;
-  //   };
-  // }, [socket]);
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for WebSocket messages
+    // socket.onmessage = (event) => {
+    //   const newData = JSON.parse(event.data);
+    //   setData(newData);
+    // };
+
+    socket.onmessage = (event) => {
+      if (event.data !== "[]") {
+        console.log("Realtime data " + event.data);
+        setNotificationCount((prevCount) => prevCount + 1);
+        // localStorage.setItem("notificationCount", 0);
+        // const prevCount = localStorage.getItem("notificationCount");
+        // localStorage.setItem("notificationCount", prevCount + 1);
+        // const currentCount = localStorage.getItem("notificationCount");
+        // setNotificationCount(currentCount);
+        // const NotificationCount = localStorage.setItem("notificationCount", notificationCount);
+
+        processWsData(JSON.parse(event.data));
+        // alertResponse.push(JSON.parse(event.data));
+      }
+    };
+
+    // Reconnect to WebSocket on page refresh
+    window.addEventListener("beforeunload", () => {
+      socket.close();
+      console.log("WebSocket connection closed.");
+    });
+
+    // Reopen WebSocket connection when component mounts again
+    window.addEventListener("load", () => {
+      const newSocket = new WebSocket(`${WS_URL}`);
+
+      console.log("Websocket connection opened");
+      setSocket(newSocket);
+    });
+
+    return () => {
+      socket.onmessage = null;
+    };
+  }, [socket]);
 
   const appBarStyles = {
     height: "50px",
@@ -290,6 +322,16 @@ function Topbar() {
   // console.log("alertmessage", alertResponse[selectedOption]);
 
   const handleHomepage = () => {
+    if (socketInstance) {
+      socketInstance.close();
+      console.log("WebSocket connection closed.");
+    }
+    // if (localStorage.getItem("socketDetails")) {
+    //   const SocketDetails = localStorage.getItem("socketDetails");
+    //   SocketDetails.close();
+    //   // console.log("WebSocket connection closed.");
+    // }
+
     navigate("/");
   };
 
@@ -728,11 +770,13 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
                 location.pathname !== "/mainpage/infraInfo" &&
-                location.pathname !== "/mainpage/infraInfo/clusterUtilization" && 
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
                 location.pathname !== "/mainpage/infraInfo/alerts" &&
                 location.pathname !== "/mainpage/infraInfo/events" &&
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname !== "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !==
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <IconButton onClick={handleIconClick}>
                     <Badge badgeContent={notificationCount} color="error">
                       <NotificationImportantIcon
@@ -749,11 +793,13 @@ function Topbar() {
                 location.pathname !== "/mainpage/infraNode" &&
                 location.pathname !== "/mainpage/infraNode/nodeMemory" &&
                 location.pathname !== "/mainpage/infraInfo" &&
-                location.pathname !== "/mainpage/infraInfo/clusterUtilization" && 
+                location.pathname !==
+                  "/mainpage/infraInfo/clusterUtilization" &&
                 location.pathname !== "/mainpage/infraInfo/alerts" &&
                 location.pathname !== "/mainpage/infraInfo/events" &&
                 location.pathname !== "/mainpage/infraInfo/events/allEvents" &&
-                location.pathname !== "/mainpage/infraInfo/events/recentEvents" && (
+                location.pathname !==
+                  "/mainpage/infraInfo/events/recentEvents" && (
                   <Popover
                     id={id}
                     open={open}
@@ -788,13 +834,12 @@ function Topbar() {
                               <>
                                 {alertResponse.metric.map((data, index) => (
                                   <div key={`metric-${index}`}>
-                                    <Typography
-                                      variant="h6"
-                                      sx={{
-                                        p: 2,
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
                                         lineHeight: "1",
                                         backgroundColor: "white",
-                                        // color:"black"
                                         color: data.alertData.includes(
                                           "CRITICAL"
                                         )
@@ -804,8 +849,39 @@ function Topbar() {
                                           : "black",
                                       }}
                                     >
-                                      {data.alertData}
-                                    </Typography>
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
                                     {index !==
                                       alertResponse.metric.length - 1 && (
                                       <Divider />
@@ -845,6 +921,61 @@ function Topbar() {
                               <>
                                 {alertResponse.trace.map((data, index) => (
                                   <div key={`trace-${index}`}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
+                                        lineHeight: "1",
+                                        backgroundColor: "white",
+                                        color: data.alertData.includes(
+                                          "CRITICAL"
+                                        )
+                                          ? "red"
+                                          : data.alertData.includes("WARNING")
+                                          ? "#FF8C00"
+                                          : "black",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
+                                    {/* <Typography>
+                                      
+                                      {data.alertData.includes("WARNING") ? (
+                                        <MdDangerous sx={{ color: "red" }} />
+                                      ) : null}
+                                    </Typography>
+
                                     <Typography
                                       variant="h6"
                                       sx={{
@@ -861,8 +992,11 @@ function Topbar() {
                                           : "black",
                                       }}
                                     >
+                                      {data.alertData.includes("WARNING") ? (
+                                        <MdDangerous sx={{ color: "red" }} />
+                                      ) : null}
                                       {data.alertData}
-                                    </Typography>
+                                    </Typography> */}
                                     {index !==
                                       alertResponse.trace.length - 1 && (
                                       <Divider />
@@ -901,14 +1035,16 @@ function Topbar() {
                             {alertResponse.log.length > 0 ? (
                               <>
                                 {alertResponse.log.map((data, index) => (
-                                  <div key={`log-${index}`}>
-                                    <Typography
-                                      variant="h6"
-                                      sx={{
-                                        p: 2,
+                                  <div
+                                    key={`log-${index}`}
+                                    style={{ display: "flex" }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
                                         lineHeight: "1",
                                         backgroundColor: "white",
-                                        // color:"black"
                                         color: data.alertData.includes(
                                           "CRITICAL"
                                         )
@@ -918,8 +1054,39 @@ function Topbar() {
                                           : "black",
                                       }}
                                     >
-                                      {data.alertData}
-                                    </Typography>
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
                                     {index !== alertResponse.log.length - 1 && (
                                       <Divider />
                                     )}
@@ -935,8 +1102,11 @@ function Topbar() {
                         </AccordionDetails>
                       </Accordion>
                     </ListItem>
+                  </Popover>
+                )}
+            </>
 
-                    {/* <div
+            {/* <div
                 style={{
                   display: "flex",
                   justifyContent: "space-around",
@@ -972,7 +1142,7 @@ function Topbar() {
                     </div>
                   ))}
                 </>
-              )} */}
+              )}
                   </Popover>
                 )}
             </>

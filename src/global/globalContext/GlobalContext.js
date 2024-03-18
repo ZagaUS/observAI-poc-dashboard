@@ -105,6 +105,8 @@ const GlobalContextProvider = ({ children }) => {
     log: [],
   });
 
+  const [socketInstance, setSocketInstance] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -281,6 +283,8 @@ const GlobalContextProvider = ({ children }) => {
         globalLoading,
         authenticated,
         setAuthenticated,
+        socketInstance,
+        setSocketInstance,
       }}
     >
       {children}
