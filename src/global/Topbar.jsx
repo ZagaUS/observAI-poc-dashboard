@@ -38,7 +38,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import { GiPortal } from "react-icons/gi";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import WindowIcon from "@mui/icons-material/Window";
-// import { useTokenExpirationCheck } from "./TokenExpiry";
+import { MdDangerous } from "react-icons/md";
+import { IoWarning } from "react-icons/io5";
+import { IoIosInformationCircle } from "react-icons/io";
+// import { BsInfoCircleFill } from "react-icons/bs";
 
 function Topbar() {
   const navigate = useNavigate();
@@ -831,24 +834,54 @@ function Topbar() {
                               <>
                                 {alertResponse.metric.map((data, index) => (
                                   <div key={`metric-${index}`}>
-                                    <Typography
-                                      variant="h6"
-                                      sx={{
-                                        p: 2,
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
                                         lineHeight: "1",
                                         backgroundColor: "white",
-                                        // color:"black"
                                         color: data.alertData.includes(
                                           "CRITICAL"
                                         )
                                           ? "red"
                                           : data.alertData.includes("WARNING")
-                                          ? "yellow"
+                                          ? "#FF8C00"
                                           : "black",
                                       }}
                                     >
-                                      {data.alertData}
-                                    </Typography>
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
                                     {index !==
                                       alertResponse.metric.length - 1 && (
                                       <Divider />
@@ -888,6 +921,61 @@ function Topbar() {
                               <>
                                 {alertResponse.trace.map((data, index) => (
                                   <div key={`trace-${index}`}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
+                                        lineHeight: "1",
+                                        backgroundColor: "white",
+                                        color: data.alertData.includes(
+                                          "CRITICAL"
+                                        )
+                                          ? "red"
+                                          : data.alertData.includes("WARNING")
+                                          ? "#FF8C00"
+                                          : "black",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
+                                    {/* <Typography>
+                                      
+                                      {data.alertData.includes("WARNING") ? (
+                                        <MdDangerous sx={{ color: "red" }} />
+                                      ) : null}
+                                    </Typography>
+
                                     <Typography
                                       variant="h6"
                                       sx={{
@@ -904,8 +992,11 @@ function Topbar() {
                                           : "black",
                                       }}
                                     >
+                                      {data.alertData.includes("WARNING") ? (
+                                        <MdDangerous sx={{ color: "red" }} />
+                                      ) : null}
                                       {data.alertData}
-                                    </Typography>
+                                    </Typography> */}
                                     {index !==
                                       alertResponse.trace.length - 1 && (
                                       <Divider />
@@ -944,25 +1035,58 @@ function Topbar() {
                             {alertResponse.log.length > 0 ? (
                               <>
                                 {alertResponse.log.map((data, index) => (
-                                  <div key={`log-${index}`}>
-                                    <Typography
-                                      variant="h6"
-                                      sx={{
-                                        p: 2,
+                                  <div
+                                    key={`log-${index}`}
+                                    style={{ display: "flex" }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        padding: "10px",
                                         lineHeight: "1",
                                         backgroundColor: "white",
-                                        // color:"black"
                                         color: data.alertData.includes(
                                           "CRITICAL"
                                         )
                                           ? "red"
                                           : data.alertData.includes("WARNING")
-                                          ? "yellow"
+                                          ? "#FF8C00"
                                           : "black",
                                       }}
                                     >
-                                      {data.alertData}
-                                    </Typography>
+                                      <div
+                                        style={{
+                                          paddingTop: "3px",
+                                          paddingRight: "3px",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        {data.alertData.includes("CRITICAL") ? (
+                                          <MdDangerous
+                                            sx={{
+                                              fontSize: "30px",
+                                              paddingRight: "5px",
+                                              paddingTop: "10px",
+                                              backgroundColor: "green",
+                                            }}
+                                          />
+                                        ) : data.alertData.includes(
+                                            "WARNING"
+                                          ) ? (
+                                          <IoWarning
+                                            sx={{ fontSize: "30px" }}
+                                          />
+                                        ) : data.alertData.includes("INFO") ? (
+                                          <IoIosInformationCircle
+                                            sx={{ fontSize: "20px" }}
+                                          />
+                                        ) : null}
+                                      </div>
+                                      <Typography variant="h6">
+                                        {" "}
+                                        {data.alertData}
+                                      </Typography>
+                                    </div>
                                     {index !== alertResponse.log.length - 1 && (
                                       <Divider />
                                     )}
