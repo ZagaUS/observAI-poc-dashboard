@@ -21,6 +21,7 @@ import {
   AlertTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -68,25 +69,11 @@ const tableHeader = [
     id: "createdTime",
     label: "Created Time",
   },
+  {
+    id: "action",
+    label: "Action",
+  },
 ];
-
-function createData(
-  severityText,
-  resource,
-  resourceName,
-  namespaceName,
-  eventMessage,
-  createdTime
-) {
-  return {
-    severityText,
-    resource,
-    resourceName,
-    namespaceName,
-    eventMessage,
-    createdTime,
-  };
-}
 
 const allEventDatas = [
   {
@@ -143,16 +130,86 @@ const AllEvents = () => {
 
   console.log("events-------------", allEventData);
 
+  function createData(
+    severityText,
+    resource,
+    resourceName,
+    namespaceName,
+    eventMessage,
+    createdTime,
+    index
+  ) {
+    const actionButton = (
+      <div>
+        <Box>
+          <Tooltip>
+            <Button
+              sx={{
+                // m: "8px",
+                backgroundColor: colors.primary[400],
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#ffffff",
+                  color: "black",
+                },
+              }}
+              variant="contained"
+              // onClick={handleViewAction}
+              onClick={() =>
+                handlePopoverOpen(
+                  severityText,
+                  resource,
+                  resourceName,
+                  namespaceName,
+                  eventMessage,
+                  createdTime,
+                  index
+                )
+              }
+            >
+              View
+            </Button>
+          </Tooltip>
+        </Box>
+      </div>
+    );
+    return {
+      severityText,
+      resource,
+      resourceName,
+      namespaceName,
+      eventMessage,
+      createdTime,
+      action: actionButton
+    };
+  }  
+
   const handleCancel = () => {
     navigate("/mainpage/infraInfo/events");
     setViewAllEvents(true);
     console.log("Closed");
   };
 
-  const handlePopoverOpen = (rowData, anchorEl) => {
-    console.log("Popover Function", rowData);
+  const handlePopoverOpen = (
+    severityText,
+    resource,
+    resourceName,
+    namespaceName,
+    eventMessage,
+    createdTime,
+    index,
+    anchorEl
+  ) => {
+    const selectedEventObj = {
+      severityText: severityText,
+      resource: resource,
+      resourceName: resourceName,
+      namespaceName: namespaceName,
+      eventMessage: eventMessage,
+      createdTime: createdTime,
+    };
     console.log("Popover", anchorEl);
-    setSelectedEvent(rowData);
+    setSelectedEvent(selectedEventObj);
     setAnchorEl(anchorEl);
   };
 
@@ -514,9 +571,9 @@ const AllEvents = () => {
                               <TableRow
                                 className={classes.hover}
                                 key={rowIndex}
-                                onClick={(event) =>
-                                  handlePopoverOpen(row, event.currentTarget)
-                                }
+                                // onClick={(event) =>
+                                //   handlePopoverOpen(row, event.currentTarget)
+                                // }
                               >
                                 {/* <TableRow key={rowIndex}> */}
                                 {tableHeader.map((column) => (

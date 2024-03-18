@@ -426,7 +426,7 @@ function Topbar() {
                                           )
                                             ? "red"
                                             : data.alertData.includes("WARNING")
-                                            ? "yellow"
+                                            ? "#FF8C00"
                                             : "black",
                                         }}
                                       >
@@ -483,7 +483,7 @@ function Topbar() {
                                           )
                                             ? "red"
                                             : data.alertData.includes("WARNING")
-                                            ? "yellow"
+                                            ? "#FF8C00"
                                             : "black",
                                         }}
                                       >
@@ -540,7 +540,7 @@ function Topbar() {
                                           )
                                             ? "red"
                                             : data.alertData.includes("WARNING")
-                                            ? "yellow"
+                                            ? "#FF8C00"
                                             : "black",
                                         }}
                                       >
@@ -800,7 +800,7 @@ function Topbar() {
                                         )
                                           ? "red"
                                           : data.alertData.includes("WARNING")
-                                          ? "yellow"
+                                          ? "#FF8C00"
                                           : "black",
                                       }}
                                     >
@@ -857,7 +857,7 @@ function Topbar() {
                                         )
                                           ? "red"
                                           : data.alertData.includes("WARNING")
-                                          ? "yellow"
+                                          ? "#FF8C00"
                                           : "black",
                                       }}
                                     >
@@ -914,7 +914,7 @@ function Topbar() {
                                         )
                                           ? "red"
                                           : data.alertData.includes("WARNING")
-                                          ? "yellow"
+                                          ? "#FF8C00"
                                           : "black",
                                       }}
                                     >
