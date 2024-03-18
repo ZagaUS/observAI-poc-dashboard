@@ -107,6 +107,8 @@ const AllEvents = () => {
     lookBackVal,
     selectedNode,
     selectedCluster,
+    setInfraActiveTab,
+    setInfraInfoActiveTab,
   } = useContext(GlobalContext);
   const [allEventData, setAllEventData] = useState([]);
   const [viewAllEvents, setViewAllEvents] = useState(false);
@@ -154,7 +156,6 @@ const AllEvents = () => {
                 },
               }}
               variant="contained"
-              // onClick={handleViewAction}
               onClick={() =>
                 handlePopoverOpen(
                   severityText,
@@ -218,29 +219,6 @@ const AllEvents = () => {
     setAnchorEl(null);
   };
 
-  // const mapAllEvents = (data) => {
-  //   return data.flatMap((item) => {
-  //     const createdTimeAndDate = new Date(item.createdTime);
-  //     const formattedTime = format(createdTimeAndDate, "MMMM dd, yyyy hh:mm:ss a");
-
-  //     return item.scopeLogs.flatMap((scopeLog) => {
-  //       return scopeLog.logRecords.map((logRecord) => {
-  //         const namespaceAttribute = logRecord.attributes.find(attr => attr.key === "k8s.namespace.name");
-  //         const namespaceName = namespaceAttribute ? namespaceAttribute.value.stringValue : "Namespace not found";
-
-  //         return {
-  //           resource: item.objectKind,
-  //           resourceName: item.objectName,
-  //           eventMessage: logRecord.body.stringValue,
-  //           namespaceName: namespaceName,
-  //           severityText: logRecord.severityText,
-  //           createdTime: formattedTime,
-  //         };
-  //       });
-  //     });
-  //   });
-  // };
-
   const mapAllEvents = (eventData) => {
     const extractEventData = [];
 
@@ -303,29 +281,6 @@ const AllEvents = () => {
     Normal: theme.palette.mode === "dark" ? "#FFFFFF" : "black",
   };
 
-  // const handleGetAllEvents = useCallback(async () => {
-  //   try {
-  //     setLoading(true);
-  //     const eventsData = await getAllEvent(lookBackVal.value);
-  //     if (eventsData.length !== 0) {
-  //       console.log("All Events Data", eventsData);
-  //       const finalData = mapAllEvents(eventsData);
-  //       // setAllEventData(eventsData);
-  //       setAllEventData(finalData);
-  //       setLoading(false);
-  //       console.log("ALL EVENTS", eventsData);
-  //     } else {
-  //       console.log("No Events data");
-  //       setEmptyMessage("No Events Data to show!");
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Error fetching All Events:", error);
-  //     setErrorMessage("An Error Occurred!");
-  //     setLoading(false);
-  //   }
-  // }, [lookBackVal]);
-
   const handleGetAllEvents = useCallback(async () => {
     const selectedNodestring = selectedNode[0];
     try {
@@ -367,8 +322,9 @@ const AllEvents = () => {
 
   useEffect(() => {
     handleGetAllEvents();
-    handlePopoverOpen();
-
+    setInfraActiveTab(0);
+    setInfraInfoActiveTab(3);
+    // setAnchorEl(null);
     console.log("Use Effect All Event");
 
     return () => {
