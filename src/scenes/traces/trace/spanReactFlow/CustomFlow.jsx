@@ -272,7 +272,7 @@ const CustomFlow = ({ spandata }) => {
               const isFunction = !isHTTP && !isKafka && !isDatabase;
 
               return (
-                <Step key={index} style={{ marginLeft: "-58px" }} onClick={ span.errorStatus ? () => handleClickError(span.errorMessage, span.logAttributes) : null}>
+                <Step key={index} style={{ marginLeft: "-58px" }} onClick={ span.errorStatus ? () => handleClickError(span.errorMessage, span.logAttributes) : null} sx={{ cursor: span.errorStatus ? "pointer" : "" }}>
                   <div className="circle">
                     {/* {isHTTP && (
                 // Render HTTP icon
