@@ -1,5 +1,5 @@
-import { Card, CardContent, Step, Stepper } from "@mui/material";
-import React from "react";
+import { Card, CardContent, IconButton, Paper, Popover, Step, Stepper, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
+import React, { useRef } from "react";
 import { useState } from "react";
 import "./CustomFlow.css";
 import { MdHttp } from "react-icons/md";
@@ -8,7 +8,7 @@ import { SiApachekafka } from "react-icons/si";
 import { PiBracketsRoundBold } from "react-icons/pi";
 import PropTypes from "prop-types";
 import { styled, useTheme } from "@mui/material/styles";
-
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import Check from "@mui/icons-material/Check";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -24,6 +24,11 @@ const CustomFlow = ({ spandata }) => {
   const colors = tokens(theme.palette.mode);
   const [spanName, setspanname] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
+
+  const [popoverOpen, setPopoverOpen] = useState(null);
+  const [errorDetails, setErrorDetails] = useState({});
+
+  const targetElementRef = useRef(null);
 
   console.log("spandata", spandata);
   console.log("spandnames", spanName);
@@ -154,6 +159,30 @@ const CustomFlow = ({ spandata }) => {
     return duration;
   };
 
+  const handleClickError = (errorMessage, logAttributes) => {
+    const formattedAttributeData = {};
+
+    logAttributes.forEach((attribute) => {
+      const key = attribute.key;
+      const value = attribute.value.stringValue;
+      formattedAttributeData[key] = value;
+    });
+
+    const logAttr = {
+      errorMessage: errorMessage.stringValue,
+      logAttributes: logAttributes,
+    };
+    console.log(logAttr);
+    setErrorDetails(logAttr);
+    setPopoverOpen(targetElementRef.current);
+
+    console.log("Circle Clicked");
+  }
+
+  const handlePopoverClose = () => {
+    setPopoverOpen(null);
+  }
+
   return (
     <div>
       <Card
@@ -163,6 +192,7 @@ const CustomFlow = ({ spandata }) => {
           overflow: "scroll",
           width: "560px",
         }}
+        ref={targetElementRef}
       >
         <CardContent>
           {/* <Stepper activeStep={1} alternativeLabel connector={<ColorlibConnector />} style={{ marginTop: "130px"}}> */}
@@ -242,8 +272,8 @@ const CustomFlow = ({ spandata }) => {
               const isFunction = !isHTTP && !isKafka && !isDatabase;
 
               return (
-                <Step key={index} >
-                  <div className="circle" style={{ marginLeft: "-58px" }}>
+                <Step key={index} style={{ marginLeft: "-58px" }} onClick={ span.errorStatus ? () => handleClickError(span.errorMessage, span.logAttributes) : null}>
+                  <div className="circle">
                     {/* {isHTTP && (
                 // Render HTTP icon
                 <MdHttp
@@ -422,6 +452,137 @@ const CustomFlow = ({ spandata }) => {
               );
             })}
           </Stepper>
+          {popoverOpen ? (
+                    <Popover
+                      open={Boolean(popoverOpen)}
+                      anchorEl={popoverOpen}
+                      onClose={handlePopoverClose}
+                      anchorOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "center",
+                        horizontal: "center",
+                      }}
+                      style={{
+                        position: "absolute",
+                        height: "550px",
+                        width: "500px",
+                        // marginRight: "100px",
+                      }}
+                    >
+                      <Paper>
+                        <div
+                          style={
+                            {
+                              // maxHeight: "calc(100vh - 70px)",
+                              // overflowY: "auto",
+                              // paddingRight: "10px",
+                              // marginTop: "10px",
+                            }
+                          }
+                        >
+                          <IconButton
+                            color="inherit"
+                            onClick={handlePopoverClose}
+                          >
+                            <ClearRoundedIcon />
+                          </IconButton>
+                          {/* <div
+                            style={{
+                              marginLeft: "10px",
+                              backgroundColor: colors.blueAccent[400],
+                              color: "white",
+                            }}
+                          >
+                            {spanErrorData.errorMessage}
+                          </div>
+                          <div>
+                            {spanErrorData.logAttributes.map((att, index) => {
+                              console.log("strrrr", att.key);
+                              console.log("strrrrvalue", att.value);
+                              return (
+                                <>
+                                  <div
+                                    key={index}
+                                    style={{
+                                      backgroundColor: "red",
+                                      color: "white",
+                                    }}
+                                  >
+                                    {att.key}
+                                  </div>
+                                  <div key={index}>{att.value.stringValue}</div>
+                                </>
+                              );
+                            })}
+                          </div> */}
+
+
+                          <TableContainer component={Paper} >
+                                <Table aria-label="customized table">
+                                    <TableBody>
+                                        <div style={{ overflowX: 'hidden' }}>
+                                            <TableRow>
+                                                <TableCell align='left' style={{ width: '20%' , fontWeight: "500" }}>
+                                                    Error Component
+                                                </TableCell>
+                                                <TableCell align='left' style={{ width: '80%' }}>
+                                                {errorDetails.errorMessage}
+                                                </TableCell>
+                                            </TableRow>
+                                            
+                                            {errorDetails.logAttributes.length > 0 ? (
+                                                errorDetails.logAttributes.map((attribute, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell align='left' style={{ width: '20%' ,fontWeight: "500" }}>
+                                                            {/* jey <div>{attribute.key}</div> */}
+                                                            
+                                                            <div></div>
+                                                        </TableCell>
+                                                        <TableCell align='left' style={{ width: '80%' }}>
+                                                            <div className={attribute.key === "exception.stacktrace" ? "scrollable" : ""}>
+                                                                {attribute.key === "exception.stacktrace" ? (
+                                                                    <div className="stacktrace">{attribute.value.stringValue}</div>
+                                                                ) : (
+                                                                    attribute.value.stringValue
+                                                                )}
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            ) : null}
+                                        </div>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                          {/* <TableContainer component={Paper}>
+                            <Table aria-label="customized table"></Table>
+                            <TableBody>
+                          
+                            
+                               
+                                  {spanErrorData.logAttributes.map(
+                                    (att, index) => {
+                                      return (
+                                        <TableRow>
+                                          <TableCell>Error Key</TableCell>
+                                          <TableCell>{att.key}</TableCell>
+                                          <TableCell>Error value</TableCell>
+                                          <TableCell>{att.values}</TableCell>
+                                        </TableRow>
+                                      );
+                                    }
+                                  )}
+                             
+                            </TableBody>
+                          </TableContainer> */}
+                        </div>
+                      </Paper>
+                    </Popover>
+                  ) : null}
         </CardContent>
       </Card>
     </div>
