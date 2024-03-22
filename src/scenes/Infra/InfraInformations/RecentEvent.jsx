@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -80,45 +81,10 @@ const tableHeader = [
     id: "createdTime",
     label: "Created Time",
   },
-];
-
-function createData(
-  severityText,
-  resource,
-  resourceName,
-  eventMessage,
-  createdTime
-) {
-  return { severityText, resource, resourceName, eventMessage, createdTime };
-}
-
-const rows = [
-  createData(
-    "Pod",
-    "collect-profiles-28474995-drkzz",
-    "Created container registry-server",
-    "30 mins ago"
-  ),
-  createData(
-    "Service",
-    "S3",
-    'announcing from node "zagaocp-master2" with protocol "layer2"',
-    "30 mins ago"
-  ),
-  createData(
-    "Deployment",
-    "oauth-openshift",
-    "Scaled up replica set oauth-openshift-576f8cbd5c to 3 from 2",
-    "30 mins ago"
-  ),
-  createData("Job", "collect-profiles-2847", "Job completed", "30 mins ago"),
-  createData(
-    "Open Telemetry Collector",
-    "infra-telemetry",
-    'failed to create objects for infra-telemetry: Service "infra-telemetry-collector" is invalid: [spec.ports[1].name: Duplicate value: "port-10250", spec.ports[2].name: Duplicate value: "port-10250", spec.ports[3].name: Duplicate value: "port-10250", spec.ports[1]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[2]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[3]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}] Service "infra-telemetry-collector-headless" is invalid: [spec.ports[1].name: Duplicate value: "port-10250", spec.ports[2].name: Duplicate value: "port-10250", spec.ports[3].name: Duplicate value: "port-10250", spec.ports[1]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[2]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[3]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}]',
-    "30 mins ago"
-  ),
-  createData("Namespace", "observability-kafka", "", "30 mins ago"),
+  {
+    id: "action",
+    label: "Action",
+  },
 ];
 
 const RecentEvent = () => {
@@ -157,13 +123,98 @@ const RecentEvent = () => {
 
   console.log("recent-------", eventRowsData);
 
+  function createData(
+    severityText,
+    resource,
+    resourceName,
+    eventMessage,
+    createdTime,
+    index
+  ) {
+    const actionButton = (
+      <div>
+        <Box>
+          <Tooltip>
+            <Button
+              sx={{
+                // m: "8px",
+                backgroundColor: colors.primary[400],
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#ffffff",
+                  color: "black",
+                },
+              }}
+              variant="contained"
+              onClick={() =>
+                handlePopoverOpen(severityText,
+                  resource,
+                  resourceName,
+                  eventMessage,
+                  createdTime,
+                  index)
+              }
+            >
+              View
+            </Button>
+          </Tooltip>
+        </Box>
+      </div>
+    );
+    return { severityText, resource, resourceName, eventMessage, createdTime, action: actionButton, };
+  }
+
+  const rows = [
+    createData(
+      "Pod",
+      "collect-profiles-28474995-drkzz",
+      "Created container registry-server",
+      "30 mins ago"
+    ),
+    createData(
+      "Service",
+      "S3",
+      'announcing from node "zagaocp-master2" with protocol "layer2"',
+      "30 mins ago"
+    ),
+    createData(
+      "Deployment",
+      "oauth-openshift",
+      "Scaled up replica set oauth-openshift-576f8cbd5c to 3 from 2",
+      "30 mins ago"
+    ),
+    createData("Job", "collect-profiles-2847", "Job completed", "30 mins ago"),
+    createData(
+      "Open Telemetry Collector",
+      "infra-telemetry",
+      'failed to create objects for infra-telemetry: Service "infra-telemetry-collector" is invalid: [spec.ports[1].name: Duplicate value: "port-10250", spec.ports[2].name: Duplicate value: "port-10250", spec.ports[3].name: Duplicate value: "port-10250", spec.ports[1]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[2]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[3]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}] Service "infra-telemetry-collector-headless" is invalid: [spec.ports[1].name: Duplicate value: "port-10250", spec.ports[2].name: Duplicate value: "port-10250", spec.ports[3].name: Duplicate value: "port-10250", spec.ports[1]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[2]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}, spec.ports[3]: Duplicate value: core.ServicePort{Name:"", Protocol:"TCP", AppProtocol:(*string)(nil), Port:10250, TargetPort:intstr.IntOrString{Type:0, IntVal:0, StrVal:""}, NodePort:0}]',
+      "30 mins ago"
+    ),
+    createData("Namespace", "observability-kafka", "", "30 mins ago"),
+  ];  
+
   const handleViewAllEvents = () => {
     navigate("/mainpage/infraInfo/events/allEvents");
     setViewAllEvents(true);
   };
 
-  const handlePopoverOpen = (eventMessage, anchorEl) => {
-    setSelectedEvent(eventMessage);
+  const handlePopoverOpen = (
+    severityText,
+    resource,
+    resourceName,
+    eventMessage,
+    createdTime,
+    index,
+    anchorEl
+  ) => {
+    const selectedEventObj = {
+      severityText: severityText,
+      resource: resource,
+      resourceName: resourceName,
+      eventMessage: eventMessage,
+      createdTime: createdTime,
+    };
+    setSelectedEvent(selectedEventObj);
     setAnchorEl(anchorEl);
   };
 
@@ -419,9 +470,9 @@ const RecentEvent = () => {
                               <TableRow
                                 className={classes.hover}
                                 key={rowIndex}
-                                onClick={(event) =>
-                                  handlePopoverOpen(row, event.currentTarget)
-                                }
+                                // onClick={(event) =>
+                                //   handlePopoverOpen(row, event.currentTarget)
+                                // }
                               >
                                 {tableHeader.map((column) => (
                                   <TableCell
