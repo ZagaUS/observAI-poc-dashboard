@@ -961,6 +961,7 @@ const Loglists = () => {
                                         align={column.align}
                                         style={{
                                           padding: "10px",
+                                          // textTransform: "uppercase",
                                           color:
                                             column.id === "severity" &&
                                             (row.severity === "SEVERE" ||
@@ -989,6 +990,7 @@ const Loglists = () => {
                                         align={column.align}
                                         style={{
                                           padding: "10px",
+                                          // textTransform: "uppercase",
                                           color:
                                             column.id === "severity" &&
                                             (row.severity === "SEVERE" ||
@@ -1020,6 +1022,11 @@ const Loglists = () => {
                                         align={column.align}
                                         style={{
                                           padding: "10px",
+                                          // textTransform: "uppercase",
+                                          textTransform:
+                                            column.id === "severity"
+                                              ? "uppercase"
+                                              : null,
                                           color:
                                             column.id === "severity" &&
                                             (row.severity === "SEVERE" ||
@@ -1037,7 +1044,9 @@ const Loglists = () => {
                                             textOverflow: "ellipsis",
                                           }}
                                         >
-                                          {value}
+                                          {value === "Information"
+                                            ? "INFO"
+                                            : value}
                                         </Typography>
                                       </TableCell>
                                     );
@@ -1071,6 +1080,7 @@ const Loglists = () => {
                                         align={column.align}
                                         style={{
                                           padding: "10px",
+                                          // textTransform: "uppercase",
                                           color:
                                             column.id === "severity" &&
                                             (row.severity === "SEVERE" ||
@@ -1099,6 +1109,10 @@ const Loglists = () => {
                                         align={column.align}
                                         style={{
                                           padding: "10px",
+                                          textTransform:
+                                            column.id === "severity"
+                                              ? "uppercase"
+                                              : null,
                                           color:
                                             column.id === "severity" &&
                                             (row.severity === "SEVERE" ||
@@ -1116,7 +1130,9 @@ const Loglists = () => {
                                             textOverflow: "ellipsis",
                                           }}
                                         >
-                                          {value}
+                                          {value === "Information"
+                                            ? "INFO"
+                                            : value}
                                         </Typography>
                                       </TableCell>
                                     );
