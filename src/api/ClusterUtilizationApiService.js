@@ -10,11 +10,11 @@ export const getClusterUtilization = async (
   clusterName,
   userName
 ) => {
-    try {
-        let finalUrl;
-        // let clusterUtilizationUrl;
-        // if(JSON.parse(localStorage.getItem("needHistoricalData"))) {
-        //     console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}`);
+  try {
+    let finalUrl;
+    // let clusterUtilizationUrl;
+    // if(JSON.parse(localStorage.getItem("needHistoricalData"))) {
+    //     console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}`);
 
     //     finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}`
     // } else {
@@ -30,21 +30,26 @@ export const getClusterUtilization = async (
     // } else {
     //     console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}`);
 
-        //     finalUrl = ` ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}`
-        // }
-        console.log("------[CLUSTER UTILIZATION API]------ ", clusterUtilizationUrl);
-        console.log("------[CLUSTER UTILIZATION NAME]------ ", clusterName[0]);
-        // if(clusterName[0] === "zagaus"){
-        //     console.log('---hey u are in zaga us')
-        //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION
-        // }
-        // else{
-        //     console.log('----hey u r in india')
-        //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_IND_CLUSTER_UTILIZATION
-        // }
-        if (nodeName) {
-            if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
-                console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
+    //     finalUrl = ` ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&minutesAgo=${minutesAgo}&clusterName=${clusterName}`
+    // }
+    console.log(
+      "------[CLUSTER UTILIZATION API]------ ",
+      clusterUtilizationUrl
+    );
+    console.log("------[CLUSTER UTILIZATION NAME]------ ", clusterName[0]);
+    // if(clusterName[0] === "zagaus"){
+    //     console.log('---hey u are in zaga us')
+    //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION
+    // }
+    // else{
+    //     console.log('----hey u r in india')
+    //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_IND_CLUSTER_UTILIZATION
+    // }
+    if (nodeName) {
+      if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
+        console.log(
+          `History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`
+        );
 
         finalUrl = `${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`;
       } else {
