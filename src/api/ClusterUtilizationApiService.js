@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// const clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION;
+const clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION;
 
 export const getClusterUtilization = async (
     startDate,
@@ -12,7 +12,7 @@ export const getClusterUtilization = async (
 ) => {
     try {
         let finalUrl;
-        let clusterUtilizationUrl;
+        // let clusterUtilizationUrl;
         // if(JSON.parse(localStorage.getItem("needHistoricalData"))) {
         //     console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}`);
 
@@ -34,14 +34,14 @@ export const getClusterUtilization = async (
         // }
         console.log("------[CLUSTER UTILIZATION API]------ ", clusterUtilizationUrl);
         console.log("------[CLUSTER UTILIZATION NAME]------ ", clusterName[0]);
-        if(clusterName[0] === "zagaus"){
-            console.log('---hey u are in zaga us')
-            clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION
-        }
-        else{
-            console.log('----hey u r in india')
-            clusterUtilizationUrl = process.env.REACT_APP_APIURL_IND_CLUSTER_UTILIZATION
-        }
+        // if(clusterName[0] === "zagaus"){
+        //     console.log('---hey u are in zaga us')
+        //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_CLUSTER_UTILIZATION
+        // }
+        // else{
+        //     console.log('----hey u r in india')
+        //     clusterUtilizationUrl = process.env.REACT_APP_APIURL_IND_CLUSTER_UTILIZATION
+        // }
         if (nodeName) {
             if (JSON.parse(localStorage.getItem("needHistoricalData"))) {
                 console.log(`History Call + ${clusterUtilizationUrl}/multi-level_nodeInfo?from=${startDate}&to=${endDate}&clusterName=${clusterName}&nodeName=${nodeName}&userName=${userName}`);
