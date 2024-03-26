@@ -1115,8 +1115,12 @@ const Loglists = () => {
                                               : null,
                                           color:
                                             column.id === "severity" &&
-                                            (row.severity === "SEVERE" ||
-                                              row.severity === "ERROR")
+                                            (row.severity.toLocaleLowerCase() === "severe" ||
+                                              // row.severity === "SEVERE" ||
+                                              // row.severity === "ERROR" ||
+                                              // row.severity === "Error"
+                                              row.severity.toLocaleLowerCase() === "error"
+                                              )
                                               ? "red"
                                               : "inherit",
                                         }}
